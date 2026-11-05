@@ -1,0 +1,132 @@
+/* Targeted redlines for the approved Fieldside board. Keep the neutral ink / Housebets cyan system intact. */
+@media (min-width: 1181px) {
+  .app-shell { grid-template-columns: 204px minmax(0, 1fr) 280px !important; }
+  .left-rail { width: 204px !important; }
+  .right-rail { width: 280px !important; }
+}
+
+@media (min-width: 761px) and (max-width: 1180px) {
+  .app-shell { grid-template-columns: 184px minmax(0, 1fr) !important; }
+  .left-rail { width: 184px !important; }
+}
+
+/* The page title already names the current view; removing its duplicate breadcrumb frees the first viewport for the match. */
+.app-shell .page-topline { display: none !important; }
+.app-shell .page-heading { margin-top: 0 !important; }
+
+/* A single navigation list prevents the same Football and Live destinations appearing twice. */
+.left-rail .primary-nav { margin-bottom: 18px; }
+.left-rail .nav-link { gap: 8px !important; padding-right: 8px !important; padding-left: 8px !important; }
+.left-rail .nav-label { overflow: hidden; text-overflow: ellipsis; }
+
+/* Keep the time/status marker and its connecting rule on one shared mobile grid. */
+.fixture-row .fixture-time-cell {
+  width: 100%;
+  min-width: 0;
+  min-height: 72px !important;
+  height: 100%;
+  display: grid !important;
+  grid-template-columns: 12px minmax(0, 1fr);
+  align-items: stretch !important;
+  gap: 5px;
+  padding: 0 !important;
+  border: 0 !important;
+}
+.fixture-row .fixture-time-cell::before { display: none !important; }
+.fixture-time-rail {
+  position: relative;
+  width: 12px;
+  min-height: 100%;
+  display: block;
+}
+.fixture-time-rail::before {
+  position: absolute;
+  top: 9px;
+  bottom: 0;
+  left: 5px;
+  width: 1px;
+  background: #53666c;
+  content: '';
+}
+.fixture-time-rail::after {
+  position: absolute;
+  z-index: 1;
+  top: 5px;
+  left: 2px;
+  width: 7px;
+  height: 7px;
+  background: #a7b6b9;
+  border: 1px solid var(--fs-bg);
+  border-radius: 50%;
+  content: '';
+}
+.fixture-row.is-live .fixture-time-rail::before { background: #a44f65; }
+.fixture-row.is-live .fixture-time-rail::after { background: var(--fs-live); }
+.fixture-row.is-final .fixture-time-rail::before { background: repeating-linear-gradient(to bottom, #566970 0 3px, transparent 3px 6px); }
+.fixture-row.is-final .fixture-time-rail::after { background: #87999d; }
+.fixture-time-copy { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 0 !important; }
+.fixture-time-copy > span,
+.fixture-time-copy > small { color: var(--fs-secondary); font-size: 12px !important; line-height: 1.35; }
+.fixture-row.is-live .fixture-time-copy > span { color: #ffabb8; }
+.fixture-time-copy > strong { color: var(--fs-text); font-size: 15px !important; font-weight: 500; line-height: 1.25; }
+
+/* Demo controls are an optional, clearly separated drawer rather than more content in the bet slip. */
+.right-rail > .rail-demo-disclosure {
+  flex: 0 0 auto;
+  margin: auto 9px 10px !important;
+  overflow: hidden;
+  background: #0b171c;
+  border: 1px solid var(--fs-line);
+  border-radius: 3px;
+}
+.rail-demo-disclosure > summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 11px;
+  color: var(--fs-secondary);
+  cursor: pointer;
+  list-style: none;
+  font-size: 13px;
+}
+.rail-demo-disclosure > summary::-webkit-details-marker { display: none; }
+.rail-demo-disclosure > summary small { margin-left: auto; color: var(--fs-muted); font-size: 12px; }
+.rail-demo-disclosure > summary b { color: var(--fs-brand); font-size: 16px; font-weight: 400; }
+.rail-demo-disclosure[open] > summary { border-bottom: 1px solid var(--fs-line); }
+.rail-demo-disclosure .demo-lab { margin: 0 !important; border: 0 !important; }
+.inline-demo-lab { margin-top: 14px !important; }
+.inline-demo-lab > summary { min-height: 44px; }
+
+.notice-undo {
+  min-height: 44px;
+  flex: 0 0 auto;
+  padding: 0 12px;
+  color: var(--fs-bg);
+  background: var(--fs-brand);
+  border: 1px solid var(--fs-brand);
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.notice-undo:hover { background: #67ffff; }
+
+@media (max-width: 760px) {
+  .app-shell .page-topline { display: none !important; }
+  .app-shell .page-heading { margin-bottom: 8px !important; }
+  .fixture-row .fixture-time-cell { min-height: 72px !important; }
+  .fixture-time-copy > strong { font-size: 14px !important; }
+  .fixture-time-copy > small { overflow-wrap: anywhere; }
+  .right-rail > .rail-demo-disclosure { display: none; }
+  .inline-demo-lab { margin-top: 12px !important; }
+  .notice-undo { min-height: 44px; padding: 0 10px; }
+}
+
+/* Keep the fixture caption across the full slip width, not squeezed beside odds and remove. */
+.side-selection-head > div { display: contents !important; }
+.side-selection-head > div > strong { grid-column: 1; grid-row: 1; }
+.side-selection-head > .side-odds { grid-column: 2; grid-row: 1; }
+.side-selection-head > .side-remove { grid-column: 3; grid-row: 1; }
+.side-selection-head > div > small { grid-column: 1 / -1; grid-row: 2; display: flex !important; align-items: flex-start; white-space: normal !important; overflow-wrap: normal !important; }
+.side-selection-head > div > small .club-pair { flex-shrink: 0; }

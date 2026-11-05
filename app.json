@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "Housebets · Matchday Board",
+    "slug": "housebets-panelui-redesign",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/housebets-favicon.png"
+    }
+  }
+}
