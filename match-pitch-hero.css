@@ -1,0 +1,94 @@
+/* Vector illustration of an empty football pitch for the sample Real Madrid v Arsenal fixture. */
+#root #housebets-app .fieldside-stage.has-pitch-illustration .fieldside-stage-photo {
+  display: block !important;
+  background-image: url('/fieldside-pitch-illustration.svg') !important;
+  background-position: center 52% !important;
+  background-size: cover !important;
+  opacity: .98 !important;
+}
+
+#root #housebets-app .fieldside-stage.has-pitch-illustration::before {
+  display: block !important;
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(4,16,21,.40) 0%, rgba(4,16,21,.14) 27%, rgba(4,16,21,.30) 48%, rgba(4,16,21,.30) 58%, rgba(4,16,21,.14) 78%, rgba(4,16,21,.40) 100%),
+    linear-gradient(0deg, #041015 0%, rgba(4,16,21,.80) 19%, rgba(4,16,21,.10) 57%, rgba(4,16,21,.30) 100%) !important;
+  content: "" !important;
+}
+
+#root #housebets-app .stage-image-note {
+  display: inline-flex !important;
+  max-width: 132px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 4px 8px;
+  color: #f9f9fb !important;
+  background: rgba(4,16,21,.78) !important;
+  border: 1px solid rgba(249,249,251,.28) !important;
+  border-radius: 999px;
+  font-size: 11px !important;
+  line-height: 1.25;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root #housebets-app .match-hero.has-pitch-illustration {
+  position: relative;
+  isolation: isolate;
+  background: #0b1920 url('/fieldside-pitch-illustration.svg') center 52% / cover no-repeat !important;
+}
+
+#root #housebets-app .match-hero.has-pitch-illustration::before {
+  display: block !important;
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(4,16,21,.42) 0%, rgba(4,16,21,.14) 27%, rgba(4,16,21,.30) 48%, rgba(4,16,21,.30) 58%, rgba(4,16,21,.14) 78%, rgba(4,16,21,.42) 100%),
+    linear-gradient(0deg, rgba(4,16,21,.90) 0%, rgba(4,16,21,.38) 30%, rgba(4,16,21,.12) 75%, rgba(4,16,21,.34) 100%) !important;
+  content: "" !important;
+}
+
+#root #housebets-app .match-hero.has-pitch-illustration > * {
+  position: relative;
+  z-index: 1;
+}
+
+#root #housebets-app .match-hero.has-pitch-illustration .match-hero-top,
+#root #housebets-app .match-hero.has-pitch-illustration .match-hero-bottom {
+  border-color: rgba(249,249,251,.26) !important;
+}
+
+@media (max-width: 760px) {
+  #root #housebets-app .fieldside-stage.has-pitch-illustration .fieldside-stage-photo {
+    background-position: center 52% !important;
+  }
+
+  #root #housebets-app .fieldside-stage.has-pitch-illustration .fieldside-stage-top {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 72px !important;
+    gap: 8px !important;
+  }
+
+  #root #housebets-app .fieldside-stage.has-pitch-illustration .stage-competition {
+    min-width: 0;
+  }
+
+  #root #housebets-app .stage-image-note {
+    width: 72px;
+    min-width: 72px;
+    max-width: 72px;
+    justify-self: end;
+    padding: 3px 6px;
+    font-size: 10px !important;
+    box-sizing: border-box;
+  }
+
+  #root #housebets-app .match-hero.has-pitch-illustration {
+    background-position: center 52% !important;
+  }
+}

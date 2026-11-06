@@ -95,7 +95,7 @@ body { font-size: 14px; line-height: 1.5; }
 .listing-filter-tabs b, .sports-count-row button b { color: #c5eeee !important; }
 .crumb-slash { color: var(--polish-muted) !important; }
 .right-rail-top { isolation: isolate; }
-.right-rail .side-tabs { position: sticky; top: 0; z-index: 3; min-height: 48px; height: auto; background: #07181f !important; box-shadow: 0 8px 0 #07181f; }
+.right-rail .side-tabs { position: sticky; top: 0; z-index: 3; min-height: 48px; height: auto; background: #07181f !important; }
 .right-rail .side-tab { background: #07181f !important; }
 .side-tab, .activity-tab, .bet-filter-tabs button, .mobile-sheet-tabs button { min-height: 44px; font-size: 14px !important; }
 .rail-panel-body { padding: 16px !important; }

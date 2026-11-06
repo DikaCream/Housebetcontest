@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <linearGradient id="night" x1="800" y1="0" x2="800" y2="430" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#06141C"/>
+      <stop offset="1" stop-color="#0B252C"/>
+    </linearGradient>
+    <linearGradient id="grass" x1="800" y1="300" x2="800" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1A5145"/>
+      <stop offset="1" stop-color="#0A2B27"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" y1="450" x2="1600" y2="450" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#041015" stop-opacity=".62"/>
+      <stop offset=".28" stop-color="#041015" stop-opacity=".18"/>
+      <stop offset=".5" stop-color="#041015" stop-opacity=".30"/>
+      <stop offset=".72" stop-color="#041015" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#041015" stop-opacity=".58"/>
+    </linearGradient>
+    <linearGradient id="bottomShade" x1="800" y1="330" x2="800" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#041015" stop-opacity=".06"/>
+      <stop offset="1" stop-color="#041015" stop-opacity=".62"/>
+    </linearGradient>
+    <pattern id="mow" width="240" height="600" patternUnits="userSpaceOnUse">
+      <rect width="120" height="600" fill="#B9F4D2" fill-opacity=".045"/>
+      <rect x="120" width="120" height="600" fill="#041015" fill-opacity=".055"/>
+    </pattern>
+    <radialGradient id="light" cx="0" cy="0" r="1" gradientTransform="matrix(0 310 -650 0 800 230)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#02F8F8" stop-opacity=".13"/>
+      <stop offset="1" stop-color="#02F8F8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#night)"/>
+  <rect width="1600" height="560" fill="url(#light)"/>
+  <path d="M0 248C250 166 514 126 800 126s550 40 800 122v157H0V248Z" fill="#0A1C25"/>
+  <path d="M0 245C248 164 516 125 800 125s552 39 800 120" stroke="#16333D" stroke-width="3"/>
+  <path d="M0 276C254 205 520 172 800 172s546 33 800 104" stroke="#102B35" stroke-width="22"/>
+  <path d="M0 296C255 231 525 202 800 202s545 29 800 94" stroke="#20414A" stroke-opacity=".58" stroke-width="2"/>
+  <path d="M0 320C260 260 531 235 800 235s540 25 800 85" stroke="#17353E" stroke-width="28"/>
+  <path d="M0 337C264 282 535 262 800 262s536 20 800 75" stroke="#31525A" stroke-opacity=".35" stroke-width="2"/>
+  <g fill="#132D36">
+    <path d="M92 268h54v18H92zM186 251h46v16h-46zM276 236h58v17h-58zM378 222h43v16h-43zM482 210h52v16h-52zM590 200h42v15h-42zM696 194h44v14h-44z"/>
+    <path d="M866 194h44v14h-44zM968 200h42v15h-42zM1066 210h52v16h-52zM1179 222h43v16h-43zM1266 236h58v17h-58zM1368 251h46v16h-46zM1454 268h54v18h-54z"/>
+  </g>
+  <g stroke="#02F8F8" stroke-opacity=".3" stroke-width="3">
+    <path d="M112 277h24M295 245h24M512 218h24M704 201h24M872 201h24M1064 218h24M1280 245h24M1464 277h24"/>
+  </g>
+  <path d="M0 352h1600v548H0z" fill="url(#grass)"/>
+  <path d="M0 352h1600v548H0z" fill="url(#mow)"/>
+  <path d="M0 378h1600M0 405h1600M0 850h1600" stroke="#C4F4F1" stroke-opacity=".035" stroke-width="2"/>
+  <g stroke="#E1F3E8" stroke-opacity=".62" stroke-width="4">
+    <path d="M0 404h1600v496H0z"/>
+    <path d="M800 404v496"/>
+    <ellipse cx="800" cy="652" rx="174" ry="84"/>
+    <circle cx="800" cy="652" r="5" fill="#E1F3E8" stroke="none"/>
+    <path d="M0 493h253v318H0M1600 493h-253v318h253"/>
+    <path d="M0 568h94v168H0M1600 568h-94v168h94"/>
+    <path d="M0 604a48 48 0 0 1 0 96M1600 604a48 48 0 0 0 0 96"/>
+    <path d="M0 465v377M1600 465v377" stroke-opacity=".3"/>
+    <path d="M0 466h24v102H0M1600 466h-24v102h24" stroke-width="3" stroke-opacity=".75"/>
+    <path d="M0 736h24v102H0M1600 736h-24v102h24" stroke-width="3" stroke-opacity=".75"/>
+  </g>
+  <rect width="1600" height="900" fill="url(#shade)"/>
+  <rect width="1600" height="900" fill="url(#bottomShade)"/>
+</svg>

@@ -3,7 +3,10 @@ import React, { useEffect, useRef } from 'react';
 export default function MobileSheet({ onClose, children }: { onClose: () => void; children: React.ReactNode }) {
   const dialog = useRef<HTMLElement>(null);
   const close = useRef(onClose);
-  close.current = onClose;
+
+  useEffect(() => {
+    close.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;

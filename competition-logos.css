@@ -1,0 +1,87 @@
+/* Compact circular competition medallions; the existing league labels and pills stay unchanged. */
+.competition-logo-badge {
+  min-width: 0;
+  flex: 0 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+  border: 1px solid rgba(196, 244, 241, .58);
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.competition-logo-badge img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.competition-logo-badge--globe img { object-fit: contain; }
+
+.league-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fixture-competition-name {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.home-fixture-competition {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.home-fixture-competition-copy {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stage-competition {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.stage-competition-copy { min-width: 0; }
+
+.selection-competition,
+.slip-summary-line strong,
+.bet-row-event em,
+.bet-detail-panel > div:nth-child(2) strong,
+.side-market-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .stage-competition { gap: 6px; }
+}
+
+/* Keep the small medallions circular on Housebets' dark surfaces. */
+#root #housebets-app .competition-logo-badge {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  flex-basis: 18px !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+  border: 1px solid rgba(196, 244, 241, .58) !important;
+  border-radius: 50% !important;
+}
+
+/* Keep all five Home competition shortcuts inside the existing row. */
+#root #housebets-app .top-competition-list button { gap: 6px !important; }

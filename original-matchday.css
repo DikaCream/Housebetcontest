@@ -1,0 +1,4612 @@
+/*
+  Housebets Matchday Board — original product UI, not a reference-site copy.
+  Product metaphor: a broadcast fixture ledger viewed from the touchline.
+  Assets: official Housebets SVGs, local Schibsted font and original club crests.
+  Accent is reserved for selected prices/actions; rose and amber are status-only.
+*/
+
+.app-shell[data-design="original-matchday"] {
+  --hb-ink: #041015;
+  --hb-header: #061116;
+  --hb-board: #0b1920;
+  --hb-raised: #0e202a;
+  --hb-raised-2: #122831;
+  --hb-line: #213840;
+  --hb-line-strong: #29404a;
+  --hb-text: #f9f9fb;
+  --hb-secondary: #c5d1d4;
+  --hb-muted: #9eafb3;
+  --hb-cyan: #02f8f8;
+  --hb-aqua: #c4f4f1;
+  --hb-live: #fa2e5d;
+  --hb-warning: #ffb264;
+  --hb-radius: 4px;
+  --hb-ease: cubic-bezier(.22, 1, .36, 1);
+  color: var(--hb-text);
+  background: var(--hb-ink);
+  color-scheme: dark;
+  font-family: Schibsted, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body, #root {
+  min-height: 100%;
+  color: #f9f9fb !important;
+  background: #041015 !important;
+}
+
+body {
+  font-family: Schibsted, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif !important;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.45;
+}
+
+#root .app-shell[data-design="original-matchday"] {
+  display: grid !important;
+  grid-template-columns: 184px minmax(0, 1fr) 310px !important;
+  grid-template-rows: 64px minmax(0, 1fr) !important;
+  align-items: start;
+  min-height: 100vh;
+  color: var(--hb-text) !important;
+  background: var(--hb-ink) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] :is(button, input, select, summary) {
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+#root .app-shell[data-design="original-matchday"] :is(button, input, select, a, summary):focus-visible {
+  outline: 2px solid var(--hb-cyan) !important;
+  outline-offset: 3px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] ::selection {
+  color: var(--hb-ink);
+  background: var(--hb-cyan);
+}
+
+#root .app-shell[data-design="original-matchday"] button {
+  cursor: pointer;
+  transition: color 150ms var(--hb-ease), background-color 150ms var(--hb-ease), border-color 150ms var(--hb-ease), transform 120ms var(--hb-ease);
+}
+
+#root .app-shell[data-design="original-matchday"] button:active:not(:disabled) {
+  transform: scale(.98);
+}
+
+/* The shell is deliberately quiet; the match board owns the visual weight. */
+#root .app-shell[data-design="original-matchday"] .topbar {
+  position: sticky !important;
+  top: 0;
+  z-index: 50;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  width: 100%;
+  height: 64px !important;
+  display: grid !important;
+  grid-template-columns: minmax(160px, 190px) minmax(240px, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  padding: 0 24px !important;
+  color: var(--hb-text) !important;
+  background: var(--hb-header) !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--hb-line) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .brand-lockup {
+  min-width: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0;
+  color: var(--hb-text);
+  background: transparent;
+  border: 0;
+  text-align: left;
+}
+
+#root .app-shell[data-design="original-matchday"] .brand-logo {
+  display: block;
+  width: auto;
+  height: 21px !important;
+  max-width: 132px;
+  object-fit: contain;
+}
+
+#root .app-shell[data-design="original-matchday"] .brand-divider {
+  height: 20px;
+  background: var(--hb-line-strong);
+}
+
+#root .app-shell[data-design="original-matchday"] .brand-sport {
+  color: var(--hb-muted) !important;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .04em;
+}
+
+#root .app-shell[data-design="original-matchday"] .header-search {
+  width: 100%;
+  max-width: 520px;
+  height: 40px !important;
+  justify-self: center;
+  margin: 0;
+  padding: 0 11px !important;
+  color: var(--hb-muted) !important;
+  background: #08171d !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: var(--hb-radius) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .search-input {
+  min-width: 0;
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  font-size: 13px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .search-input::placeholder,
+#root .app-shell[data-design="original-matchday"] .search-key {
+  color: var(--hb-muted) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .search-key {
+  border-color: var(--hb-line) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .topbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .demo-badge {
+  color: var(--hb-secondary) !important;
+  background: #0e202a !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+  font-size: 11px !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .demo-badge [data-slot="badge-dot"] {
+  background: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .topbar-note {
+  color: var(--hb-muted) !important;
+  font-size: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .account-button {
+  min-height: 38px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px !important;
+  color: var(--hb-secondary) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: var(--hb-radius) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .account-avatar {
+  width: 23px;
+  height: 23px;
+  display: grid;
+  place-items: center;
+  color: var(--hb-ink) !important;
+  background: var(--hb-cyan) !important;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+#root .app-shell[data-design="original-matchday"] .account-chevron {
+  color: var(--hb-muted) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .left-rail,
+#root .app-shell[data-design="original-matchday"] .right-rail {
+  min-width: 0;
+  color: var(--hb-text) !important;
+  background: #071318 !important;
+  border-color: var(--hb-line) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .left-rail {
+  position: sticky !important;
+  top: 64px !important;
+  grid-column: 1;
+  grid-row: 2;
+  width: 184px;
+  height: calc(100vh - 64px) !important;
+  min-height: 520px;
+  display: flex !important;
+  flex-direction: column;
+  align-items: stretch !important;
+  gap: 0;
+  padding: 22px 12px 16px !important;
+  overflow-y: auto;
+  border: 0 !important;
+  border-right: 1px solid var(--hb-line) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .rail-section-label {
+  padding: 0 9px !important;
+  color: var(--hb-muted) !important;
+  font-size: 12px !important;
+  font-weight: 400;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .primary-nav {
+  display: flex !important;
+  flex-direction: column;
+  align-items: stretch !important;
+  gap: 3px !important;
+  margin-top: 10px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .left-rail .nav-link {
+  position: relative;
+  width: 100%;
+  min-height: 42px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  padding: 0 10px !important;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 3px !important;
+  font-size: 13px !important;
+  text-align: left;
+}
+
+#root .app-shell[data-design="original-matchday"] .left-rail .nav-link:hover {
+  color: var(--hb-text) !important;
+  background: #0e202a !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .left-rail .nav-link.is-active {
+  color: var(--hb-text) !important;
+  background: #0e202a !important;
+  border-color: #29404a !important;
+  box-shadow: inset 3px 0 var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .left-rail .nav-icon {
+  width: 19px !important;
+  height: 19px !important;
+  display: grid !important;
+  place-items: center;
+  color: var(--hb-muted) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .left-rail .nav-link.is-active .nav-icon {
+  color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .left-rail .nav-label {
+  min-width: 0;
+  display: block !important;
+  flex: 1;
+  color: inherit !important;
+  font-size: 13px !important;
+  text-align: left !important;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .nav-count {
+  position: static !important;
+  min-width: 23px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  padding: 0 5px;
+  color: var(--hb-text) !important;
+  background: #273840 !important;
+  border-radius: 2px;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .nav-count-lime {
+  color: var(--hb-ink) !important;
+  background: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .rail-note {
+  margin-top: auto !important;
+  padding: 12px !important;
+  color: var(--hb-secondary) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .rail-note-mark,
+#root .app-shell[data-design="original-matchday"] .footer-mark {
+  color: var(--hb-ink) !important;
+  background: var(--hb-cyan) !important;
+  border-radius: 2px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .rail-note strong,
+#root .app-shell[data-design="original-matchday"] .page-footer strong {
+  color: var(--hb-text) !important;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .rail-note p,
+#root .app-shell[data-design="original-matchday"] .rail-note-foot {
+  color: var(--hb-muted) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .rail-note-foot span {
+  background: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .main-content {
+  grid-column: 2;
+  grid-row: 2;
+  width: 100% !important;
+  max-width: 1600px !important;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 22px clamp(22px, 2.4vw, 34px) 42px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .page-stack {
+  display: grid;
+  gap: 20px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .page-topline {
+  min-height: 28px;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0 0 14px !important;
+  padding: 0 0 9px !important;
+  border-bottom: 1px solid var(--hb-line) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .breadcrumbs,
+#root .app-shell[data-design="original-matchday"] .updated-note {
+  color: var(--hb-muted) !important;
+  font-size: 11px !important;
+  letter-spacing: 0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .breadcrumbs span:first-child {
+  color: var(--hb-secondary) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .breadcrumbs span:last-child {
+  color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .updated-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .updated-note .live-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--hb-cyan) !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .page-heading {
+  display: flex !important;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0 0 15px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .page-heading .eyebrow {
+  display: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .page-heading h1 {
+  margin: 0 0 4px !important;
+  color: var(--hb-text) !important;
+  font-size: clamp(26px, 2.15vw, 32px) !important;
+  font-weight: 500 !important;
+  letter-spacing: -.02em !important;
+  line-height: 1.1 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .page-subtitle {
+  max-width: 620px;
+  margin: 0;
+  color: var(--hb-secondary) !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .page-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#root .app-shell[data-design="original-matchday"] .sample-tag,
+#root .app-shell[data-design="original-matchday"] .single-badge {
+  color: var(--hb-secondary) !important;
+  background: #0e202a !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+  font-size: 11px !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .head-action {
+  min-height: 38px !important;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+  font-size: 12px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .head-action:hover {
+  color: var(--hb-text) !important;
+  background: #0e202a !important;
+  border-color: var(--hb-line-strong) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .page-search {
+  display: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .notice {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px !important;
+  color: var(--hb-secondary) !important;
+  background: #0e202a !important;
+  border: 1px solid var(--hb-line) !important;
+  border-left: 3px solid var(--hb-cyan) !important;
+  border-radius: 3px !important;
+  font-size: 13px;
+}
+
+#root .app-shell[data-design="original-matchday"] .notice-warning { border-left-color: var(--hb-warning) !important; }
+#root .app-shell[data-design="original-matchday"] .notice-error { border-left-color: var(--hb-live) !important; }
+#root .app-shell[data-design="original-matchday"] .notice-success { border-left-color: var(--hb-cyan) !important; }
+#root .app-shell[data-design="original-matchday"] .notice-mark { color: var(--hb-cyan) !important; background: transparent !important; }
+#root .app-shell[data-design="original-matchday"] .notice-warning .notice-mark { color: var(--hb-warning) !important; }
+#root .app-shell[data-design="original-matchday"] .notice-error .notice-mark { color: var(--hb-live) !important; }
+#root .app-shell[data-design="original-matchday"] .notice-close,
+#root .app-shell[data-design="original-matchday"] .notice-undo { color: var(--hb-secondary) !important; background: transparent !important; }
+
+/* Home: sports index, competition strip, one atmospheric scoreboard. */
+#root .app-shell[data-design="original-matchday"] .sports-index {
+  display: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-dashboard {
+  gap: 16px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-sports-nav {
+  min-width: 0;
+  display: flex !important;
+  align-items: center;
+  gap: 20px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--hb-line);
+  scrollbar-width: none;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-sports-nav::-webkit-scrollbar,
+#root .app-shell[data-design="original-matchday"] .top-competition-list::-webkit-scrollbar,
+#root .app-shell[data-design="original-matchday"] .market-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-sports-nav button {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 0 1px;
+  color: var(--hb-muted) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-sports-nav button:hover,
+#root .app-shell[data-design="original-matchday"] .home-sports-nav button.selected {
+  color: var(--hb-text) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-sports-nav button.selected {
+  border-bottom-color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .top-competitions {
+  min-width: 0;
+  display: grid;
+  gap: 0;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid var(--hb-line) !important;
+  border-bottom: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .top-competition-heading {
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .top-competition-heading h2 {
+  margin: 0;
+  color: var(--hb-text) !important;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .top-competition-heading p {
+  display: none;
+}
+
+#root .app-shell[data-design="original-matchday"] .top-competition-heading > span {
+  color: var(--hb-muted) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .top-competition-list {
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+#root .app-shell[data-design="original-matchday"] .top-competition-list button {
+  min-width: 0;
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 0 auto;
+  padding: 0 12px;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-left: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+  font-size: 12px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .top-competition-list button:first-child {
+  padding-left: 0;
+  border-left: 0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .top-competition-list button:hover {
+  color: var(--hb-text) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .top-competition-code {
+  color: var(--hb-cyan) !important;
+  background: transparent !important;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+#root .app-shell[data-design="original-matchday"] .top-competition-list button > svg {
+  color: var(--hb-muted) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-stage {
+  position: relative;
+  isolation: isolate;
+  min-height: 318px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 16px 19px 15px;
+  color: var(--hb-text) !important;
+  background: #09171c !important;
+  border: 1px solid var(--hb-line-strong) !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-stage-photo {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  opacity: .78;
+  background-image: url('/fieldside-stadium.jpg');
+  background-size: cover;
+  background-position: center 60%;
+  filter: saturate(.82);
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-stage::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(4,16,21,.94) 0%, rgba(4,16,21,.56) 48%, rgba(4,16,21,.88) 100%), linear-gradient(0deg, #041015 0%, rgba(4,16,21,.76) 27%, rgba(4,16,21,.05) 82%);
+  content: "";
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-stage-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  color: var(--hb-secondary) !important;
+  font-size: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-stage-top > span:first-child {
+  color: var(--hb-text) !important;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-stage-top i {
+  padding: 0 4px;
+  color: var(--hb-muted) !important;
+  font-style: normal;
+}
+
+#root .app-shell[data-design="original-matchday"] .stage-sample-label {
+  color: var(--hb-secondary) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-matchup {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+  margin: 19px 0 17px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-team {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-team.away {
+  align-items: flex-end;
+  text-align: right;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-team .stage-crest {
+  width: 58px !important;
+  height: 58px !important;
+  padding: 4px;
+  object-fit: contain;
+  background: #f8fbfb !important;
+  border: 1px solid rgba(255,255,255,.56) !important;
+  border-radius: 50% !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-team strong {
+  max-width: 100%;
+  color: var(--hb-text) !important;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-team small {
+  color: var(--hb-secondary) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  text-align: center;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-score > span {
+  color: var(--hb-text) !important;
+  font-size: 42px;
+  font-weight: 500;
+  letter-spacing: -.035em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-score > small {
+  color: var(--hb-secondary) !important;
+  font-size: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .stage-live {
+  color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-stage-bottom {
+  display: grid;
+  grid-template-columns: minmax(115px, .65fr) minmax(220px, 1.15fr) auto;
+  align-items: end;
+  gap: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(249,249,251,.24) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .stage-state-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+#root .app-shell[data-design="original-matchday"] .stage-state-copy > span {
+  color: var(--hb-secondary) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .stage-state-copy > strong {
+  color: var(--hb-text) !important;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-prices {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-price {
+  min-width: 0;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 9px;
+  color: var(--hb-text) !important;
+  background: rgba(4,16,21,.84) !important;
+  border: 1px solid rgba(249,249,251,.26) !important;
+  border-radius: 3px !important;
+  text-align: left;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-price:hover:not(:disabled) {
+  background: rgba(14,32,42,.96) !important;
+  border-color: rgba(249,249,251,.62) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-price small {
+  color: var(--hb-secondary) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-price strong {
+  color: var(--hb-text) !important;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-price.is-selected {
+  color: var(--hb-ink) !important;
+  background: var(--hb-cyan) !important;
+  border-color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-price.is-selected :is(small, strong) {
+  color: var(--hb-ink) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .stage-match-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 2px;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 0 !important;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .stage-match-link:hover {
+  color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .stage-unavailable {
+  grid-column: 2;
+  color: var(--hb-warning) !important;
+  font-size: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-schedule-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 4px 0 -7px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-schedule-heading h2 {
+  margin: 0;
+  color: var(--hb-text) !important;
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -.01em;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-schedule-heading p {
+  margin: 3px 0 0;
+  color: var(--hb-muted) !important;
+  font-size: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-schedule-heading button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 2px;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 0 !important;
+  font-size: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fieldside-schedule-heading button:hover {
+  color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-lanes {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 26px;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-lanes.is-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-lane {
+  min-width: 0;
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-lane-heading,
+#root .app-shell[data-design="original-matchday"] .ledger-lane-heading {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 2px !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--hb-line) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-lane-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-lane-title h3,
+#root .app-shell[data-design="original-matchday"] .ledger-lane-heading h3 {
+  margin: 0;
+  color: var(--hb-text) !important;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-lane-mark {
+  width: 7px;
+  height: 7px;
+  display: inline-block;
+  background: var(--hb-muted);
+  border-radius: 50%;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-lane--live .home-fixture-lane-mark {
+  background: var(--hb-live);
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-lane-count,
+#root .app-shell[data-design="original-matchday"] .ledger-lane-count {
+  color: var(--hb-muted) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-list {
+  display: grid;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-card {
+  min-width: 0;
+  padding: 10px 0 12px !important;
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-card-head {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  margin-bottom: 7px;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-context {
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  padding: 0;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 0 !important;
+  text-align: left;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-timing {
+  color: var(--hb-muted) !important;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-timing.is-live {
+  color: #ff9ab0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-competition {
+  color: var(--hb-secondary) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-markets {
+  flex: 0 0 auto;
+  padding: 0;
+  color: var(--hb-muted) !important;
+  background: transparent !important;
+  border: 0 !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-markets strong {
+  color: var(--hb-cyan) !important;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-card-body {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(205px, .95fr);
+  align-items: center;
+  gap: 14px;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-teams {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  padding: 0;
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  text-align: left;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-team {
+  min-width: 0;
+  min-height: 27px;
+  display: grid;
+  grid-template-columns: 23px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 8px;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-team .club-crest {
+  width: 22px !important;
+  height: 22px !important;
+  padding: 2px;
+  object-fit: contain;
+  background: #f6f8f8 !important;
+  border-radius: 50% !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-team strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--hb-text) !important;
+  font-size: 13px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-team b {
+  color: var(--hb-text) !important;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: right;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-market {
+  min-width: 0;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-market-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+  color: var(--hb-secondary) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-market-heading > span:last-child {
+  color: var(--hb-muted) !important;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-odds {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-odd {
+  min-width: 0;
+  min-height: 42px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 3px 5px;
+  color: var(--hb-text) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line-strong) !important;
+  border-radius: 3px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-odd:hover:not(:disabled) {
+  background: #122831 !important;
+  border-color: #607982 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-odd > span {
+  color: var(--hb-muted) !important;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-odd > strong {
+  color: var(--hb-text) !important;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-odd.is-selected {
+  color: var(--hb-ink) !important;
+  background: var(--hb-cyan) !important;
+  border-color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-odd.is-selected :is(span, strong) {
+  color: var(--hb-ink) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .home-fixture-suspended {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--hb-warning) !important;
+  font-size: 12px;
+}
+
+/* One shared ledger grammar for Live and Football. */
+#root .app-shell[data-design="original-matchday"] .live-filter-panel,
+#root .app-shell[data-design="original-matchday"] .football-toolbar,
+#root .app-shell[data-design="original-matchday"] .listing-toolbar,
+#root .app-shell[data-design="original-matchday"] .sports-count-row {
+  min-width: 0;
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .live-filter-panel {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 0 12px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .live-filter-heading {
+  display: grid;
+  gap: 3px;
+}
+
+#root .app-shell[data-design="original-matchday"] .live-filter-heading .eyebrow {
+  color: var(--hb-muted) !important;
+  font-size: 11px !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .live-filter-heading strong {
+  color: var(--hb-text) !important;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .live-sport-tabs,
+#root .app-shell[data-design="original-matchday"] .league-chips {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+#root .app-shell[data-design="original-matchday"] .live-sport-tab,
+#root .app-shell[data-design="original-matchday"] .league-chip {
+  min-height: 38px !important;
+  flex: 0 0 auto;
+  padding: 0 10px !important;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-bottom-color: var(--hb-line) !important;
+  border-radius: 0 !important;
+  font-size: 12px !important;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .live-sport-tab.active,
+#root .app-shell[data-design="original-matchday"] .league-chip.active {
+  color: var(--hb-cyan) !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  border-bottom: 2px solid var(--hb-cyan) !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .live-filter-select {
+  display: grid;
+  gap: 4px;
+  color: var(--hb-muted) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .live-filter-select select,
+#root .app-shell[data-design="original-matchday"] .fixture-picker,
+#root .app-shell[data-design="original-matchday"] .date-filter,
+#root .app-shell[data-design="original-matchday"] .mybets-search {
+  min-height: 38px;
+  color: var(--hb-secondary) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line-strong) !important;
+  border-radius: 3px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .live-filter-select select,
+#root .app-shell[data-design="original-matchday"] .fixture-picker,
+#root .app-shell[data-design="original-matchday"] .date-filter select {
+  padding: 0 9px;
+}
+
+#root .app-shell[data-design="original-matchday"] .football-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 0 10px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .league-select-label,
+#root .app-shell[data-design="original-matchday"] .fixtures-total {
+  flex: 0 0 auto;
+  color: var(--hb-muted) !important;
+  font-size: 11px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixtures-total {
+  margin-left: auto;
+}
+
+#root .app-shell[data-design="original-matchday"] .listing-toolbar {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 0 8px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .listing-filter-tabs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .listing-filter-tabs button {
+  min-height: 36px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 2px !important;
+  color: var(--hb-muted) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  font-size: 12px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .listing-filter-tabs button.active {
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border-bottom-color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .listing-filter-tabs button b {
+  color: var(--hb-cyan) !important;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .pulse-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--hb-live) !important;
+  border-radius: 50%;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .filter-note,
+#root .app-shell[data-design="original-matchday"] .starting-soon-indicator {
+  color: var(--hb-muted) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .filter-note .live-dot {
+  background: var(--hb-live) !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .desktop-competition-list {
+  display: grid;
+  gap: 20px;
+}
+
+#root .app-shell[data-design="original-matchday"] .competition-block,
+#root .app-shell[data-design="original-matchday"] .league-frame,
+#root .app-shell[data-design="original-matchday"] .fixture-frame,
+#root .app-shell[data-design="original-matchday"] .ledger-sheet {
+  overflow: visible !important;
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .competition-block > [data-slot="frame-header"] {
+  min-height: 48px;
+  padding: 4px 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .competition-block [data-slot="frame-title"] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--hb-text) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .competition-mark {
+  width: 22px;
+  height: 22px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--hb-ink) !important;
+  background: var(--hb-aqua) !important;
+  border-radius: 2px !important;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+#root .app-shell[data-design="original-matchday"] .competition-block [data-slot="frame-title"] small {
+  color: var(--hb-muted) !important;
+  font-size: 11px !important;
+  font-weight: 400;
+}
+
+#root .app-shell[data-design="original-matchday"] .competition-block [data-slot="frame-action"] {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#root .app-shell[data-design="original-matchday"] .competition-star,
+#root .app-shell[data-design="original-matchday"] .match-fav {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px;
+  min-height: 38px;
+  color: var(--hb-muted) !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 50% !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .competition-star.selected,
+#root .app-shell[data-design="original-matchday"] .match-fav.selected {
+  color: var(--hb-cyan) !important;
+  background: rgba(2,248,248,.1) !important;
+  border-color: rgba(2,248,248,.35) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .competition-view-all,
+#root .app-shell[data-design="original-matchday"] .text-link,
+#root .app-shell[data-design="original-matchday"] .fixture-details-link {
+  min-height: 36px;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 0 !important;
+  font-size: 11px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .competition-view-all:hover,
+#root .app-shell[data-design="original-matchday"] .text-link:hover,
+#root .app-shell[data-design="original-matchday"] .fixture-details-link:hover {
+  color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .competition-block [data-slot="frame-panel"],
+#root .app-shell[data-design="original-matchday"] .fixture-frame [data-slot="frame-panel"],
+#root .app-shell[data-design="original-matchday"] .ledger-sheet [data-slot="frame-panel"] {
+  overflow: visible !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row,
+#root .app-shell[data-design="original-matchday"] .fixture-row.docket-row {
+  position: relative;
+  min-width: 0;
+  min-height: 94px !important;
+  display: grid !important;
+  grid-template-columns: 66px minmax(0, 1fr) minmax(210px, 32%) 12px !important;
+  align-items: center;
+  gap: 13px !important;
+  padding: 11px 5px 11px 0 !important;
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row:hover {
+  background: rgba(14,32,42,.46) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row [data-slot="frame-media"] {
+  grid-column: 1;
+  grid-row: 1;
+  width: auto !important;
+  height: auto !important;
+  align-self: stretch;
+  display: flex !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-time-cell {
+  position: relative;
+  min-height: 68px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding-left: 11px;
+  border-left: 1px solid #687b80;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-time-cell::before {
+  position: absolute;
+  top: 50%;
+  left: -4px;
+  width: 7px;
+  height: 7px;
+  background: #a7b6b9;
+  border: 1px solid var(--hb-ink);
+  border-radius: 50%;
+  content: "";
+  transform: translateY(-50%);
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row.is-live .fixture-time-cell {
+  border-left-color: var(--hb-live);
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row.is-live .fixture-time-cell::before {
+  background: var(--hb-live);
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row.is-final .fixture-time-cell {
+  border-left-style: dashed;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-time-copy > span {
+  color: var(--hb-muted) !important;
+  font-size: 11px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row.is-live .fixture-time-copy > span {
+  color: #ff9ab0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-time-copy > strong {
+  color: var(--hb-text) !important;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row [data-slot="frame-content"] {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  display: flex !important;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row [data-slot="frame-description"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 7px;
+  margin: 0 !important;
+  color: var(--hb-secondary) !important;
+  font-size: 11px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row [data-slot="frame-description"] > span:last-child {
+  color: var(--hb-muted) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-team-stack {
+  display: grid;
+  gap: 4px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-team-stack > span {
+  min-width: 0;
+  min-height: 25px;
+  display: grid;
+  grid-template-columns: 23px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 7px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-team-stack .club-crest {
+  width: 21px !important;
+  height: 21px !important;
+  padding: 2px;
+  object-fit: contain;
+  background: #f6f8f8 !important;
+  border-radius: 50% !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-team-stack strong,
+#root .app-shell[data-design="original-matchday"] .fixture-team-stack b {
+  color: var(--hb-text) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-team-stack strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-team-stack b {
+  text-align: right;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row [data-slot="frame-actions"] {
+  grid-column: 3;
+  grid-row: 1;
+  min-width: 0;
+  align-self: center;
+  display: flex !important;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-market-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--hb-secondary) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-market-head small {
+  color: var(--hb-muted) !important;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row .row-odds {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row .row-odd {
+  min-width: 0;
+  min-height: 42px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 5px 7px !important;
+  color: var(--hb-text) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line-strong) !important;
+  border-radius: 3px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row .row-odd:hover {
+  background: #122831 !important;
+  border-color: #607982 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row .row-odd small {
+  color: var(--hb-muted) !important;
+  font-size: 10px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row .row-odd strong {
+  color: var(--hb-text) !important;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row .extra-market-count {
+  min-height: 24px;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 !important;
+  color: var(--hb-muted) !important;
+  background: transparent !important;
+  border: 0 !important;
+  font-size: 11px !important;
+  text-align: left;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row .extra-market-count:hover {
+  color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row .row-suspended {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 9px;
+  color: var(--hb-warning) !important;
+  background: rgba(255,178,100,.08) !important;
+  border: 1px solid rgba(255,178,100,.28) !important;
+  border-radius: 3px !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-row > svg:last-child {
+  grid-column: 4;
+  grid-row: 1;
+  color: var(--hb-muted) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .info-band,
+#root .app-shell[data-design="original-matchday"] .settlement-note,
+#root .app-shell[data-design="original-matchday"] .history-foot {
+  min-height: 38px;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 8px 10px !important;
+  color: var(--hb-secondary) !important;
+  background: #0b1920 !important;
+  border: 0 !important;
+  border-left: 2px solid var(--hb-line-strong) !important;
+  border-radius: 0 !important;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+#root .app-shell[data-design="original-matchday"] .info-band .info-mark,
+#root .app-shell[data-design="original-matchday"] .settlement-note .info-mark,
+#root .app-shell[data-design="original-matchday"] .history-foot .info-mark {
+  flex: 0 0 17px;
+  color: var(--hb-cyan) !important;
+  border-color: var(--hb-line-strong) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .info-band [data-slot="badge"] {
+  margin-left: auto;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .back-home {
+  align-self: flex-start;
+}
+
+/* Match centre: score first, then a single-line market directory. */
+#root .app-shell[data-design="original-matchday"] .match-toolbar {
+  min-width: 0;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--hb-muted) !important;
+  font-size: 11px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-back {
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-toolbar-divider {
+  color: var(--hb-line-strong) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .fixture-picker {
+  min-width: 0;
+  max-width: 230px;
+  min-height: 34px;
+  padding: 0 7px;
+  color: var(--hb-secondary) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-toolbar-spacer {
+  flex: 1;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-hero {
+  overflow: hidden;
+  padding: 16px 18px !important;
+  color: var(--hb-text) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line-strong) !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid var(--hb-line) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .competition-label {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--hb-secondary) !important;
+  font-size: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .competition-label .competition-mark {
+  flex: 0 0 22px;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-round-name {
+  color: var(--hb-muted) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-hero .live-tag {
+  color: #ff9ab0 !important;
+  background: rgba(250,46,93,.1) !important;
+  border: 1px solid rgba(250,46,93,.3) !important;
+  border-radius: 3px !important;
+  font-size: 11px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-hero .upcoming-tag {
+  color: var(--hb-secondary) !important;
+  background: #122831 !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+  font-size: 11px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-hero-teams {
+  min-height: 176px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(120px, .8fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 18px 4px;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-team {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-team.align-right {
+  align-items: flex-end;
+  text-align: right;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-club-crest {
+  width: 52px !important;
+  height: 52px !important;
+  padding: 3px;
+  object-fit: contain;
+  background: #f6f8f8 !important;
+  border-radius: 50% !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-team strong {
+  color: var(--hb-text) !important;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-team small,
+#root .app-shell[data-design="original-matchday"] .match-score small {
+  color: var(--hb-muted) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .follow-chip {
+  min-height: 31px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+  padding: 0 8px;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 1px solid var(--hb-line-strong) !important;
+  border-radius: 3px !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .follow-chip.following {
+  color: var(--hb-ink) !important;
+  background: var(--hb-cyan) !important;
+  border-color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  text-align: center;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-score > span:first-child {
+  color: var(--hb-text) !important;
+  font-size: 40px;
+  font-weight: 500;
+  letter-spacing: -.04em;
+  line-height: 1;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-score i {
+  padding: 0 4px;
+  color: var(--hb-cyan) !important;
+  font-style: normal;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-hero-bottom {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 8px;
+  color: var(--hb-muted) !important;
+  border-top: 1px solid var(--hb-line) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-fixture-details {
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid var(--hb-line) !important;
+  border-bottom: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-details-heading {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-details-heading > div {
+  display: grid;
+  gap: 2px;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-details-heading span,
+#root .app-shell[data-design="original-matchday"] .match-details-grid small {
+  color: var(--hb-muted) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-details-heading strong,
+#root .app-shell[data-design="original-matchday"] .match-details-grid strong {
+  color: var(--hb-text) !important;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-details-heading button {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 3px;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 0 !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-details-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding: 0 0 13px;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-details-grid > div {
+  display: grid;
+  gap: 3px;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-market-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px !important;
+  color: var(--hb-warning) !important;
+  background: rgba(255,178,100,.08) !important;
+  border: 1px solid rgba(255,178,100,.25) !important;
+  border-radius: 3px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-market-alert > div {
+  display: grid;
+  gap: 2px;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-market-alert strong {
+  color: var(--hb-warning) !important;
+  font-size: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .match-market-alert span {
+  color: var(--hb-secondary) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-search-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-search {
+  min-width: 0;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  color: var(--hb-muted) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-search input {
+  min-width: 0;
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  font-size: 12px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-search input::placeholder {
+  color: var(--hb-muted) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-search-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--hb-muted) !important;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-toolbar {
+  display: grid;
+  gap: 8px;
+  padding: 10px 0 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-toolbar > div:first-child {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-toolbar .eyebrow {
+  margin: 0;
+  color: var(--hb-text) !important;
+  font-size: 13px !important;
+  font-weight: 500;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-count-line {
+  color: var(--hb-muted) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-tabs {
+  width: 100%;
+  min-width: 0;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch;
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 1px;
+  border-bottom: 1px solid var(--hb-line);
+  scrollbar-width: none;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-tab {
+  min-height: 39px !important;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 1px !important;
+  color: var(--hb-muted) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  font-size: 12px !important;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-tab.selected {
+  color: var(--hb-cyan) !important;
+  background: transparent !important;
+  border-bottom-color: var(--hb-cyan) !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-tab span {
+  color: var(--hb-muted) !important;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-directory {
+  display: grid;
+  gap: 9px;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-card {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-card-heading {
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 2px !important;
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  text-align: left;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-card-heading > span:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-card-heading strong {
+  color: var(--hb-text) !important;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-card-heading small,
+#root .app-shell[data-design="original-matchday"] .market-count {
+  color: var(--hb-muted) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-card-heading-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-collapse-icon {
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  font-size: 16px;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-outcomes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  padding: 0 0 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .market-outcomes.two-outcomes {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#root .app-shell[data-design="original-matchday"] .odds-button {
+  min-width: 0;
+  min-height: 48px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px !important;
+  color: var(--hb-text) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line-strong) !important;
+  border-radius: 3px !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .odds-button:hover:not(:disabled) {
+  background: #122831 !important;
+  border-color: #607982 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .odds-label {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--hb-secondary) !important;
+  font-size: 11px !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .odds-value {
+  flex: 0 0 auto;
+  color: var(--hb-text) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .odds-button.is-selected {
+  color: var(--hb-ink) !important;
+  background: var(--hb-cyan) !important;
+  border-color: var(--hb-cyan) !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .odds-button.is-selected :is(.odds-label, .odds-value) {
+  color: var(--hb-ink) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .odds-button:disabled {
+  opacity: .48;
+  cursor: not-allowed;
+}
+
+/* Slip, activity ledger and demo states. */
+#root .app-shell[data-design="original-matchday"] .right-rail {
+  position: sticky !important;
+  top: 64px;
+  grid-column: 3;
+  grid-row: 2;
+  width: 310px;
+  height: calc(100vh - 64px) !important;
+  min-height: 420px;
+  display: flex !important;
+  flex-direction: column;
+  padding: 12px !important;
+  overflow-y: auto;
+  border: 0 !important;
+  border-left: 1px solid var(--hb-line) !important;
+  overscroll-behavior: contain;
+}
+
+#root .app-shell[data-design="original-matchday"] .right-rail-top {
+  min-width: 0;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-tabs {
+  min-height: 43px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 0 !important;
+  border-bottom: 1px solid var(--hb-line) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-tab {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 5px;
+  color: var(--hb-muted) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  font-size: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-tab.selected {
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border-bottom-color: var(--hb-cyan) !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-tab span {
+  min-width: 20px;
+  height: 19px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 4px;
+  color: var(--hb-secondary) !important;
+  background: #1a2c33 !important;
+  border-radius: 2px;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-tab.selected span {
+  color: var(--hb-ink) !important;
+  background: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .rail-panel-body {
+  min-height: 0;
+  padding: 14px 3px 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-empty-slip,
+#root .app-shell[data-design="original-matchday"] .side-slip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--hb-text) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .empty-ticket-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: var(--hb-cyan) !important;
+  background: #0e202a !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-empty-slip > strong {
+  margin: 0 !important;
+  color: var(--hb-text) !important;
+  font-size: 14px !important;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-empty-slip p {
+  margin: -7px 0 0;
+  color: var(--hb-secondary) !important;
+  font-size: 12px !important;
+  line-height: 1.45;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-stake-label,
+#root .app-shell[data-design="original-matchday"] .stake-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--hb-secondary) !important;
+  font-size: 12px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-stake-label span,
+#root .app-shell[data-design="original-matchday"] .stake-label span,
+#root .app-shell[data-design="original-matchday"] .stake-unit {
+  color: var(--hb-muted) !important;
+  font-size: 11px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .stake-input-row {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  color: var(--hb-secondary) !important;
+  background: #071318 !important;
+  border: 1px solid var(--hb-line-strong) !important;
+  border-radius: 3px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .stake-currency {
+  flex: 0 0 auto;
+  padding: 3px 5px;
+  color: var(--hb-ink) !important;
+  background: var(--hb-aqua) !important;
+  border: 0 !important;
+  border-radius: 2px !important;
+  font-size: 10px !important;
+  font-weight: 600;
+}
+
+#root .app-shell[data-design="original-matchday"] .stake-input {
+  min-width: 0;
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  font-size: 14px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .stake-input:focus {
+  outline: 0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-return,
+#root .app-shell[data-design="original-matchday"] .return-line {
+  min-height: 47px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 0 !important;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid var(--hb-line) !important;
+  border-bottom: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+  font-size: 12px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-return strong,
+#root .app-shell[data-design="original-matchday"] .return-line strong {
+  color: var(--hb-aqua) !important;
+  font-size: 17px !important;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-return small,
+#root .app-shell[data-design="original-matchday"] .return-line strong small {
+  color: var(--hb-muted) !important;
+  font-size: 10px !important;
+  font-weight: 400;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-place-button,
+#root .app-shell[data-design="original-matchday"] .side-open-slip-button,
+#root .app-shell[data-design="original-matchday"] .place-button {
+  min-height: 44px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--hb-ink) !important;
+  background: var(--hb-cyan) !important;
+  border: 1px solid var(--hb-cyan) !important;
+  border-radius: 3px !important;
+  font-size: 13px !important;
+  font-weight: 600;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-place-button:disabled,
+#root .app-shell[data-design="original-matchday"] .place-button:disabled {
+  color: #8d9b9e !important;
+  background: #1a2c33 !important;
+  border-color: #29404a !important;
+  opacity: 1;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-add-button,
+#root .app-shell[data-design="original-matchday"] .side-open-slip-button {
+  color: var(--hb-secondary) !important;
+  background: #0e202a !important;
+  border: 1px solid var(--hb-line-strong) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-legal,
+#root .app-shell[data-design="original-matchday"] .slip-disclaimer {
+  margin: 0;
+  color: var(--hb-muted) !important;
+  font-size: 10px !important;
+  text-align: center;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-slip-caption {
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--hb-muted) !important;
+  border-bottom: 1px solid var(--hb-line) !important;
+  font-size: 11px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-slip-caption strong {
+  color: var(--hb-text) !important;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-slip-caption > button {
+  margin-left: auto;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 0 !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-selection-card,
+#root .app-shell[data-design="original-matchday"] .side-empty-stake,
+#root .app-shell[data-design="original-matchday"] .side-slip-content .side-selection-card {
+  color: var(--hb-text) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-selection-card {
+  padding: 10px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-selection-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 26px;
+  align-items: start;
+  gap: 7px;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-selection-head > div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-selection-head > div strong {
+  color: var(--hb-text) !important;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-selection-head small,
+#root .app-shell[data-design="original-matchday"] .side-market-line,
+#root .app-shell[data-design="original-matchday"] .side-single-note {
+  color: var(--hb-muted) !important;
+  font-size: 10px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-odds {
+  color: var(--hb-aqua) !important;
+  font-size: 14px !important;
+  font-weight: 600;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-remove {
+  width: 27px;
+  height: 27px;
+  color: var(--hb-secondary) !important;
+  background: #122831 !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-market-line {
+  display: block;
+  margin-top: 7px;
+  padding-top: 7px;
+  border-top: 1px solid var(--hb-line);
+}
+
+#root .app-shell[data-design="original-matchday"] .side-single-note {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 7px;
+  color: var(--hb-secondary) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-single-note svg {
+  color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-state,
+#root .app-shell[data-design="original-matchday"] .state-banner {
+  color: var(--hb-warning) !important;
+  background: rgba(255,178,100,.08) !important;
+  border: 1px solid rgba(255,178,100,.25) !important;
+  border-radius: 3px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-state {
+  margin-top: 8px;
+  padding: 7px;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-odds,
+#root .app-shell[data-design="original-matchday"] .rolling-odds,
+#root .app-shell[data-design="original-matchday"] .bet-row-number,
+#root .app-shell[data-design="original-matchday"] .return-number,
+#root .app-shell[data-design="original-matchday"] .mybets-summary-cards b {
+  font-variant-numeric: tabular-nums;
+}
+
+#root .app-shell[data-design="original-matchday"] .activity-stack {
+  gap: 16px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .activity-tabs {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 0 1px;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .activity-tab {
+  min-height: 45px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 1px;
+  color: var(--hb-muted) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  font-size: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .activity-tab.active {
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border-bottom-color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .activity-tab > span {
+  color: var(--hb-secondary) !important;
+  background: #1a2c33 !important;
+  border-radius: 2px;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .activity-tab.active > span {
+  color: var(--hb-ink) !important;
+  background: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .activity-content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(220px, .8fr);
+  align-items: start;
+  gap: 18px;
+}
+
+#root .app-shell[data-design="original-matchday"] .activity-section-title {
+  margin: 0 0 10px !important;
+  color: var(--hb-text) !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .selection-card,
+#root .app-shell[data-design="original-matchday"] .empty-slip-card,
+#root .app-shell[data-design="original-matchday"] .empty-state-card {
+  color: var(--hb-text) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line-strong) !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .selection-card {
+  padding: 14px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .selection-card-top,
+#root .app-shell[data-design="original-matchday"] .selection-pick,
+#root .app-shell[data-design="original-matchday"] .return-line {
+  border-color: var(--hb-line) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .slip-market-badge {
+  color: var(--hb-ink) !important;
+  background: var(--hb-aqua) !important;
+  border: 0 !important;
+  border-radius: 2px !important;
+  font-size: 10px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .selection-competition,
+#root .app-shell[data-design="original-matchday"] .selection-pick small,
+#root .app-shell[data-design="original-matchday"] .pick-odds > span,
+#root .app-shell[data-design="original-matchday"] .stake-hint {
+  color: var(--hb-muted) !important;
+  font-size: 11px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .selection-pick strong {
+  color: var(--hb-text) !important;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .rolling-odds {
+  color: var(--hb-aqua) !important;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+#root .app-shell[data-design="original-matchday"] .selection-safety-row {
+  color: var(--hb-secondary) !important;
+  border-color: var(--hb-line) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .quick-stakes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+#root .app-shell[data-design="original-matchday"] .quick-stake {
+  min-height: 36px !important;
+  color: var(--hb-secondary) !important;
+  background: #0e202a !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+  font-size: 12px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .quick-stake.chosen {
+  color: var(--hb-ink) !important;
+  background: var(--hb-cyan) !important;
+  border-color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .quick-stake small {
+  color: inherit !important;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .state-banner {
+  min-height: 49px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .state-banner > div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  flex: 1;
+}
+
+#root .app-shell[data-design="original-matchday"] .state-banner strong {
+  color: var(--hb-warning) !important;
+  font-size: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .state-banner small {
+  color: var(--hb-secondary) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .accept-odds-button {
+  min-height: 36px !important;
+  flex: 0 0 auto;
+  color: var(--hb-ink) !important;
+  background: var(--hb-cyan) !important;
+  border: 1px solid var(--hb-cyan) !important;
+  border-radius: 3px !important;
+  font-size: 11px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .place-button {
+  width: 100%;
+}
+
+#root .app-shell[data-design="original-matchday"] .placement-feedback {
+  padding: 9px 10px;
+  color: var(--hb-secondary) !important;
+  background: #0e202a !important;
+  border: 1px solid var(--hb-line) !important;
+  border-left: 3px solid var(--hb-cyan) !important;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .placement-feedback--error { border-left-color: var(--hb-live) !important; }
+#root .app-shell[data-design="original-matchday"] .placement-feedback--warning { border-left-color: var(--hb-warning) !important; }
+
+#root .app-shell[data-design="original-matchday"] .dark-mini-card,
+#root .app-shell[data-design="original-matchday"] .slip-summary-card {
+  padding: 14px !important;
+  color: var(--hb-text) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line-strong) !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .dark-mini-card .eyebrow {
+  color: var(--hb-muted) !important;
+  font-size: 11px !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .dark-mini-card h3 {
+  color: var(--hb-text) !important;
+  font-size: 19px !important;
+  font-weight: 500 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .slip-summary-fixture,
+#root .app-shell[data-design="original-matchday"] .slip-summary-line span {
+  color: var(--hb-muted) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .slip-summary-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 0;
+  border-top: 1px solid var(--hb-line);
+}
+
+#root .app-shell[data-design="original-matchday"] .slip-summary-line strong {
+  color: var(--hb-secondary) !important;
+  font-size: 11px;
+  font-weight: 500;
+  text-align: right;
+}
+
+#root .app-shell[data-design="original-matchday"] .no-multi {
+  margin-top: 12px;
+  padding-top: 9px;
+  color: var(--hb-secondary) !important;
+  border-top: 1px solid var(--hb-line);
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .mybets-summary-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+#root .app-shell[data-design="original-matchday"] .mybets-summary-row .eyebrow {
+  color: var(--hb-muted) !important;
+  font-size: 11px !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .mybets-summary-cards {
+  display: flex;
+  gap: 8px;
+}
+
+#root .app-shell[data-design="original-matchday"] .mybets-summary-cards > span {
+  min-width: 96px;
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 8px 10px;
+  color: var(--hb-secondary) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+  font-size: 11px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .mybets-summary-cards b {
+  color: var(--hb-aqua) !important;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+#root .app-shell[data-design="original-matchday"] .mybets-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-top: 1px solid var(--hb-line);
+  border-bottom: 1px solid var(--hb-line);
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-filter-tabs {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-filter-tabs button {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 1px;
+  color: var(--hb-muted) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  font-size: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-filter-tabs button.active {
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border-bottom-color: var(--hb-cyan) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-filter-tabs button span {
+  min-width: 19px;
+  height: 18px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--hb-secondary) !important;
+  background: #1a2c33 !important;
+  border-radius: 2px;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .mybets-filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+#root .app-shell[data-design="original-matchday"] .date-filter {
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  color: var(--hb-muted) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .date-filter select {
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 0 !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .mybets-search {
+  min-width: 150px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+}
+
+#root .app-shell[data-design="original-matchday"] .mybets-search input {
+  min-width: 0;
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  font-size: 11px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .mybets-search input::placeholder {
+  color: var(--hb-muted) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .mybets-list {
+  overflow: hidden;
+  color: var(--hb-text) !important;
+  background: transparent !important;
+
+}
+
+/* My Bets is an aligned ledger, with actions kept secondary to the record. */
+#root .app-shell[data-design="original-matchday"] .mybets-list {
+  display: grid;
+  overflow: hidden;
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-table-header,
+#root .app-shell[data-design="original-matchday"] .bet-table-row {
+  display: grid;
+  grid-template-columns: minmax(105px, .72fr) minmax(200px, 1.65fr) minmax(52px, .42fr) minmax(86px, .62fr) minmax(96px, .72fr) minmax(82px, .62fr);
+  align-items: center;
+  gap: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-table-header {
+  min-height: 38px;
+  padding: 0 10px;
+  color: var(--hb-muted) !important;
+  background: #08171d !important;
+  border-bottom: 1px solid var(--hb-line) !important;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-record {
+  overflow: hidden;
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-table-row {
+  width: 100%;
+  min-height: 72px;
+  padding: 9px 10px !important;
+  color: var(--hb-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  text-align: left;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-table-row:hover {
+  background: rgba(14,32,42,.46) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-placed,
+#root .app-shell[data-design="original-matchday"] .bet-row-event {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+  color: var(--hb-secondary) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-placed small,
+#root .app-shell[data-design="original-matchday"] .bet-row-event small,
+#root .app-shell[data-design="original-matchday"] .bet-row-event em {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--hb-muted) !important;
+  font-size: 10px;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-row-event strong {
+  overflow: hidden;
+  color: var(--hb-text) !important;
+  font-size: 12px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-row-number {
+  color: var(--hb-text) !important;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-row-number i {
+  color: var(--hb-muted) !important;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-row-number.return-number {
+  color: var(--hb-aqua) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-result-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-result-cell [data-slot="badge"] {
+  color: var(--hb-secondary) !important;
+  background: #0e202a !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 2px !important;
+  font-size: 10px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-result-cell [data-slot="badge"][data-variant="success"] {
+  color: var(--hb-aqua) !important;
+  background: rgba(196,244,241,.08) !important;
+  border-color: rgba(196,244,241,.25) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-result-cell > svg {
+  color: var(--hb-muted) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-detail-panel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px 14px;
+  padding: 12px 14px 14px !important;
+  background: #08171d !important;
+  border-top: 1px solid var(--hb-line) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-detail-panel > div:not(.bet-lifecycle) {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-detail-panel small {
+  color: var(--hb-muted) !important;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-detail-panel strong {
+  color: var(--hb-secondary) !important;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-lifecycle {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 3px;
+  padding-top: 10px;
+  border-top: 1px solid var(--hb-line);
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-step {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 23px minmax(0, 1fr);
+  align-items: start;
+  gap: 2px 8px;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-step > span {
+  grid-row: 1 / span 2;
+  width: 21px;
+  height: 21px;
+  display: grid;
+  place-items: center;
+  color: var(--hb-ink) !important;
+  background: var(--hb-cyan) !important;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-step.pending > span {
+  color: var(--hb-secondary) !important;
+  background: #1a2c33 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-step strong {
+  color: var(--hb-text) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .bet-step small {
+  color: var(--hb-muted) !important;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .cashout-summary {
+  grid-column: 1 / -1;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 2px;
+  padding: 7px 0 0;
+  color: var(--hb-secondary) !important;
+  border-top: 1px solid var(--hb-line);
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .cashout-summary b {
+  margin-left: auto;
+  color: var(--hb-aqua) !important;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .cashout-button,
+#root .app-shell[data-design="original-matchday"] .compact-cashout {
+  min-height: 34px !important;
+  flex: 0 0 auto;
+  color: var(--hb-secondary) !important;
+  background: #122831 !important;
+  border: 1px solid var(--hb-line-strong) !important;
+  border-radius: 3px !important;
+  font-size: 10px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .cashout-button:hover,
+#root .app-shell[data-design="original-matchday"] .compact-cashout:hover {
+  color: var(--hb-text) !important;
+  background: #1a303a !important;
+  border-color: #607982 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .result-note {
+  grid-column: 1 / -1;
+  color: var(--hb-warning) !important;
+  font-size: 11px;
+}
+
+#root .app-shell[data-design="original-matchday"] .result-note.result-won {
+  color: var(--hb-aqua) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .compact-bets {
+  display: grid;
+  gap: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .compact-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 0 8px;
+  color: var(--hb-muted) !important;
+  border-bottom: 1px solid var(--hb-line);
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .compact-bet {
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  color: var(--hb-text) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .compact-bet-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#root .app-shell[data-design="original-matchday"] .compact-bet-top [data-slot="badge"] {
+  color: #ff9ab0 !important;
+  background: rgba(250,46,93,.1) !important;
+  border: 1px solid rgba(250,46,93,.28) !important;
+  border-radius: 2px !important;
+  font-size: 10px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .compact-bet-top strong {
+  color: var(--hb-aqua) !important;
+  font-size: 13px;
+}
+
+#root .app-shell[data-design="original-matchday"] .compact-bet > b {
+  color: var(--hb-text) !important;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .compact-bet > small,
+#root .app-shell[data-design="original-matchday"] .compact-bet-return {
+  color: var(--hb-muted) !important;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .compact-bet-return {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--hb-line);
+}
+
+#root .app-shell[data-design="original-matchday"] .compact-bet-return strong {
+  color: var(--hb-secondary) !important;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .compact-empty {
+  margin: 0;
+  color: var(--hb-muted) !important;
+  font-size: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .view-history-button {
+  min-height: 38px !important;
+  justify-content: center;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+  font-size: 11px !important;
+}
+
+/* The demo controls are visible, but intentionally subordinate to the product. */
+#root .app-shell[data-design="original-matchday"] .inline-demo-lab,
+#root .app-shell[data-design="original-matchday"] .rail-demo-disclosure {
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .inline-demo-lab > summary,
+#root .app-shell[data-design="original-matchday"] .rail-demo-disclosure > summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 0 !important;
+  cursor: pointer;
+  font-size: 11px;
+  list-style: none;
+}
+
+#root .app-shell[data-design="original-matchday"] .inline-demo-lab > summary::-webkit-details-marker,
+#root .app-shell[data-design="original-matchday"] .rail-demo-disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+#root .app-shell[data-design="original-matchday"] .inline-demo-lab > summary > small,
+#root .app-shell[data-design="original-matchday"] .rail-demo-disclosure > summary > small {
+  margin-left: auto;
+  color: var(--hb-muted) !important;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .inline-demo-lab > summary > b,
+#root .app-shell[data-design="original-matchday"] .rail-demo-disclosure > summary > b {
+  color: var(--hb-cyan) !important;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+#root .app-shell[data-design="original-matchday"] .demo-lab {
+  display: grid;
+  gap: 9px;
+  padding: 10px 0 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .demo-lab-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .demo-lab-heading .eyebrow {
+  color: var(--hb-muted) !important;
+  font-size: 10px !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .demo-lab-heading h3 {
+  margin: 2px 0 0;
+  color: var(--hb-text) !important;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .lab-stamp {
+  color: var(--hb-muted) !important;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .demo-control-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+#root .app-shell[data-design="original-matchday"] .demo-control {
+  min-height: 50px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 7px;
+  padding: 7px 9px;
+  color: var(--hb-secondary) !important;
+  background: #0b1920 !important;
+  border: 1px solid var(--hb-line) !important;
+  border-radius: 3px !important;
+  text-align: left;
+}
+
+#root .app-shell[data-design="original-matchday"] .demo-control:hover:not(:disabled) {
+  background: #122831 !important;
+  border-color: var(--hb-line-strong) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .demo-control > span:first-child {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+#root .app-shell[data-design="original-matchday"] .demo-control strong {
+  color: var(--hb-text) !important;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .demo-control small {
+  overflow: hidden;
+  color: var(--hb-muted) !important;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .app-shell[data-design="original-matchday"] .demo-control .control-chevron {
+  flex: 0 0 auto;
+  color: var(--hb-cyan) !important;
+  font-size: 12px;
+}
+
+#root .app-shell[data-design="original-matchday"] .demo-control.control-armed {
+  border-color: rgba(250,46,93,.5) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .demo-control:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+#root .app-shell[data-design="original-matchday"] .lab-footer {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--hb-muted) !important;
+  font-size: 10px;
+}
+
+#root .app-shell[data-design="original-matchday"] .lab-footer-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--hb-cyan) !important;
+  border-radius: 50%;
+}
+
+#root .app-shell[data-design="original-matchday"] .page-footer {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 22px;
+  padding: 12px 0 0 !important;
+  color: var(--hb-muted) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+#root .app-shell[data-design="original-matchday"] .footer-mark {
+  flex: 0 0 23px;
+  width: 23px;
+  height: 23px;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+#root .app-shell[data-design="original-matchday"] .empty-state-card {
+  padding: 18px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .empty-state-mark,
+#root .app-shell[data-design="original-matchday"] .empty-illustration {
+  color: var(--hb-cyan) !important;
+  background: #0e202a !important;
+  border-color: var(--hb-line) !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .empty-state-card h3,
+#root .app-shell[data-design="original-matchday"] .empty-slip-card h3 {
+  color: var(--hb-text) !important;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+#root .app-shell[data-design="original-matchday"] .empty-state-card p,
+#root .app-shell[data-design="original-matchday"] .empty-slip-card p {
+  color: var(--hb-secondary) !important;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Tablet: preserve the full board, temporarily move the slip to the mobile sheet. */
+@media (max-width: 1120px) and (min-width: 761px) {
+  #root .app-shell[data-design="original-matchday"] {
+    grid-template-columns: 176px minmax(0, 1fr) !important;
+  }
+  #root .app-shell[data-design="original-matchday"] .left-rail { width: 176px; }
+  #root .app-shell[data-design="original-matchday"] .right-rail { display: none !important; }
+  #root .app-shell[data-design="original-matchday"] .mobile-slip-bar[data-has-selection="true"] { display: flex !important; }
+}
+
+/* Mobile: one sports board, one bottom navigation, one persistent slip affordance. */
+@media (max-width: 760px) {
+  html, body, #root {
+    width: 100%;
+    min-width: 320px;
+    overflow-x: hidden !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] {
+    display: block !important;
+    width: 100%;
+    min-height: 100vh;
+    padding-bottom: calc(70px + env(safe-area-inset-bottom));
+  }
+
+  #root .app-shell[data-design="original-matchday"] .topbar {
+    position: sticky !important;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+    height: 56px !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 0 14px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .brand-lockup {
+    gap: 0;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .brand-logo {
+    height: 19px !important;
+    max-width: 116px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .brand-divider,
+  #root .app-shell[data-design="original-matchday"] .brand-sport,
+  #root .app-shell[data-design="original-matchday"] .header-search,
+  #root .app-shell[data-design="original-matchday"] .topbar-note,
+  #root .app-shell[data-design="original-matchday"] .account-label,
+  #root .app-shell[data-design="original-matchday"] .account-chevron {
+    display: none !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .topbar-actions {
+    gap: 6px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .demo-badge {
+    min-height: 29px;
+    padding: 0 7px !important;
+    font-size: 10px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .account-button {
+    min-height: 34px !important;
+    padding: 0 6px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .left-rail,
+  #root .app-shell[data-design="original-matchday"] .right-rail {
+    display: none !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .main-content {
+    display: block;
+    width: 100% !important;
+    max-width: none !important;
+    padding: 12px 14px calc(32px + env(safe-area-inset-bottom)) !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .page-topline {
+    display: none !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .page-heading {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 0 10px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .page-heading h1 {
+    margin: 0 !important;
+    font-size: 24px !important;
+    line-height: 1.15 !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .page-subtitle,
+  #root .app-shell[data-design="original-matchday"] .page-head-actions {
+    display: none !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .page-search {
+    min-height: 42px;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 8px;
+    padding: 0 10px !important;
+    color: var(--hb-muted) !important;
+    background: #08171d !important;
+    border: 1px solid var(--hb-line-strong) !important;
+    border-radius: 3px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .page-search input {
+    min-width: 0;
+    color: var(--hb-text) !important;
+    background: transparent !important;
+    font-size: 13px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .page-search input::placeholder {
+    color: var(--hb-muted) !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .home-dashboard {
+    gap: 12px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .home-sports-nav {
+    gap: 18px;
+    margin: 0 -1px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .home-sports-nav button {
+    min-height: 38px;
+    font-size: 12px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .top-competitions {
+    margin: 0 -14px;
+    padding: 0 14px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .top-competition-heading {
+    min-height: 30px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .top-competition-heading h2 {
+    font-size: 12px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .top-competition-heading > span {
+    display: none;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .top-competition-list {
+    width: calc(100% + 28px);
+    margin: 0 -14px;
+    padding: 0 14px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .top-competition-list button {
+    min-height: 39px;
+    gap: 6px;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .top-competition-list button:first-child {
+    padding-left: 0;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-stage {
+    min-height: 0;
+    padding: 12px 12px 11px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-stage-photo {
+    background-position: center 58%;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-stage-top > span:first-child {
+    overflow: hidden;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-matchup {
+    grid-template-columns: minmax(0, 1fr) 82px minmax(0, 1fr);
+    gap: 6px;
+    margin: 17px 0 12px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-team {
+    gap: 4px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-team .stage-crest {
+    width: 46px !important;
+    height: 46px !important;
+    padding: 3px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-team strong {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 1.15;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-team small {
+    font-size: 10px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-score > span {
+    font-size: 33px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-score > small {
+    font-size: 10px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-stage-bottom {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding-top: 9px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .stage-state-copy {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .stage-state-copy > strong {
+    font-size: 11px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-price {
+    min-height: 43px;
+    justify-content: center;
+    gap: 7px;
+    padding: 5px 4px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-price small {
+    font-size: 10px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-price strong {
+    font-size: 13px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .stage-match-link {
+    min-height: 34px;
+    justify-content: center;
+    border-top: 1px solid rgba(249,249,251,.13) !important;
+    font-size: 11px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .stage-unavailable {
+    grid-column: 1;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-schedule-heading {
+    align-items: center;
+    margin: 1px 0 -3px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-schedule-heading h2 {
+    font-size: 16px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-schedule-heading p {
+    font-size: 11px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fieldside-schedule-heading button {
+    min-height: 38px;
+    gap: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .home-fixture-lanes {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .home-fixture-card {
+    padding: 9px 0 10px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .home-fixture-card-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 7px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .home-fixture-teams {
+    gap: 2px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .home-fixture-team {
+    min-height: 25px;
+    grid-template-columns: 21px minmax(0, 1fr) 18px;
+    gap: 7px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .home-fixture-team strong {
+    font-size: 12px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .home-fixture-team b {
+    font-size: 12px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .home-fixture-market-heading {
+    margin-bottom: 3px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .home-fixture-odd {
+    min-height: 40px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .live-filter-panel {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 9px;
+    padding-bottom: 9px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .live-filter-heading {
+    display: none;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .live-sport-tabs,
+  #root .app-shell[data-design="original-matchday"] .league-chips {
+    width: 100%;
+    gap: 8px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .live-sport-tab,
+  #root .app-shell[data-design="original-matchday"] .league-chip {
+    min-height: 36px !important;
+    padding: 0 2px !important;
+    font-size: 11px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .live-filter-select {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .live-filter-select select {
+    min-width: 0;
+    min-height: 36px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .listing-toolbar {
+    min-height: 40px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+    padding-bottom: 7px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .listing-filter-tabs {
+    gap: 12px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .filter-note {
+    font-size: 10px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .football-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+    padding-bottom: 8px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .league-select-label {
+    font-size: 10px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .league-chips {
+    margin: 0 -2px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixtures-total {
+    display: none;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .desktop-competition-list {
+    gap: 14px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .competition-block > [data-slot="frame-header"] {
+    min-height: 45px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .competition-block [data-slot="frame-action"] .frame-action-count,
+  #root .app-shell[data-design="original-matchday"] .competition-block .competition-view-all {
+    display: none !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .competition-star {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-row,
+  #root .app-shell[data-design="original-matchday"] .fixture-row.docket-row {
+    grid-template-columns: 50px minmax(0, 1fr) !important;
+    gap: 6px 9px !important;
+    padding: 9px 0 !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-row [data-slot="frame-media"] {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-time-cell {
+    min-height: 58px;
+    padding-left: 8px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-time-copy > strong {
+    font-size: 13px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-row [data-slot="frame-content"] {
+    grid-column: 2;
+    grid-row: 1;
+    gap: 4px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-row [data-slot="frame-description"] {
+    gap: 3px 5px;
+    font-size: 10px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-team-stack {
+    gap: 2px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-team-stack > span {
+    min-height: 22px;
+    grid-template-columns: 20px minmax(0, 1fr) 18px;
+    gap: 6px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-team-stack .club-crest {
+    width: 19px !important;
+    height: 19px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-team-stack strong,
+  #root .app-shell[data-design="original-matchday"] .fixture-team-stack b {
+    font-size: 12px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-row [data-slot="frame-actions"] {
+    grid-column: 2;
+    grid-row: 2;
+    margin-top: 4px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-market-head {
+    margin-bottom: 2px;
+    font-size: 10px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-row .row-odd {
+    min-height: 40px !important;
+    padding: 4px 6px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-row .row-odd small {
+    font-size: 10px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-row .row-odd strong {
+    font-size: 12px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-row > svg:last-child {
+    display: none !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .match-toolbar {
+    min-height: 34px;
+    gap: 6px;
+    font-size: 10px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .fixture-picker {
+    max-width: min(48vw, 190px);
+    min-height: 33px;
+    font-size: 10px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .match-hero {
+    padding: 12px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .match-hero-top {
+    align-items: flex-start;
+    gap: 7px;
+    padding-bottom: 8px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .competition-label {
+    flex-wrap: wrap;
+    gap: 5px;
+    font-size: 10px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .match-hero-teams {
+    min-height: 143px;
+    grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1fr);
+    gap: 5px;
+    padding: 13px 0;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .match-club-crest {
+    width: 43px !important;
+    height: 43px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .match-team strong {
+    font-size: 12px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .match-team small {
+    font-size: 10px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .follow-chip {
+    min-height: 30px;
+    padding: 0 6px;
+    font-size: 10px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .match-score > span:first-child {
+    font-size: 31px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .match-score small {
+    font-size: 10px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .match-details-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .market-search-row {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .market-search-note {
+    font-size: 10px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .market-tabs {
+    gap: 13px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .market-tab {
+    min-height: 38px !important;
+    font-size: 11px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .market-outcomes {
+    gap: 4px;
+    padding-bottom: 9px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .odds-button {
+    min-height: 46px !important;
+    gap: 5px;
+    padding: 6px 7px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .odds-label {
+    font-size: 10px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .odds-value {
+    font-size: 13px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .activity-content-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .activity-side-col {
+    display: none;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .activity-tabs {
+    min-height: 43px;
+    gap: 15px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .activity-tab {
+    min-height: 42px;
+    flex: 0 0 auto;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .activity-tabs .single-badge {
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .selection-card {
+    padding: 11px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .selection-pick strong {
+    font-size: 15px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .state-banner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .state-banner > div {
+    min-width: calc(100% - 34px);
+  }
+
+  #root .app-shell[data-design="original-matchday"] .accept-odds-button {
+    min-height: 38px !important;
+    width: 100%;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mybets-summary-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mybets-summary-cards {
+    width: 100%;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mybets-summary-cards > span {
+    min-width: 0;
+    flex: 1;
+    justify-content: space-between;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mybets-controls {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mybets-filter-controls {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mybets-search {
+    min-width: 100%;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .bet-table-header {
+    display: none;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .bet-table-row {
+    grid-template-columns: minmax(0, 1fr) minmax(85px, auto);
+    gap: 7px 10px;
+    padding: 10px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .bet-placed {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .bet-row-event {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .bet-row-number {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .bet-row-number::before {
+    content: attr(data-label) ":";
+    color: var(--hb-muted);
+    font-size: 10px;
+    font-weight: 400;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .bet-result-cell {
+    grid-column: 2;
+    grid-row: 1;
+    justify-content: flex-end;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .bet-detail-panel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+    padding: 10px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .cashout-summary {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .cashout-summary b {
+    margin-left: 0;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .cashout-button {
+    width: 100%;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .demo-control-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #root .app-shell[data-design="original-matchday"] .demo-control {
+    min-height: 54px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-nav {
+    position: fixed !important;
+    z-index: 45;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    min-height: calc(64px + env(safe-area-inset-bottom));
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 0;
+    padding: 4px 4px calc(4px + env(safe-area-inset-bottom)) !important;
+    background: rgba(6,17,22,.98) !important;
+    border: 0 !important;
+    border-top: 1px solid var(--hb-line) !important;
+    box-shadow: none !important;
+    backdrop-filter: blur(12px);
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-nav .nav-link {
+    min-width: 0;
+    min-height: 50px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center;
+    justify-content: center;
+    gap: 4px !important;
+    padding: 3px 2px !important;
+    color: var(--hb-muted) !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    border-radius: 3px !important;
+    font-size: 12px !important;
+    line-height: 16px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-nav .nav-link.is-active {
+    color: var(--hb-cyan) !important;
+    background: #0e202a !important;
+    border-color: var(--hb-line) !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-nav .nav-icon {
+    width: 18px !important;
+    height: 18px !important;
+    color: inherit !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-nav .nav-label {
+    display: block !important;
+    color: inherit !important;
+    font-size: 12px !important;
+    line-height: 16px;
+    font-weight: 500;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-nav .nav-count {
+    position: absolute !important;
+    top: 1px;
+    right: calc(50% - 21px);
+    min-width: 18px;
+    height: 16px;
+    padding: 0 4px;
+    font-size: 10px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-slip-bar {
+    position: fixed !important;
+    z-index: 46;
+    right: 12px;
+    bottom: calc(69px + env(safe-area-inset-bottom));
+    left: 12px;
+    width: calc(100% - 24px);
+    min-height: 54px;
+    display: none;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 10px !important;
+    color: var(--hb-text) !important;
+    background: #0e202a !important;
+    border: 1px solid #3c5c66 !important;
+    border-radius: 4px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35) !important;
+    text-align: left;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-slip-bar[data-has-selection="true"] {
+    display: flex !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-slip-count {
+    width: 27px;
+    height: 27px;
+    flex: 0 0 27px;
+    display: grid;
+    place-items: center;
+    color: var(--hb-ink) !important;
+    background: var(--hb-cyan) !important;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-slip-summary {
+    min-width: 0;
+    display: grid;
+    gap: 1px;
+    flex: 1;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-slip-summary strong {
+    overflow: hidden;
+    color: var(--hb-text) !important;
+    font-size: 12px;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-slip-summary strong small {
+    color: var(--hb-muted) !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-slip-summary > small {
+    overflow: hidden;
+    color: var(--hb-muted) !important;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-slip-open {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--hb-cyan) !important;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-sheet-backdrop {
+    position: fixed !important;
+    z-index: 70;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 !important;
+    background: rgba(1,7,10,.72) !important;
+    backdrop-filter: blur(3px);
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-slip-sheet {
+    width: 100%;
+    max-width: 680px;
+    max-height: min(88dvh, 820px);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 7px 14px calc(18px + env(safe-area-inset-bottom)) !important;
+    color: var(--hb-text) !important;
+    background: #071318 !important;
+    border: 1px solid var(--hb-line-strong) !important;
+    border-bottom: 0 !important;
+    border-radius: 9px 9px 0 0 !important;
+    box-shadow: 0 -12px 35px rgba(0,0,0,.38) !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-sheet-grip {
+    width: 34px;
+    height: 4px;
+    align-self: center;
+    margin: 2px 0 8px;
+    background: #526a71;
+    border-radius: 99px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-sheet-head {
+    position: sticky;
+    top: -7px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 -14px;
+    padding: 0 14px;
+    background: #071318;
+    border-bottom: 1px solid var(--hb-line);
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-sheet-tabs {
+    min-width: 0;
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-sheet-tabs button {
+    min-height: 45px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 1px;
+    color: var(--hb-muted) !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-bottom: 2px solid transparent !important;
+    border-radius: 0 !important;
+    font-size: 12px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-sheet-tabs button.active {
+    color: var(--hb-text) !important;
+    border-bottom-color: var(--hb-cyan) !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-sheet-tabs button span {
+    color: var(--hb-ink) !important;
+    background: var(--hb-cyan) !important;
+    border-radius: 2px;
+    font-size: 10px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-sheet-close {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    color: var(--hb-secondary) !important;
+    background: #0e202a !important;
+    border: 1px solid var(--hb-line) !important;
+    border-radius: 3px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .mobile-sheet-body {
+    padding: 12px 0 4px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .side-empty-slip,
+  #root .app-shell[data-design="original-matchday"] .side-slip-content {
+    gap: 10px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .side-selection-card {
+    padding: 10px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .side-place-button,
+  #root .app-shell[data-design="original-matchday"] .side-open-slip-button,
+  #root .app-shell[data-design="original-matchday"] .side-add-button {
+    min-height: 44px !important;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .info-band,
+  #root .app-shell[data-design="original-matchday"] .settlement-note,
+  #root .app-shell[data-design="original-matchday"] .history-foot {
+    font-size: 10px;
+  }
+
+  #root .app-shell[data-design="original-matchday"] .page-footer {
+    margin-top: 16px;
+    padding-bottom: 8px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #root .app-shell[data-design="original-matchday"] *,
+  #root .app-shell[data-design="original-matchday"] *::before,
+  #root .app-shell[data-design="original-matchday"] *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+
+/* Final sizing guard for inherited rail defaults that otherwise constrain the ticket. */
+#root .app-shell[data-design="original-matchday"] .right-rail {
+  width: 100% !important;
+  min-width: 0 !important;
+  align-items: stretch !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .right-rail-top {
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-tabs {
+  width: 100% !important;
+  min-height: 43px !important;
+  padding: 0 !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .rail-panel-body {
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 12px 3px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-empty-slip,
+#root .app-shell[data-design="original-matchday"] .side-slip-content {
+  width: 100% !important;
+  min-width: 0 !important;
+  align-items: stretch !important;
+  padding: 10px 3px !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-empty-slip > .empty-ticket-icon {
+  align-self: center;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-empty-slip > strong,
+#root .app-shell[data-design="original-matchday"] .side-empty-slip > p {
+  text-align: left !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-empty-stake,
+#root .app-shell[data-design="original-matchday"] .side-empty-stake .side-stake-label,
+#root .app-shell[data-design="original-matchday"] .side-empty-stake .stake-input-row,
+#root .app-shell[data-design="original-matchday"] .side-return,
+#root .app-shell[data-design="original-matchday"] .side-place-button,
+#root .app-shell[data-design="original-matchday"] .side-add-button,
+#root .app-shell[data-design="original-matchday"] .side-open-slip-button,
+#root .app-shell[data-design="original-matchday"] .side-legal,
+#root .app-shell[data-design="original-matchday"] .side-selection-card,
+#root .app-shell[data-design="original-matchday"] .side-slip-caption {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
+#root .app-shell[data-design="original-matchday"] .side-empty-stake .stake-input-row {
+  display: flex !important;
+}
+
+@media (min-width: 761px) {
+  #root .app-shell[data-design="original-matchday"] .mobile-slip-bar {
+    display: none !important;
+  }
+}
+
+
+/* Keep foreground and active surface paired at every point in a selection change. */
+#root .app-shell[data-design="original-matchday"] .fieldside-price.is-selected,
+#root .app-shell[data-design="original-matchday"] .fieldside-price.is-selected :is(small, strong),
+#root .app-shell[data-design="original-matchday"] .home-fixture-odd.is-selected,
+#root .app-shell[data-design="original-matchday"] .home-fixture-odd.is-selected :is(span, strong),
+#root .app-shell[data-design="original-matchday"] .odds-button.is-selected,
+#root .app-shell[data-design="original-matchday"] .odds-button.is-selected :is(.odds-label, .odds-value) {
+  transition: none !important;
+}
