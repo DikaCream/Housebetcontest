@@ -7,6 +7,7 @@ export type Fixture = {
   homeScore?: number;
   awayScore?: number;
   status: 'LIVE' | 'UPCOMING' | 'FINISHED';
+  phase?: '1H' | 'HT' | '2H' | 'ET' | 'FT';
   time: string;
   date?: string;
   odds: [number, number, number];

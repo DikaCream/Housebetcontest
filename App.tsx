@@ -3,13 +3,13 @@ import { StatusBar } from 'expo-status-bar';
 import { Badge } from 'panelui-web/badge';
 import { Button } from 'panelui-web/button';
 import { Card } from 'panelui-web/card';
-import { Frame } from 'panelui-web/frame';
 import { Input } from 'panelui-web/input';
 import { RollingNumber } from 'panelui-web/rolling-number';
 import type { Fixture, Selection } from './types';
 import ClubCrest from './ClubCrest';
 import CompetitionLogo from './CompetitionLogo';
 import HubieMatchHero from './HubieMatchHero';
+import MatchLiveSignal from './MatchLiveSignal';
 import MobileSheet from './MobileSheet';
 import './global.css';
 import './housebets-brand.css';
@@ -98,7 +98,7 @@ const fixtures: Fixture[] = [
   {
     id: 'arsenal-brighton', competition: 'Premier League', round: 'Round 9',
     home: 'Arsenal', away: 'Brighton & Hove Albion', homeScore: 1, awayScore: 0,
-    status: 'LIVE', time: "63’", odds: [1.84, 3.20, 4.60], extraMarkets: 12,
+    status: 'LIVE', phase: '2H', time: "47′", odds: [1.84, 3.20, 4.60], extraMarkets: 12,
   },
   {
     id: 'real-madrid-arsenal', competition: 'UEFA Champions League', round: 'Sample pairing',
@@ -108,27 +108,27 @@ const fixtures: Fixture[] = [
   {
     id: 'liverpool-man-utd', competition: 'Premier League', round: 'Round 9',
     home: 'Liverpool', away: 'Manchester United', homeScore: 1, awayScore: 1,
-    status: 'LIVE', time: 'HT', odds: [2.35, 2.90, 3.00], extraMarkets: 12,
+    status: 'LIVE', phase: 'HT', time: '45′', odds: [2.35, 2.90, 3.00], extraMarkets: 12,
   },
   {
     id: 'toulouse-strasbourg', competition: 'Ligue 1', round: 'Round 10',
     home: 'Toulouse FC', away: 'RC Strasbourg Alsace', homeScore: 0, awayScore: 0,
-    status: 'LIVE', time: 'HT', odds: [2.35, 2.90, 3.00], suspended: true, extraMarkets: 12,
+    status: 'LIVE', phase: 'HT', time: '45′', odds: [2.35, 2.90, 3.00], suspended: true, extraMarkets: 12,
   },
   {
     id: 'real-madrid-bayern', competition: 'UEFA Champions League', round: 'Quarter-final',
-    home: 'Real Madrid', away: 'FC Bayern München', homeScore: 2, awayScore: 1, status: 'FINISHED',
-    time: 'FT', date: 'FINAL SAMPLE', odds: [1.72, 3.55, 4.75], extraMarkets: 0,
+    home: 'Real Madrid', away: 'FC Bayern München', homeScore: 2, awayScore: 1, status: 'FINISHED', phase: 'FT',
+    time: '90′', date: 'FINAL SAMPLE', odds: [1.72, 3.55, 4.75], extraMarkets: 0,
   },
   {
     id: 'liverpool-tottenham-final', competition: 'Premier League', round: 'Round 8',
-    home: 'Liverpool', away: 'Tottenham Hotspur', homeScore: 2, awayScore: 1, status: 'FINISHED',
-    time: 'FT', date: 'FINAL SAMPLE', odds: [1.95, 3.35, 3.80], extraMarkets: 0,
+    home: 'Liverpool', away: 'Tottenham Hotspur', homeScore: 2, awayScore: 1, status: 'FINISHED', phase: 'FT',
+    time: '90′', date: 'FINAL SAMPLE', odds: [1.95, 3.35, 3.80], extraMarkets: 0,
   },
   {
     id: 'sevilla-inter-final', competition: 'UEFA Champions League', round: 'Group stage',
-    home: 'Sevilla FC', away: 'Inter Milan', homeScore: 1, awayScore: 1, status: 'FINISHED',
-    time: 'FT', date: 'FINAL SAMPLE', odds: [2.75, 3.10, 2.65], extraMarkets: 0,
+    home: 'Sevilla FC', away: 'Inter Milan', homeScore: 1, awayScore: 1, status: 'FINISHED', phase: 'FT',
+    time: '90′', date: 'FINAL SAMPLE', odds: [2.75, 3.10, 2.65], extraMarkets: 0,
   },
   {
     id: 'man-city-tottenham', competition: 'Premier League', round: 'Round 10',
@@ -157,6 +157,32 @@ const fixtures: Fixture[] = [
   },
 ];
 
+function isFinishedFixture(fixture: Fixture) {
+  return fixture.status === 'FINISHED' || fixture.phase === 'FT';
+}
+function isLiveFixture(fixture: Fixture) {
+  return fixture.status === 'LIVE' && fixture.phase !== 'FT';
+}
+function isActivelyLiveFixture(fixture: Fixture) {
+  return fixture.status === 'LIVE' && fixture.phase !== 'HT' && fixture.phase !== 'FT';
+}
+function fixturePeriodText(fixture: Fixture) {
+  switch (fixture.phase) {
+    case '1H': return '1st half';
+    case 'HT': return 'Half-time';
+    case '2H': return '2nd half';
+    case 'ET': return 'Extra time';
+    case 'FT': return 'Full time';
+    default: return 'In play';
+  }
+}
+function FixtureStatusBadge({ fixture, className = '' }: { fixture: Fixture; className?: string }) {
+  const classes = `match-card-period-tag ${className}`.trim();
+  if (isFinishedFixture(fixture)) return <span className={`${classes} is-fulltime`} title="Full time" aria-label="FT, full time">FT</span>;
+  if (fixture.status === 'LIVE' && fixture.phase === 'HT') return <span className={`${classes} is-halftime`} title="Half-time" aria-label="HT, half-time">HT</span>;
+  if (isActivelyLiveFixture(fixture)) return <MatchLiveSignal className={className} />;
+  return null;
+}
 function ClubPair({ fixtureId, className = '' }: { fixtureId: string; className?: string }) {
   const fixture = fixtures.find((item) => item.id === fixtureId);
   if (!fixture) return null;
@@ -165,7 +191,7 @@ function ClubPair({ fixtureId, className = '' }: { fixtureId: string; className?
 
 const navItems: { id: Page; label: string; icon: string; count?: string }[] = [
   { id: 'home', label: 'Sports home', icon: 'home' },
-  { id: 'live', label: 'Live now', icon: 'live', count: '03' },
+  { id: 'live', label: 'Live now', icon: 'live', count: String(fixtures.filter(isLiveFixture).length).padStart(2, '0') },
   { id: 'football', label: 'Football', icon: 'ball' },
   { id: 'match', label: 'Match centre', icon: 'grid' },
   { id: 'activity', label: 'Bet slip & My bets', icon: 'ticket' },
@@ -294,7 +320,7 @@ function App() {
     if (!normalized) return fixtures;
     return fixtures.filter((fixture) => fixtureSearchText(fixture).includes(normalized));
   }, [query]);
-  const homeFeatured = visibleFixtures.find((fixture) => fixture.id === 'arsenal-brighton') ?? visibleFixtures.find((fixture) => fixture.status === 'LIVE') ?? visibleFixtures[0];
+  const homeFeatured = visibleFixtures.find((fixture) => fixture.id === 'real-madrid-arsenal') ?? visibleFixtures.find(isLiveFixture) ?? visibleFixtures[0];
   const homeFeaturedOdds = homeFeatured
     ? homeFeatured.odds.map((_, index) => getMarketOdds(homeFeatured, 'Match result', index, priceOverrides)) as [number, number, number]
     : undefined;
@@ -333,6 +359,12 @@ function App() {
     setPage(next);
     setMobileSheetOpen(false);
     scrollPageTop();
+  }
+
+  function openMarket(fixtureId: string, category: string) {
+    setMarketCategory(category);
+    setMarketQuery('');
+    navigate('match', fixtureId);
   }
 
   function openFullBets() {
@@ -381,7 +413,7 @@ function App() {
       clearSelection();
       return;
     }
-    if (fixture.status === 'FINISHED') {
+    if (isFinishedFixture(fixture)) {
       setNotice({ type: 'warning', text: 'This sample match has finished. Its markets are closed.' });
       return;
     }
@@ -582,7 +614,7 @@ function App() {
 
       <main className="main-content">
         {page !== 'home' && <>
-        <div className="page-topline"><div className="breadcrumbs"><span>HOUSEBETS</span><span className="crumb-slash">/</span><span>{activeMeta.crumb}</span></div><span className="updated-note"><span className="live-dot" /> Sample data only</span></div>
+        <div className="page-topline"><div className="breadcrumbs"><span>HOUSEBETS</span><span className="crumb-slash">/</span><span>{activeMeta.crumb}</span></div><span className="updated-note">Sample data only</span></div>
         <div className="page-heading">
           <div>
             <p className="eyebrow">{activeMeta.crumb}</p>
@@ -610,9 +642,9 @@ function App() {
           <button className="notice-close" onClick={() => setNotice(null)} aria-label="Dismiss message"><Icon name="close" size={14} /></button>
           </div>
         )}
-        {page === 'home' && <HomePage fixtures={visibleFixtures} featuredId={homeFeatured?.id} navigate={navigate} makeSelection={makeSelection} selection={selection} priceOverrides={priceOverrides} onCompetition={openCompetition} onChooseSport={selectMobileSport} searchQuery={query} clearSearch={() => setQuery('')} />}
-        {page === 'live' && <LivePage fixtures={visibleFixtures} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} sportFilter={liveSportFilter} setSportFilter={setLiveSportFilter} competitionFilter={liveCompetitionFilter} setCompetitionFilter={setLiveCompetitionFilter} searchQuery={query} selection={selection} />}
-        {page === 'football' && <FootballPage fixtures={visibleFixtures} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} sportFilter={sportFilter} setSportFilter={setSportFilter} footballScope={footballScope} setFootballScope={setFootballScope} favourites={favourites} toggleFavourite={toggleFavourite} searchQuery={query} clearSearch={() => setQuery('')} selection={selection} />}
+        {page === 'home' && <HomePage fixtures={visibleFixtures} featuredId={homeFeatured?.id} navigate={navigate} makeSelection={makeSelection} selection={selection} priceOverrides={priceOverrides} onCompetition={openCompetition} onChooseSport={selectMobileSport} searchQuery={query} clearSearch={() => setQuery('')} favourites={favourites} toggleFavourite={toggleFavourite} openMarket={openMarket} />}
+        {page === 'live' && <LivePage fixtures={visibleFixtures} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} sportFilter={liveSportFilter} setSportFilter={setLiveSportFilter} competitionFilter={liveCompetitionFilter} setCompetitionFilter={setLiveCompetitionFilter} searchQuery={query} selection={selection} openMarket={openMarket} />}
+        {page === 'football' && <FootballPage fixtures={visibleFixtures} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} sportFilter={sportFilter} setSportFilter={setSportFilter} footballScope={footballScope} setFootballScope={setFootballScope} favourites={favourites} toggleFavourite={toggleFavourite} searchQuery={query} clearSearch={() => setQuery('')} selection={selection} openMarket={openMarket} />}
         {page === 'match' && (
           <MatchPage
             fixture={fixtures.find((fixture) => fixture.id === matchFixtureId) ?? fixtures[0]}
@@ -734,9 +766,10 @@ function App() {
 
 
 function MobileSportsHeader({ page, navigate, onChooseSport }: { page: Page; navigate: Navigate; onChooseSport: (sport: string) => void }) {
+  const liveCount = String(fixtures.filter(isLiveFixture).length).padStart(2, '0');
   const destinations: { name: string; page: Page; count?: string }[] = [
     { name: 'Home', page: 'home' },
-    { name: 'Live', page: 'live', count: '03' },
+    { name: 'Live', page: 'live', count: liveCount },
     { name: 'Soccer', page: 'football' },
   ];
   return (
@@ -764,7 +797,7 @@ function ActiveFilterRow({ items, clearAll }: { items: FilterChip[]; clearAll: (
   );
 }
 
-function HomePage({ fixtures, featuredId, navigate, makeSelection, selection, priceOverrides, onCompetition, onChooseSport, searchQuery, clearSearch }: {
+function HomePage({ fixtures, featuredId, navigate, makeSelection, selection, priceOverrides, onCompetition, onChooseSport, searchQuery, clearSearch, favourites, toggleFavourite, openMarket }: {
   fixtures: Fixture[];
   featuredId?: string;
   navigate: Navigate;
@@ -775,6 +808,9 @@ function HomePage({ fixtures, featuredId, navigate, makeSelection, selection, pr
   onChooseSport: (sport: string) => void;
   searchQuery: string;
   clearSearch: () => void;
+  favourites: string[];
+  toggleFavourite: (item: string) => void;
+  openMarket: (fixtureId: string, category: string) => void;
 }) {
   const schedule = fixtures.filter((fixture) => fixture.id !== featuredId);
   const topCompetitions = [
@@ -785,9 +821,9 @@ function HomePage({ fixtures, featuredId, navigate, makeSelection, selection, pr
     { name: 'Bundesliga' },
   ];
   const sports = ['Football', 'Tennis', 'Basketball', 'Cricket'];
-  const liveRows = schedule.filter((fixture) => fixture.status === 'LIVE');
+  const liveRows = schedule.filter(isLiveFixture);
   const upcomingRows = schedule.filter((fixture) => fixture.status === 'UPCOMING');
-  const finalRows = schedule.filter((fixture) => fixture.status === 'FINISHED');
+  const finalRows = schedule.filter(isFinishedFixture);
   const hasBothLanes = liveRows.length > 0 && upcomingRows.length > 0;
   return (
     <div className="page-stack home-dashboard fixture-ledger">
@@ -810,95 +846,83 @@ function HomePage({ fixtures, featuredId, navigate, makeSelection, selection, pr
             <div className="home-fixture-lane-title"><span className="home-fixture-lane-mark" aria-hidden="true" /><h3>{lane.label}</h3></div>
             <span className="home-fixture-lane-count">{lane.rows.length} {lane.rows.length === 1 ? 'match' : 'matches'}</span>
           </header>
-          <div className="home-fixture-list">{lane.rows.map((fixture) => <HomeFixtureCard key={fixture.id} fixture={fixture} navigate={navigate} makeSelection={makeSelection} selection={selection} priceOverrides={priceOverrides} />)}</div>
+          <div className="home-fixture-list">{lane.rows.map((fixture) => <HomeFixtureCard key={fixture.id} fixture={fixture} navigate={navigate} makeSelection={makeSelection} selection={selection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} openMarket={openMarket} />)}</div>
         </section>)}
       </div>
       {finalRows.length > 0 && <section className="ledger-lane fieldside-lane home-final-samples">
         <header className="ledger-lane-heading"><span className="lane-status-mark" aria-hidden="true" /><div><h3>Final results</h3></div><span className="ledger-lane-count">{finalRows.length} {finalRows.length === 1 ? 'match' : 'matches'}</span></header>
-        <div className="home-final-list">{finalRows.map((fixture) => <HomeFinalSampleCard key={fixture.id} fixture={fixture} navigate={navigate} />)}</div>
+        <div className="home-final-list">{finalRows.map((fixture) => <HomeFixtureCard key={fixture.id} fixture={fixture} navigate={navigate} makeSelection={makeSelection} selection={selection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} openMarket={openMarket} />)}</div>
       </section>}
       <div className="info-band"><span className="info-mark">i</span><span>Club names and crests are authentic; fixtures, scores, odds, stakes and returns are examples.</span><Badge variant="warning">Demo board</Badge></div>
     </div>
   );
 }
 
-function HomeFinalSampleCard({ fixture, navigate }: { fixture: Fixture; navigate: Navigate }) {
-  const homeScore = fixture.homeScore ?? '–';
-  const awayScore = fixture.awayScore ?? '–';
-  return (
-    <button
-      className="home-final-card"
-      type="button"
-      data-fixture-id={fixture.id}
-      onClick={() => navigate('match', fixture.id)}
-      aria-label={`Open match: ${fixture.home} ${homeScore}, ${fixture.away} ${awayScore}. ${fixture.competition}, ${fixture.round}. Market closed.`}
-    >
-      <span className="home-final-card-meta">
-        <span className="home-final-card-competition"><CompetitionLogo competition={fixture.competition} /><span>{fixture.competition}</span><i aria-hidden="true">·</i><span>{fixture.round}</span></span>
-        <span className="home-final-card-status">Final</span>
-      </span>
-      <span className="home-final-scoreline">
-        <span className="home-final-side"><ClubCrest club={fixture.home} /><strong>{fixture.home}</strong></span>
-        <span className="home-final-score" aria-label={`Final score ${homeScore} to ${awayScore}`}>{homeScore}<i>–</i>{awayScore}</span>
-        <span className="home-final-side home-final-side--away"><strong>{fixture.away}</strong><ClubCrest club={fixture.away} /></span>
-      </span>
-      <span className="home-final-card-footer">
-        <span className="home-final-closed"><Icon name="lock" size={12} />Market closed</span>
-      </span>
-    </button>
-  );
-}
-
-function HomeFixtureCard({ fixture, navigate, makeSelection, selection, priceOverrides }: {
+function HomeFixtureCard({ fixture, navigate, makeSelection, selection, priceOverrides, favourites, toggleFavourite, openMarket }: {
   fixture: Fixture;
   navigate: Navigate;
   makeSelection: (fixture: Fixture, pickIndex: number, market?: string) => void;
   selection: Selection | null;
   priceOverrides: OddsOverrides;
+  favourites: string[];
+  toggleFavourite: (item: string) => void;
+  openMarket: (fixtureId: string, category: string) => void;
 }) {
-  const timing = fixture.status === 'LIVE'
-    ? `Live · ${fixture.time}`
-    : fixture.date === 'TOMORROW' ? `Tomorrow · ${fixture.time}` : `Today · ${fixture.time}`;
-  const scores = [fixture.homeScore, fixture.awayScore];
   const outcomes = [fixture.home, 'Draw', fixture.away];
+  const isFinished = isFinishedFixture(fixture);
+  const isActivelyLive = isActivelyLiveFixture(fixture);
+  const isHalfTime = fixture.status === 'LIVE' && fixture.phase === 'HT';
+  const favourite = favourites.includes(fixture.home);
+  const marketCounts = getSampleMarkets(fixture).reduce<Record<string, number>>((counts, market) => {
+    counts[market.category] = (counts[market.category] ?? 0) + 1;
+    return counts;
+  }, {});
+  const kickoff = `${fixture.date === 'TOMORROW' ? 'Tomorrow' : fixture.date === 'TODAY' ? 'Today' : fixture.date ?? 'Today'} · ${fixture.time}`;
 
   return (
-    <article className={`home-fixture-card${fixture.suspended ? ' is-suspended' : ''}`} data-fixture-id={fixture.id}>
-      <div className="home-fixture-card-head">
-        <button className="home-fixture-context" onClick={() => navigate('match', fixture.id)} aria-label={`Open ${fixture.home} v ${fixture.away} match centre`}>
-          <span className={`home-fixture-timing${fixture.status === 'LIVE' ? ' is-live' : ''}`}>{timing}</span>
-          <span className="home-fixture-competition"><CompetitionLogo competition={fixture.competition} /><span className="home-fixture-competition-copy">{fixture.competition}<span aria-hidden="true"> · </span>{fixture.round}</span></span>
+    <article className={`match-fixture-card${fixture.suspended ? ' is-suspended' : ''}`} data-fixture-id={fixture.id} data-phase={fixture.phase ?? fixture.status}>
+      <div className="match-card-header">
+        <button className="match-card-competition" type="button" onClick={() => navigate('match', fixture.id)} aria-label={`Open ${fixture.home} v ${fixture.away} match centre`}>
+          <CompetitionLogo competition={fixture.competition} /><span>{fixture.competition}</span><i aria-hidden="true">·</i><small>{fixture.round}</small>
         </button>
-        <button className="home-fixture-markets" onClick={() => navigate('match', fixture.id)} aria-label={`Open ${fixture.extraMarkets} more markets for ${fixture.home} v ${fixture.away}`}>
-          Markets <strong>+{fixture.extraMarkets}</strong>
-        </button>
+        <button className={`match-card-favourite${favourite ? ' selected' : ''}`} type="button" aria-pressed={favourite} onClick={() => toggleFavourite(fixture.home)} aria-label={favourite ? `Remove ${fixture.home} favourite` : `Favourite ${fixture.home}`}><Icon name="star" size={16} /></button>
       </div>
-      <div className="home-fixture-card-body">
-        <button className="home-fixture-teams" onClick={() => navigate('match', fixture.id)} aria-label={`Open simulated match ${fixture.home} ${scores[0] ?? ''} versus ${fixture.away} ${scores[1] ?? ''}`}>
-          {[fixture.home, fixture.away].map((club, index) => <span className="home-fixture-team" key={club}>
-            <ClubCrest club={club} />
-            <strong>{club}</strong>
-            <b>{scores[index] ?? '–'}</b>
-          </span>)}
-        </button>
-        <div className="home-fixture-market">
-          <div className="home-fixture-market-heading"><span>Match result</span><span className={fixture.suspended ? 'home-fixture-market-state is-suspended' : ''}>{fixture.suspended ? 'Suspended' : '1X2'}</span></div>
-          <div className={`home-fixture-odds${fixture.suspended ? ' is-suspended' : ''}`} aria-label={fixture.suspended ? 'Match result odds, suspended' : 'Match result odds'}>
+      <div className={`match-card-status${isActivelyLive ? ' is-live' : isHalfTime ? ' is-halftime' : isFinished ? ' is-fulltime' : ' is-upcoming'}`}>
+        {isActivelyLive ? <><div className="match-card-clock"><strong>{fixture.time}</strong><span aria-hidden="true">·</span><span>{fixturePeriodText(fixture)}</span></div><MatchLiveSignal /></> : isHalfTime ? <><span className="match-card-period-tag is-halftime">HT</span><span>Half-time</span></> : isFinished ? <><span className="match-card-period-tag is-fulltime">FT</span><span>Full time</span></> : <><strong className="match-card-kickoff">{kickoff}</strong><span className="match-card-period-tag is-upcoming">UPCOMING</span></>}
+      </div>
+      <button className="match-card-teams" type="button" onClick={() => navigate('match', fixture.id)} aria-label={`Open ${fixture.home} ${fixture.homeScore ?? ''} v ${fixture.away} ${fixture.awayScore ?? ''}`}>
+        {[fixture.home, fixture.away].map((club, index) => <span className="match-card-team" key={club}>
+          <ClubCrest club={club} />
+          <strong>{club}</strong>
+          <b>{index === 0 ? fixture.homeScore ?? '–' : fixture.awayScore ?? '–'}</b>
+        </span>)}
+      </button>
+      <section className="match-card-market" aria-label="1X2 market">
+        <div className="match-card-market-heading"><strong>1X2</strong></div>
+        <div className="match-card-market-actions">
+          {isFinished ? <div className="match-card-lock-panel is-closed" role="status"><Icon name="lock" size={15} /><strong>Market closed</strong></div> : fixture.suspended ? <div className="match-card-lock-panel is-suspended" role="status" aria-label="1X2 market suspended"><Icon name="lock" size={15} /><strong>Suspended</strong></div> : <div className="match-card-odds" aria-label="Decimal 1X2 odds">
             {fixture.odds.map((_, index) => {
               const odd = getMarketOdds(fixture, 'Match result', index, priceOverrides);
               const selected = selection?.fixtureId === fixture.id && selection.market === 'Match result' && selection.label === outcomes[index];
-              return <button key={index} type="button" className={`home-fixture-odd${selected ? ' is-selected' : ''}`} disabled={fixture.suspended} onClick={() => makeSelection(fixture, index, 'Match result')} aria-pressed={selected} aria-label={fixture.suspended ? `${outcomes[index]} at ${odd.toFixed(2)} — market suspended` : `Select ${outcomes[index]} at ${odd.toFixed(2)}`}>
-                <span>{['1', 'Draw', '2'][index]}</span><strong>{odd.toFixed(2)}</strong>
+              return <button key={index} type="button" className={`match-card-odd${selected ? ' is-selected' : ''}`} onClick={() => makeSelection(fixture, index, 'Match result')} aria-pressed={selected} aria-label={`Select ${outcomes[index]} at ${odd.toFixed(2)}${selected ? ', selected' : ''}`}>
+                <span>{['1', 'X', '2'][index]}</span><strong>{odd.toFixed(2)}</strong>
               </button>;
             })}
-          </div>
+          </div>}
+          {!isFinished && <details className="match-card-more-markets">
+            <summary aria-label={`More markets for ${fixture.home} v ${fixture.away}`}><span>More markets</span><b>+{fixture.extraMarkets}</b><Icon name="chevron" size={14} /></summary>
+            <div className="match-card-market-menu" aria-label="More market groups">
+              {marketGroups.map((group) => <button key={group} type="button" onClick={() => openMarket(fixture.id, group)}><span>{group}</span><b>{marketCounts[group] ?? 0}</b></button>)}
+              <button type="button" className="is-all-markets" onClick={() => openMarket(fixture.id, 'All markets')}><span>All markets</span><b>{getSampleMarkets(fixture).length}</b></button>
+            </div>
+          </details>}
         </div>
-      </div>
+      </section>
     </article>
   );
 }
 
-function LivePage({ fixtures: rows, navigate, makeSelection, priceOverrides, favourites, toggleFavourite, sportFilter, setSportFilter, competitionFilter, setCompetitionFilter, searchQuery, selection }: {
+function LivePage({ fixtures: rows, navigate, makeSelection, priceOverrides, favourites, toggleFavourite, sportFilter, setSportFilter, competitionFilter, setCompetitionFilter, searchQuery, selection, openMarket }: {
   fixtures: Fixture[];
   navigate: Navigate;
   makeSelection: (fixture: Fixture, pickIndex: number, market?: string) => void;
@@ -911,12 +935,14 @@ function LivePage({ fixtures: rows, navigate, makeSelection, priceOverrides, fav
   setCompetitionFilter: (value: string) => void;
   searchQuery: string;
   selection: Selection | null;
+  openMarket: (fixtureId: string, category: string) => void;
 }) {
   const sports = ['All sports', 'Football', 'Tennis', 'Basketball', 'Cricket'];
   const competitions = [...new Set(fixtures.map((fixture) => fixture.competition))];
   const bySport = sportFilter === 'All sports' || sportFilter === 'Football' ? rows : [];
   const scoped = competitionFilter === 'All competitions' ? bySport : bySport.filter((fixture) => fixture.competition === competitionFilter);
-  const liveRows = scoped.filter((fixture) => fixture.status === 'LIVE');
+  const liveRows = scoped.filter(isLiveFixture);
+  const activeLiveCount = scoped.filter(isActivelyLiveFixture).length;
   const upcomingRows = scoped.filter((fixture) => fixture.status === 'UPCOMING');
   const liveGroups = groupByCompetition(liveRows);
   const upcomingGroups = groupByCompetition(upcomingRows);
@@ -929,14 +955,14 @@ function LivePage({ fixtures: rows, navigate, makeSelection, priceOverrides, fav
         </div>
         <label className="live-filter-select"><span>Competition</span><select aria-label="Filter live board by competition" value={competitionFilter} onChange={(event) => setCompetitionFilter(event.currentTarget.value)}><option>All competitions</option>{competitions.map((competition) => <option key={competition}>{competition}</option>)}</select></label>
       </section>
-      <div className="listing-toolbar live-summary-toolbar"><div className="listing-filter-tabs"><button className={liveRows.length ? 'active' : ''}><span className="pulse-dot" /> Live now <b>{String(liveRows.length).padStart(2, '0')}</b></button>{!liveRows.length && upcomingRows.length > 0 && <span className="starting-soon-indicator">Starting soon <b>{String(upcomingRows.length).padStart(2, '0')}</b></span>}</div><div className="filter-note"><span className="live-dot" /> No live feed</div></div>
-      {liveGroups.length > 0 ? <div key={`${sportFilter}-${competitionFilter}`} className="live-result-surface"><div className="desktop-competition-list">{liveGroups.map(([competition, group]) => <CompetitionBlock key={competition} competition={competition} fixtures={group} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} selection={selection} />)}</div></div> : upcomingGroups.length > 0 ? <section key={`${sportFilter}-${competitionFilter}`} className="starting-soon-block live-result-surface"><header><span className="eyebrow">No match in play</span><h2>Starting soon</h2><p>Upcoming fixtures match these filters.</p></header><div className="desktop-competition-list">{upcomingGroups.map(([competition, group]) => <CompetitionBlock key={competition} competition={competition} fixtures={group} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} selection={selection} />)}</div></section> : <EmptyState title={searchQuery.trim() ? 'No fixtures match that search' : `No live or upcoming ${sportFilter === 'All sports' ? '' : sportFilter.toLowerCase() + ' '} fixtures`} copy={searchQuery.trim() ? 'Try another team, competition, player label or market.' : 'Try another sport or competition. This board contains football fixtures only.'} />}
+      <div className="listing-toolbar live-summary-toolbar"><div className="listing-filter-tabs"><button className={liveRows.length ? 'active' : ''}>Live now <b>{String(liveRows.length).padStart(2, '0')}</b>{activeLiveCount > 0 && <span className="live-board-signal" aria-label={`${activeLiveCount} match currently in play`}><MatchLiveSignal /></span>}</button>{!liveRows.length && upcomingRows.length > 0 && <span className="starting-soon-indicator">Starting soon <b>{String(upcomingRows.length).padStart(2, '0')}</b></span>}</div><div className="filter-note">Sample scores · no live feed</div></div>
+      {liveGroups.length > 0 ? <div key={`${sportFilter}-${competitionFilter}`} className="live-result-surface"><div className="desktop-competition-list">{liveGroups.map(([competition, group]) => <CompetitionBlock key={competition} competition={competition} fixtures={group} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} selection={selection} openMarket={openMarket} />)}</div></div> : upcomingGroups.length > 0 ? <section key={`${sportFilter}-${competitionFilter}`} className="starting-soon-block live-result-surface"><header><span className="eyebrow">No match in play</span><h2>Starting soon</h2><p>Upcoming fixtures match these filters.</p></header><div className="desktop-competition-list">{upcomingGroups.map(([competition, group]) => <CompetitionBlock key={competition} competition={competition} fixtures={group} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} selection={selection} openMarket={openMarket} />)}</div></section> : <EmptyState title={searchQuery.trim() ? 'No fixtures match that search' : `No live or upcoming ${sportFilter === 'All sports' ? '' : sportFilter.toLowerCase() + ' '} fixtures`} copy={searchQuery.trim() ? 'Try another team, competition, player label or market.' : 'Try another sport or competition. This board contains football fixtures only.'} />}
       <div className="info-band"><span className="info-mark">i</span><span>Scores, clocks and odds are examples, not a live feed.</span><Badge variant="warning">Demo board</Badge></div>
     </div>
   );
 }
 
-function FootballPage({ fixtures: rows, navigate, makeSelection, priceOverrides, sportFilter, setSportFilter, footballScope, setFootballScope, favourites, toggleFavourite, searchQuery, clearSearch, selection }: {
+function FootballPage({ fixtures: rows, navigate, makeSelection, priceOverrides, sportFilter, setSportFilter, footballScope, setFootballScope, favourites, toggleFavourite, searchQuery, clearSearch, selection, openMarket }: {
   fixtures: Fixture[];
   navigate: Navigate;
   makeSelection: (fixture: Fixture, pickIndex: number, market?: string) => void;
@@ -950,6 +976,7 @@ function FootballPage({ fixtures: rows, navigate, makeSelection, priceOverrides,
   searchQuery: string;
   clearSearch: () => void;
   selection: Selection | null;
+  openMarket: (fixtureId: string, category: string) => void;
 }) {
   const leagues = [
     { label: 'All football', value: 'All football' },
@@ -960,7 +987,7 @@ function FootballPage({ fixtures: rows, navigate, makeSelection, priceOverrides,
     { label: 'Bundesliga', value: 'Bundesliga' },
   ];
   const filtered = rows.filter((fixture) => sportFilter === 'All football' || sportFilter === 'All sports' || sportFilter === 'Football' || fixture.competition === sportFilter);
-  const liveUpcoming = filtered.filter((fixture) => fixture.status === 'LIVE' || fixture.status === 'UPCOMING');
+  const liveUpcoming = filtered.filter((fixture) => isLiveFixture(fixture) || fixture.status === 'UPCOMING');
   const visibleFixtures = footballScope === 'live-upcoming' ? liveUpcoming : filtered;
   const grouped = groupByCompetition(visibleFixtures);
   return (
@@ -979,7 +1006,7 @@ function FootballPage({ fixtures: rows, navigate, makeSelection, priceOverrides,
       {sportFilter === 'Basketball' || sportFilter === 'Tennis' ? (
         <div className="desktop-competition-list"><EmptyState title={`No ${sportFilter.toLowerCase()} samples in this build`} copy="This contest prototype focuses on fictional football fixtures." /></div>
       ) : grouped.length ? (
-        <><div className="desktop-competition-list">{grouped.map(([competition, group]) => <CompetitionBlock key={competition} competition={competition} fixtures={group} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} selection={selection} />)}</div><div className="info-band"><span className="info-mark">i</span><span>Club names and crests are real. Events, scores, dates and odds are fixed samples.</span><Badge variant="warning">Sample data</Badge></div></>
+        <><div className="desktop-competition-list">{grouped.map(([competition, group]) => <CompetitionBlock key={competition} competition={competition} fixtures={group} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} selection={selection} openMarket={openMarket} />)}</div><div className="info-band"><span className="info-mark">i</span><span>Club names and crests are real. Events, scores, dates and odds are fixed samples.</span><Badge variant="warning">Sample data</Badge></div></>
       ) : <div className="desktop-competition-list"><EmptyState title="No matches here yet" copy="Try another competition or clear your search." /></div>}
       <button className="text-link back-home" onClick={() => navigate('home')}>Back to sports home <Icon name="arrow" size={15} /></button>
     </div>
@@ -991,7 +1018,7 @@ function groupByCompetition(rows: Fixture[]): [string, Fixture[]][] {
   return names.map((name) => [name, rows.filter((fixture) => fixture.competition === name)]);
 }
 
-function CompetitionBlock({ competition, fixtures: rows, navigate, makeSelection, priceOverrides, favourites, toggleFavourite, selection }: {
+function CompetitionBlock({ competition, fixtures: rows, navigate, makeSelection, priceOverrides, favourites, toggleFavourite, selection, openMarket }: {
   competition: string;
   fixtures: Fixture[];
   navigate: Navigate;
@@ -1000,43 +1027,12 @@ function CompetitionBlock({ competition, fixtures: rows, navigate, makeSelection
   favourites: string[];
   toggleFavourite: (item: string) => void;
   selection: Selection | null;
+  openMarket: (fixtureId: string, category: string) => void;
 }) {
-  const isFavourite = favourites.includes(competition);
   return (
-    <Frame className="league-frame competition-block">
-      <Frame.Header>
-        <Frame.Title as="h2"><CompetitionLogo competition={competition} /><span>{competition}</span><small>{rows.length} {rows.length === 1 ? 'match' : 'matches'}</small></Frame.Title>
-        <Frame.Action><span className="frame-action-count">Match result</span><button className={`competition-star ${isFavourite ? 'selected' : ''}`} onClick={() => toggleFavourite(competition)} aria-label={isFavourite ? `Unfavourite ${competition}` : `Favourite ${competition}`}><Icon name="star" size={14} /></button><button className="competition-view-all" aria-label="View first match" onClick={() => rows[0] && navigate('match', rows[0].id)}><span className="competition-view-label">View first match</span> <Icon name="arrow" size={12} /></button></Frame.Action>
-      </Frame.Header>
-      <Frame.Panel>{rows.map((fixture) => <FixtureRow key={fixture.id} fixture={fixture} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} selection={selection} />)}</Frame.Panel>
-    </Frame>
-  );
-}
-
-function FixtureRow({ fixture, navigate, makeSelection, priceOverrides, selection }: { fixture: Fixture; navigate: Navigate; makeSelection: (fixture: Fixture, pickIndex: number, market?: string) => void; priceOverrides: OddsOverrides; selection: Selection | null }) {
-  const timeLabel = fixture.status === 'LIVE' ? fixture.time : fixture.status === 'FINISHED' ? 'FT' : fixture.time;
-  const phaseLabel = fixture.status === 'LIVE' ? 'Live' : fixture.status === 'FINISHED' ? 'Final' : fixture.date === 'TOMORROW' ? 'Tomorrow' : 'Today';
-  return (
-    <Frame.Row data-fixture-id={fixture.id} className={`fixture-row docket-row ${fixture.status === 'LIVE' ? 'is-live' : ''} ${fixture.status === 'FINISHED' ? 'is-final' : ''}`} onClick={() => navigate('match', fixture.id)} chevron>
-      <Frame.Media><div className="fixture-time-cell"><span className="fixture-time-rail" aria-hidden="true" /><span className="fixture-time-copy"><span>{phaseLabel}</span><strong>{timeLabel}</strong></span></div></Frame.Media>
-      <Frame.Content>
-        <Frame.Description><span className="fixture-competition-name"><CompetitionLogo competition={fixture.competition} />{fixture.competition}</span><span className="mini-divider">/</span><span>{fixture.round}</span></Frame.Description>
-        <div className="fixture-team-stack"><span><ClubCrest club={fixture.home} /><strong>{fixture.home}</strong>{fixture.homeScore !== undefined && <b>{fixture.homeScore}</b>}</span><span><ClubCrest club={fixture.away} /><strong>{fixture.away}</strong>{fixture.awayScore !== undefined && <b>{fixture.awayScore}</b>}</span></div>
-      </Frame.Content>
-      <Frame.Actions>
-        <div className="fixture-market-head"><span>Match result</span>{fixture.status !== 'FINISHED' && fixture.suspended && <span className="market-status">Suspended</span>}</div>
-        <div className="row-market-actions">
-          {fixture.status === 'FINISHED' && <div className="row-suspended market-closed"><Icon name="lock" size={13} /> Market closed</div>}
-          {fixture.status !== 'FINISHED' && <div className={`row-odds${fixture.suspended ? ' is-suspended' : ''}`}>{fixture.odds.map((_, index) => {
-            const odd = getMarketOdds(fixture, 'Match result', index, priceOverrides);
-            const label = index === 0 ? fixture.home : index === 1 ? 'Draw' : fixture.away;
-            const selected = selection?.fixtureId === fixture.id && selection.market === 'Match result' && selection.label === label;
-            return <button key={index} type="button" className={`row-odd${selected ? ' is-selected' : ''}`} disabled={fixture.suspended} onClick={(event) => { event.stopPropagation(); makeSelection(fixture, index); }} aria-pressed={selected} aria-label={fixture.suspended ? `${label} ${odd.toFixed(2)}, market suspended` : `Select ${label} at ${odd.toFixed(2)}${selected ? ', selected, activate again to remove' : ''}`}><small>{['1', 'Draw', '2'][index]}</small><strong>{odd.toFixed(2)}</strong></button>;
-          })}</div>}
-          {fixture.status !== 'FINISHED' && <button className="extra-market-count" onClick={(event) => { event.stopPropagation(); navigate('match', fixture.id); }}>+{fixture.extraMarkets} markets <span>↗</span></button>}
-        </div>
-      </Frame.Actions>
-    </Frame.Row>
+    <section className="match-card-group" data-competition={competition} aria-label={`${competition} fixtures`}>
+      {rows.map((fixture) => <HomeFixtureCard key={fixture.id} fixture={fixture} navigate={navigate} makeSelection={makeSelection} selection={selection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} openMarket={openMarket} />)}
+    </section>
   );
 }
 
@@ -1066,27 +1062,29 @@ function MatchPage({ fixture, fixtures: fixtureOptions, priceOverrides, marketSu
   ];
   const search = marketQuery.trim().toLowerCase();
   const shown = markets.filter((market) => (marketCategory === 'All markets' || market.category === marketCategory) && (!search || `${market.title} ${market.sub} ${market.options.join(' ')}`.toLowerCase().includes(search)));
-  const marketUnavailable = fixture.status === 'FINISHED' || fixture.suspended === true || marketSuspended;
-  const unavailableLabel = fixture.status === 'FINISHED' ? 'Market closed' : 'Market suspended';
+  const isFinished = isFinishedFixture(fixture);
+  const isLive = isLiveFixture(fixture);
+  const marketUnavailable = isFinished || fixture.suspended === true || marketSuspended;
+  const unavailableLabel = isFinished ? 'Market closed' : 'Market suspended';
   const favourite = favourites.includes(fixture.home);
   const [fixtureDetailsOpen, setFixtureDetailsOpen] = useState(false);
   return (
     <div className="page-stack match-page-stack">
       <div className="match-toolbar"><button className="match-back" onClick={() => navigate('football')}>‹ <span>Football</span></button><span className="match-toolbar-divider">/</span><span>{fixture.competition}</span><span className="match-toolbar-divider">/</span><select className="fixture-picker" aria-label="Select sample fixture" value={fixture.id} onChange={(event) => navigate('match', event.currentTarget.value)}>{fixtureOptions.map((option) => <option key={option.id} value={option.id}>{option.home} v {option.away}</option>)}</select><span className="match-toolbar-spacer" /><Badge variant="warning">Singles only</Badge></div>
       <Card className={`match-hero ${fixture.id === 'real-madrid-arsenal' ? 'has-pitch-illustration' : ''}`} size="default">
-        <div className="match-hero-top"><span className="competition-label"><CompetitionLogo competition={fixture.competition} className="match-competition-logo" /><span className="match-competition-name">{fixture.competition}</span><span className="match-round-name"><span className="mini-divider">/</span>{fixture.round}</span></span><div className="match-hero-actions">{fixture.status === 'LIVE' ? <Badge variant="destructive" dot="pulse" className="live-tag">Sample live · {fixture.time}</Badge> : <Badge variant="secondary" className="upcoming-tag">{fixture.status === 'FINISHED' ? 'Final sample' : `${fixture.date === 'TODAY' ? 'Today' : fixture.date === 'TOMORROW' ? 'Tomorrow' : fixture.date ?? 'Upcoming'} · ${fixture.time}`}</Badge>}<button className={`icon-favourite match-fav ${favourite ? 'selected' : ''}`} onClick={() => toggleFavourite(fixture.home)} aria-label={favourite ? 'Remove team favourite' : 'Add team favourite'}><Icon name="star" size={16} /></button></div></div>
+        <div className="match-hero-top"><span className="competition-label"><CompetitionLogo competition={fixture.competition} className="match-competition-logo" /><span className="match-competition-name">{fixture.competition}</span><span className="match-round-name"><span className="mini-divider">/</span>{fixture.round}</span></span><div className="match-hero-actions">{isLive || isFinished ? <span className="match-status-line"><FixtureStatusBadge fixture={fixture} /><span>{isFinished ? 'Full time' : fixture.phase === 'HT' ? 'Half-time' : `${fixture.time} · ${fixturePeriodText(fixture)}`}</span></span> : <Badge variant="secondary" className="upcoming-tag">{`${fixture.date === 'TODAY' ? 'Today' : fixture.date === 'TOMORROW' ? 'Tomorrow' : fixture.date ?? 'Upcoming'} · ${fixture.time}`}</Badge>}<button className={`icon-favourite match-fav ${favourite ? 'selected' : ''}`} onClick={() => toggleFavourite(fixture.home)} aria-label={favourite ? 'Remove team favourite' : 'Add team favourite'}><Icon name="star" size={16} /></button></div></div>
         <div className="match-hero-teams">
           <div className="match-team"><ClubCrest club={fixture.home} className="match-club-crest" /><strong>{fixture.home}</strong><small>Home side</small><button className={`follow-chip ${following.includes(fixture.home) ? 'following' : ''}`} onClick={() => toggleFollow(fixture.home)}>{following.includes(fixture.home) ? <><Icon name="star" size={14} /> Following</> : <><Icon name="plus" size={14} /> Follow</>}</button></div>
-          <div className="match-score"><span>{fixture.homeScore !== undefined ? <>{fixture.homeScore}<i>:</i>{fixture.awayScore}</> : 'VS'}</span>{fixture.status === 'LIVE' ? <Badge variant="destructive" dot className="live-tag">{fixture.time}</Badge> : <Badge variant="secondary" className="upcoming-tag">{fixture.status === 'FINISHED' ? 'FINAL' : `${fixture.date ?? 'UPCOMING'} · ${fixture.time}`}</Badge>}<small>{fixture.status === 'LIVE' ? 'Simulated score · 90 min' : fixture.status === 'FINISHED' ? 'Final sample result' : 'Simulated kick-off'}</small></div>
+          <div className="match-score"><span>{fixture.homeScore !== undefined ? <>{fixture.homeScore}<i>:</i>{fixture.awayScore}</> : 'VS'}</span>{isLive ? <span className="match-score-phase">{fixture.phase === 'HT' ? 'Half-time' : `${fixture.time} · ${fixturePeriodText(fixture)}`}</span> : isFinished ? <span className="match-score-phase">FT · Full time</span> : <Badge variant="secondary" className="upcoming-tag">{`${fixture.date ?? 'UPCOMING'} · ${fixture.time}`}</Badge>}<small>{isLive ? 'Simulated score · 90 min' : isFinished ? 'Final sample result' : 'Simulated kick-off'}</small></div>
           <div className="match-team align-right"><ClubCrest club={fixture.away} className="match-club-crest" /><strong>{fixture.away}</strong><small>Away side</small><button className={`follow-chip ${following.includes(fixture.away) ? 'following' : ''}`} onClick={() => toggleFollow(fixture.away)}>{following.includes(fixture.away) ? <><Icon name="star" size={14} /> Following</> : <><Icon name="plus" size={14} /> Follow</>}</button></div>
         </div>
         <div className="match-hero-bottom"><span>{fixture.id === 'real-madrid-arsenal' ? 'Illustrated pitch · simulated fixture' : 'Simulated fixture · no live feed'}</span><span>{fixture.competition} · {fixture.round}</span></div>
       </Card>
       <section className="match-fixture-details" aria-label="Fixture details">
         <div className="match-details-heading"><div><span>Event details</span><strong>{fixture.competition} · {fixture.round}</strong></div><button aria-expanded={fixtureDetailsOpen} onClick={() => setFixtureDetailsOpen((open) => !open)}>{fixtureDetailsOpen ? 'Hide details' : 'Show details'} <Icon name="chevron" size={14} /></button></div>
-        {fixtureDetailsOpen && <div className="match-details-grid"><div><small>Event</small><strong>{fixture.home} v {fixture.away}</strong></div><div><small>Format</small><strong>Football · Match result (1X2)</strong></div><div><small>Data notice</small><strong>Fictional event · fixed sample values</strong></div><div className="match-event-time"><small>{fixture.status === 'LIVE' ? 'Sample clock' : fixture.status === 'FINISHED' ? 'Event status' : 'Kick-off'}</small><strong>{fixture.status === 'LIVE' ? `${fixture.time} · simulated` : fixture.status === 'FINISHED' ? 'Final sample' : `${fixture.date ?? 'Today'} · ${fixture.time}`}</strong></div></div>}
+        {fixtureDetailsOpen && <div className="match-details-grid"><div><small>Event</small><strong>{fixture.home} v {fixture.away}</strong></div><div><small>Format</small><strong>Football · Match result (1X2)</strong></div><div><small>Data notice</small><strong>Fictional event · fixed sample values</strong></div><div className="match-event-time"><small>{isLive ? fixture.phase === 'HT' ? 'Match phase' : 'Sample clock' : isFinished ? 'Event status' : 'Kick-off'}</small><strong>{isLive ? fixture.phase === 'HT' ? 'Half-time · simulated' : `${fixture.time} · ${fixturePeriodText(fixture)} · simulated` : isFinished ? 'FT · Full time sample' : `${fixture.date ?? 'Today'} · ${fixture.time}`}</strong></div></div>}
       </section>
-      {marketUnavailable && <div className={`match-market-alert ${fixture.status === 'FINISHED' ? 'closed' : ''}`} role="status"><Icon name="lock" size={16} /><div><strong>{unavailableLabel}</strong><span>{fixture.status === 'FINISHED' ? 'This sample event has ended; its prices cannot be selected.' : 'Prices for this sample event are temporarily unavailable.'}</span></div></div>}
+      {marketUnavailable && <div className={`match-market-alert ${isFinished ? 'closed' : ''}`} role="status"><Icon name="lock" size={16} /><div><strong>{unavailableLabel}</strong><span>{isFinished ? 'This sample event has ended; its prices cannot be selected.' : 'Prices for this sample event are temporarily unavailable.'}</span></div></div>}
       <div className="market-search-row"><div className="market-search"><Icon name="search" size={15} /><Input aria-label="Search markets or players" placeholder="Search markets or players" value={marketQuery} onChange={(event) => setMarketQuery(event.currentTarget.value)} size="sm" />{marketQuery && <button type="button" className="market-search-clear" onClick={() => setMarketQuery('')} aria-label="Clear market search"><Icon name="close" size={14} /></button>}</div><span className="market-search-note"><Icon name="ticket" size={13} /> One selection at a time</span></div>
       <ActiveFilterRow items={marketQuery.trim() ? [{ label: `Market search: ${marketQuery.trim()}`, clear: () => setMarketQuery('') }] : []} clearAll={() => setMarketQuery('')} />
       <div className="market-toolbar"><div><p className="eyebrow">Market directory</p><span className="market-count-line">{shown.length} of {markets.length} sample markets · 6 groups</span></div><div className="market-tabs" role="tablist" aria-label="Market categories">{categories.map((category) => <button key={category.name} className={`market-tab ${marketCategory === category.name ? 'selected' : ''}`} onClick={() => { setMarketCategory(category.name); setMarketQuery(''); }} role="tab" aria-selected={marketCategory === category.name}>{category.name} <span>{String(category.count).padStart(2, '0')}</span></button>)}</div></div>
