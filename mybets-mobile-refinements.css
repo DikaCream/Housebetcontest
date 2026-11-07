@@ -1,0 +1,94 @@
+/* Mobile-only corrections for the My Bets filter and compact odds ledger. */
+@media (max-width: 760px) {
+  #root #housebets-app[data-page="activity"] .mybets-filter-controls .sport-filter > svg {
+    display: none !important;
+  }
+
+  #root #housebets-app[data-page="activity"] .mybets-filter-controls .sport-filter select {
+    appearance: auto !important;
+    -webkit-appearance: auto !important;
+  }
+
+  #root #housebets-app[data-page="activity"] .mybets-page .bet-table-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-template-rows: auto auto auto;
+    align-items: start !important;
+    gap: 8px 10px !important;
+    padding: 10px !important;
+  }
+
+  #root #housebets-app[data-page="activity"] .mybets-page .bet-placed {
+    grid-column: 1 / 3 !important;
+    grid-row: 1 !important;
+    min-width: 0;
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 6px;
+    font-size: 10px !important;
+    line-height: 14px;
+  }
+
+  #root #housebets-app[data-page="activity"] .mybets-page .bet-placed small {
+    font-size: 9px !important;
+    line-height: 12px;
+  }
+
+  #root #housebets-app[data-page="activity"] .mybets-page .bet-result-cell {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    align-self: center;
+    justify-self: end;
+  }
+
+  #root #housebets-app[data-page="activity"] .mybets-page .bet-row-event {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+  }
+
+  #root #housebets-app[data-page="activity"] .mybets-page .bet-row-number {
+    min-width: 0;
+    display: block !important;
+    align-self: start;
+    grid-row: 3 !important;
+    color: var(--hb-text) !important;
+    font-size: 11px !important;
+    font-variant-numeric: tabular-nums;
+    line-height: 14px;
+    white-space: nowrap !important;
+  }
+
+  #root #housebets-app[data-page="activity"] .mybets-page .bet-row-number[data-label="Odds"] {
+    grid-column: 1 !important;
+  }
+
+  #root #housebets-app[data-page="activity"] .mybets-page .bet-row-number[data-label="Stake"] {
+    grid-column: 2 !important;
+  }
+
+  #root #housebets-app[data-page="activity"] .mybets-page .bet-row-number[data-label="Return"] {
+    grid-column: 3 !important;
+  }
+
+  #root #housebets-app[data-page="activity"] .mybets-page .bet-row-number::before {
+    display: block !important;
+    margin: 0 0 4px;
+    color: var(--hb-muted) !important;
+    font-size: 10px !important;
+    font-weight: 400;
+    line-height: 12px;
+    white-space: nowrap;
+  }
+
+  #root #housebets-app[data-page="activity"] .mybets-page .bet-row-number i {
+    display: inline !important;
+    margin-left: 2px;
+    color: var(--hb-muted) !important;
+    font-size: 8px !important;
+    font-style: normal;
+    font-weight: 400;
+    line-height: inherit;
+    vertical-align: baseline;
+    white-space: inherit;
+  }
+}
