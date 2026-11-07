@@ -38,7 +38,7 @@ export default function HubieMatchHero({ fixture, odds, selection, onOpen, onSel
         </div>
         <button type="button" className="hubie-hero-open" onClick={onOpen} aria-label={`Open ${fixture.home} v ${fixture.away} match centre`}>View match<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6" /></svg></button>
       </div>
-      <div className="hubie-hero-art"><img className="hubie-hero-mascot" src="/hubie-mascot.png" alt="Hubie, the official Housebets mascot" width="458" height="562" loading="eager" decoding="async" draggable={false} /></div>
+      <div className="hubie-hero-art"><img className="hubie-hero-mascot" src="/hubie-mascot-football.png" alt="Hubie, the official Housebets mascot, holding a football" width="1132" height="1389" loading="eager" decoding="async" draggable={false} /></div>
       <div className="hubie-hero-market">
         <div className="hubie-hero-market-heading"><span>1X2</span></div>
         {fixture.suspended ? <div className="hubie-hero-suspended" role="status" aria-label="1X2 market suspended"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4.5" y="10" width="15" height="11" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg><strong>Suspended</strong></div> : <>
