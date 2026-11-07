@@ -476,6 +476,7 @@
   }
   #root #housebets-app .mobile-sheet-body .place-button {
     min-height: 48px !important;
+    margin-inline: 0 !important;
   }
   #root #housebets-app .mobile-sheet-body .side-empty-slip--simple {
     padding: 10px 0 14px !important;

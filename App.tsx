@@ -832,6 +832,22 @@ function App() {
             </div>
         </MobileSheet>
       )}
+      {selection && page !== 'activity' && (
+        <button
+          type="button"
+          className="mobile-slip-bar"
+          data-has-selection="true"
+          aria-label={`Open bet slip, 1 selection: ${selection.fixture}, ${selection.label} at ${selection.odds.toFixed(2)}; potential return ${formatDemoUSDT(estimatedReturn)}`}
+          onClick={openFullSlip}
+        >
+          <span className="mobile-slip-count" aria-hidden="true">1</span>
+          <span className="mobile-slip-summary">
+            <strong>{selection.fixture}</strong>
+            <small>{selection.label} · {selection.odds.toFixed(2)} odds · {formatDemoUSDT(estimatedReturn)} potential return</small>
+          </span>
+          <span className="mobile-slip-open">Open slip <Icon name="arrow" size={14} /></span>
+        </button>
+      )}
       <nav className="mobile-nav" aria-label="Mobile navigation">{nav(true)}</nav>
     </div>
   );
@@ -944,7 +960,28 @@ function HomePage({ fixtures, featuredId, navigate, makeSelection, selection, pr
       </nav>
       <section className="top-competitions" aria-label="Top competitions">
         <div className="top-competition-heading"><div><h2>Top competitions</h2><p>Jump to a league board</p></div></div>
-        <div className="top-competition-list">{topCompetitions.map((competition) => <button key={competition.name} onClick={() => onCompetition(competition.name)}><CompetitionLogo competition={competition.name} /><span>{competition.name === 'UEFA Champions League' ? 'Champions League' : competition.name}</span><Icon name="arrow" size={14} /></button>)}</div>
+        <div className="top-competition-list">{topCompetitions.map((competition) => {
+          const isFollowing = favourites.includes(competition.name);
+          return (
+            <div key={competition.name} className="top-competition-item">
+              <button type="button" className="top-competition-open" onClick={() => onCompetition(competition.name)} aria-label={`Open ${competition.name}`}>
+                <CompetitionLogo competition={competition.name} />
+                <span>{competition.name === 'UEFA Champions League' ? 'Champions League' : competition.name}</span>
+                <Icon name="arrow" size={14} />
+              </button>
+              <button
+                type="button"
+                className={`top-competition-follow${isFollowing ? ' is-following' : ''}`}
+                aria-label={`${isFollowing ? 'Unfollow' : 'Follow'} ${competition.name}`}
+                aria-pressed={isFollowing}
+                title={`${isFollowing ? 'Unfollow' : 'Follow'} ${competition.name}`}
+                onClick={() => toggleFavourite(competition.name)}
+              >
+                <Icon name="star" size={15} />
+              </button>
+            </div>
+          );
+        })}</div>
       </section>
       {topMatches.length > 0 && <TopMatchesCarousel>{topMatches.map((fixture) => <HomeFixtureCard key={fixture.id} fixture={fixture} navigate={navigate} makeSelection={makeSelection} selection={selection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} openMarket={openMarket} />)}</TopMatchesCarousel>}
       <div className="fieldside-schedule-heading"><div><h2>Live now &amp; starting soon</h2><p>Scores, kick-off times and prices</p></div><button aria-label="View full board" onClick={() => navigate('live')}><span className="fieldside-board-label">View full board</span><Icon name="arrow" size={14} /></button></div>

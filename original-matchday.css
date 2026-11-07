@@ -630,6 +630,70 @@ body {
   color: var(--hb-muted) !important;
 }
 
+#root #housebets-app .top-competition-item {
+  min-width: 0;
+  display: flex;
+  flex: 1 0 auto;
+  align-items: stretch;
+  border-left: 1px solid var(--hb-line);
+}
+
+#root #housebets-app .top-competition-item:first-child {
+  border-left: 0;
+}
+
+#root #housebets-app .top-competition-list .top-competition-open {
+  min-width: 0;
+  min-height: 42px;
+  display: inline-flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px !important;
+  color: var(--hb-secondary) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  font-size: 12px !important;
+  text-align: left;
+  white-space: nowrap;
+}
+
+#root #housebets-app .top-competition-list .top-competition-follow {
+  width: 40px;
+  min-width: 40px;
+  min-height: 42px;
+  display: grid;
+  flex: 0 0 40px;
+  place-items: center;
+  padding: 0 !important;
+  color: var(--hb-muted) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-left: 1px solid var(--hb-line) !important;
+  border-radius: 0 !important;
+  cursor: pointer;
+}
+
+#root #housebets-app .top-competition-list .top-competition-follow.is-following {
+  color: var(--hb-cyan) !important;
+}
+
+#root #housebets-app .top-competition-item > .top-competition-follow:hover,
+#root #housebets-app .top-competition-item > .top-competition-follow:focus-visible {
+  color: var(--hb-cyan) !important;
+  background: #0e202a !important;
+}
+
+#root #housebets-app .top-competition-item > .top-competition-follow:focus-visible {
+  outline: 2px solid var(--hb-cyan);
+  outline-offset: -2px;
+}
+
+#root #housebets-app .top-competition-item > .top-competition-follow.is-following:hover {
+  color: var(--hb-text) !important;
+}
+
 #root .app-shell[data-design="original-matchday"] .fieldside-stage {
   position: relative;
   isolation: isolate;
@@ -3668,6 +3732,24 @@ body {
     font-size: 11px;
   }
 
+  #root #housebets-app .top-competition-item {
+    flex: 0 0 190px;
+  }
+
+  #root #housebets-app .top-competition-list .top-competition-open {
+    min-height: 44px;
+    gap: 6px;
+    padding: 0 7px !important;
+    font-size: 11px !important;
+  }
+
+  #root #housebets-app .top-competition-list .top-competition-follow {
+    width: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    flex-basis: 44px;
+  }
+
   #root .app-shell[data-design="original-matchday"] .top-competition-list button:first-child {
     padding-left: 0;
   }
@@ -4341,6 +4423,10 @@ body {
   }
 
   #root .app-shell[data-design="original-matchday"] .mobile-slip-bar[data-has-selection="true"] {
+    display: flex !important;
+  }
+
+  #root #housebets-app[data-has-selection="true"]:not([data-page="activity"]):not([data-sheet-open="true"]) .mobile-slip-bar[data-has-selection="true"] {
     display: flex !important;
   }
 
