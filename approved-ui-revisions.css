@@ -1,0 +1,479 @@
+/* Owner-approved refinements: clearer Home schedule rhythm, market-local suspension,
+   and a calmer text-first bet history. These are presentation-only overrides. */
+
+#root #housebets-app .fieldside-schedule-heading {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 18px;
+  margin: 10px 0 2px !important;
+  padding: 0 0 14px !important;
+  border-bottom: 1px solid #29404a !important;
+}
+#root #housebets-app .fieldside-schedule-heading > div { min-width: 0; }
+#root #housebets-app .fieldside-schedule-heading h2 {
+  margin: 0 !important;
+  color: #f3f8f8 !important;
+  font-size: clamp(20px, 2vw, 24px) !important;
+  font-weight: 650 !important;
+  letter-spacing: -.025em !important;
+  line-height: 1.15 !important;
+}
+#root #housebets-app .fieldside-schedule-heading p {
+  margin: 6px 0 0 !important;
+  color: #a5b8be !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+}
+#root #housebets-app .fieldside-schedule-heading > button {
+  min-height: 44px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 14px !important;
+  color: #d8e7e9 !important;
+  background: #0b1a21 !important;
+  border: 1px solid #29404a !important;
+  border-radius: 11px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  transition: border-color 150ms ease, background-color 150ms ease, transform 150ms ease;
+}
+#root #housebets-app .fieldside-schedule-heading > button:hover {
+  color: #02f8f8 !important;
+  background: #0e202a !important;
+  border-color: #02f8f8 !important;
+  transform: translateY(-1px);
+}
+#root #housebets-app .fieldside-schedule-heading > button:focus-visible {
+  outline: 2px solid #02f8f8 !important;
+  outline-offset: 3px !important;
+}
+#root #housebets-app .home-fixture-lanes { gap: 22px !important; }
+#root #housebets-app .home-fixture-lane { min-width: 0; }
+#root #housebets-app .home-fixture-lane-heading {
+  min-height: 46px !important;
+  align-items: center !important;
+  padding: 2px 0 9px !important;
+  border-bottom-color: #29404a !important;
+}
+#root #housebets-app .home-fixture-lane-heading h3 {
+  color: #e9f2f3 !important;
+  font-size: 16px !important;
+  font-weight: 650 !important;
+  letter-spacing: -.01em !important;
+}
+#root #housebets-app .home-fixture-lane-heading > span:last-child {
+  color: #91a9af !important;
+  font-size: 12px !important;
+  font-variant-numeric: tabular-nums;
+}
+#root #housebets-app .home-fixture-lane .home-fixture-list { gap: 9px !important; }
+#root #housebets-app .home-fixture-lane .home-fixture-card {
+  animation: schedule-card-in 300ms cubic-bezier(.2,.75,.25,1) both;
+}
+#root #housebets-app .home-fixture-lane .home-fixture-card:nth-child(2) { animation-delay: 45ms; }
+#root #housebets-app .home-fixture-lane .home-fixture-card:nth-child(3) { animation-delay: 90ms; }
+#root #housebets-app .home-fixture-market-heading {
+  min-height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+#root #housebets-app .home-fixture-market-heading > span:first-child {
+  color: #a5b8be !important;
+  font-size: 12px !important;
+  font-weight: 550 !important;
+}
+#root #housebets-app .home-fixture-market-heading > span:last-child {
+  color: #91a9af !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+#root #housebets-app .home-fixture-market-heading > .home-fixture-market-state.is-suspended {
+  padding: 3px 7px;
+  color: #f0d4ad !important;
+  background: #282219 !important;
+  border: 1px solid #55452f !important;
+  border-radius: 999px;
+  line-height: 1.2;
+}
+#root #housebets-app .home-fixture-odds.is-suspended .home-fixture-odd:disabled {
+  opacity: .68 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+#root #housebets-app .home-fixture-odds.is-suspended .home-fixture-odd:disabled strong {
+  color: #c7d1d4 !important;
+}
+#root #housebets-app .home-fixture-odds.is-suspended .home-fixture-odd:disabled span {
+  color: #8da0a6 !important;
+}
+#root #housebets-app .fixture-market-head .market-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 2px 8px;
+  color: #f0d4ad !important;
+  background: #282219 !important;
+  border: 1px solid #55452f !important;
+  border-radius: 999px;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  line-height: 1.2;
+}
+#root #housebets-app .row-odds.is-suspended .row-odd:disabled,
+#root #housebets-app .hubie-hero-odds.is-suspended .hubie-hero-odd:disabled {
+  color: #bdc9cc !important;
+  background: #101c22 !important;
+  border-color: #34434a !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+  opacity: .66;
+  transform: none !important;
+}
+#root #housebets-app .row-odds.is-suspended .row-odd:disabled::after,
+#root #housebets-app .hubie-hero-odds.is-suspended .hubie-hero-odd:disabled::after { display: none; }
+#root #housebets-app .row-odds.is-suspended .row-odd:disabled strong,
+#root #housebets-app .hubie-hero-odds.is-suspended .hubie-hero-odd:disabled strong { color: #c7d1d4 !important; }
+#root #housebets-app .row-odds.is-suspended .row-odd:disabled small,
+#root #housebets-app .hubie-hero-odds.is-suspended .hubie-hero-odd:disabled span { color: #8da0a6 !important; }
+#root #housebets-app .hubie-hero-odd:disabled:hover,
+#root #housebets-app .hubie-hero-odd:disabled:active { transform: none !important; }
+#root #housebets-app .hubie-hero-closed { padding: 8px 0 !important; color: #93a7ad !important; background: transparent !important; }
+
+/* Center the final score as a fixed visual anchor between flexible club columns. */
+#root #housebets-app .home-final-scoreline {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 58px minmax(0, 1fr);
+  align-items: center !important;
+  gap: 10px !important;
+}
+#root #housebets-app .home-final-side {
+  min-width: 0;
+  display: grid !important;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center !important;
+  justify-content: initial !important;
+  gap: 8px !important;
+  text-align: left;
+}
+#root #housebets-app .home-final-side--away {
+  grid-template-columns: minmax(0, 1fr) 24px;
+  text-align: right;
+}
+#root #housebets-app .home-final-side .club-crest {
+  width: 24px !important;
+  height: 24px !important;
+  flex: 0 0 24px !important;
+  object-fit: contain;
+}
+#root #housebets-app .home-final-side strong {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#root #housebets-app .home-final-score {
+  width: 58px;
+  justify-content: center !important;
+  color: #f3f8f8 !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* My Bets: clear title, grouped controls, quiet card surfaces, and text-only teams. */
+#root #housebets-app .mybets-page {
+  min-width: 0;
+  display: grid !important;
+  gap: 14px !important;
+}
+#root #housebets-app .mybets-summary-row {
+  min-width: 0;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 15px 16px !important;
+  background: #0b1a21 !important;
+  border: 1px solid #29404a !important;
+  border-left: 2px solid #02f8f8 !important;
+  border-radius: 14px !important;
+}
+#root #housebets-app .mybets-summary-heading { min-width: 0; }
+#root #housebets-app .mybets-summary-heading h2 {
+  margin: 0 !important;
+  color: #f3f8f8 !important;
+  font-size: 21px !important;
+  font-weight: 650 !important;
+  letter-spacing: -.025em !important;
+  line-height: 1.15 !important;
+}
+#root #housebets-app .mybets-summary-heading p {
+  margin: 5px 0 0 !important;
+  color: #9bb0b6 !important;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
+}
+#root #housebets-app .mybets-summary-cards { display: flex !important; gap: 8px !important; }
+#root #housebets-app .mybets-summary-cards > span {
+  min-width: 84px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding: 9px 11px !important;
+  color: #b2c2c6 !important;
+  background: #0e202a !important;
+  border: 1px solid #29404a !important;
+  border-radius: 10px !important;
+  font-size: 12px !important;
+  line-height: 1.2;
+}
+#root #housebets-app .mybets-summary-cards b {
+  color: #02f8f8 !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums;
+}
+#root #housebets-app .mybets-controls {
+  min-width: 0;
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 10px 12px !important;
+  background: #0b1a21 !important;
+  border: 1px solid #29404a !important;
+  border-radius: 13px !important;
+}
+#root #housebets-app .bet-filter-tabs {
+  min-height: 42px;
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+#root #housebets-app .bet-filter-tabs button {
+  min-width: 82px;
+  min-height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 10px !important;
+  color: #a6b8bd !important;
+  background: #0e202a !important;
+  border: 1px solid #29404a !important;
+  border-radius: 9px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease;
+}
+#root #housebets-app .bet-filter-tabs button.active {
+  color: #041015 !important;
+  background: #02f8f8 !important;
+  border-color: #02f8f8 !important;
+}
+#root #housebets-app .bet-filter-tabs button span {
+  min-width: 19px;
+  height: 19px;
+  display: inline-grid;
+  place-items: center;
+  color: inherit !important;
+  background: rgba(4, 16, 21, .14) !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  font-variant-numeric: tabular-nums;
+}
+#root #housebets-app .mybets-filter-controls {
+  min-width: 0;
+  display: grid !important;
+  grid-template-columns: minmax(112px, .8fr) minmax(112px, .8fr) minmax(150px, 1.3fr);
+  align-items: center !important;
+  gap: 7px !important;
+}
+#root #housebets-app .date-filter,
+#root #housebets-app .mybets-search {
+  min-width: 0 !important;
+  min-height: 42px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding: 0 10px !important;
+  color: #a6b8bd !important;
+  background: #0e202a !important;
+  border: 1px solid #29404a !important;
+  border-radius: 9px !important;
+  font-size: 12px !important;
+}
+#root #housebets-app .date-filter select {
+  width: 100%;
+  min-width: 0;
+  color: #d3e0e2 !important;
+  background: transparent !important;
+  font-size: 12px !important;
+}
+#root #housebets-app .sport-filter > svg { flex: 0 0 14px; color: #92a9af !important; transform: rotate(90deg); }
+#root #housebets-app .mybets-search input {
+  width: 100%;
+  min-width: 0 !important;
+  color: #edf5f5 !important;
+  font-size: 13px !important;
+}
+#root #housebets-app .mybets-search input::placeholder { color: #82989e !important; opacity: 1; }
+#root #housebets-app .bet-record {
+  margin: 0 0 9px !important;
+  overflow: hidden;
+  background: #0b1a21 !important;
+  border: 1px solid #29404a !important;
+  border-radius: 13px !important;
+  box-shadow: 0 5px 14px rgba(0, 0, 0, .12) !important;
+}
+#root #housebets-app .bet-table-header,
+#root #housebets-app .bet-table-row {
+  grid-template-columns: minmax(88px, .72fr) minmax(160px, 1.5fr) minmax(54px, .42fr) minmax(72px, .56fr) minmax(86px, .68fr) minmax(80px, .62fr) !important;
+  gap: 10px !important;
+}
+#root #housebets-app .bet-table-header { padding: 0 12px !important; }
+#root #housebets-app .bet-table-row {
+  min-height: 76px !important;
+  padding: 12px !important;
+}
+#root #housebets-app .bet-row-event strong { font-size: 13px !important; }
+#root #housebets-app .bet-row-event small,
+#root #housebets-app .bet-row-event em {
+  color: #9bb0b6 !important;
+  font-size: 11px !important;
+  line-height: 1.35;
+}
+#root #housebets-app .bet-row-event em { display: block; }
+#root #housebets-app .bet-detail-panel {
+  padding: 13px 14px !important;
+  background: #08171d !important;
+}
+#root #housebets-app .bet-detail-panel small { font-size: 11px !important; }
+#root #housebets-app .bet-detail-panel strong { font-size: 12px !important; line-height: 1.35; }
+#root #housebets-app .history-foot {
+  align-items: flex-start !important;
+  gap: 8px !important;
+  padding: 10px 12px !important;
+  color: #9bb0b6 !important;
+  background: #0b1a21 !important;
+  border: 1px solid #29404a !important;
+  border-radius: 10px !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+#root #housebets-app[data-page="activity"] .active-filter-row {
+  min-width: 0;
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap;
+  gap: 7px !important;
+  padding: 9px 11px !important;
+  background: #0b1a21 !important;
+  border: 1px solid #29404a !important;
+  border-radius: 10px !important;
+}
+#root #housebets-app[data-page="activity"] .active-filter-row > * { min-width: 0; }
+
+@keyframes schedule-card-in {
+  from { opacity: .01; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 760px) {
+  #root #housebets-app .fieldside-schedule-heading {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 9px;
+    margin-top: 8px !important;
+    padding-bottom: 11px !important;
+  }
+  #root #housebets-app .fieldside-schedule-heading h2 { font-size: 19px !important; }
+  #root #housebets-app .fieldside-schedule-heading p { font-size: 13px !important; }
+  #root #housebets-app .fieldside-schedule-heading > button {
+    width: 44px;
+    min-width: 44px !important;
+    padding: 0 !important;
+    gap: 0;
+  }
+  #root #housebets-app .fieldside-board-label { display: none; }
+  #root #housebets-app .home-fixture-lanes { gap: 18px !important; }
+  #root #housebets-app .home-fixture-lane-heading { min-height: 42px !important; }
+  #root #housebets-app .home-fixture-market-heading { margin-bottom: 6px; }
+  #root #housebets-app .home-final-scoreline {
+    grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr);
+    gap: 6px !important;
+  }
+  #root #housebets-app .home-final-side {
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 5px !important;
+  }
+  #root #housebets-app .home-final-side--away { grid-template-columns: minmax(0, 1fr) 20px; }
+  #root #housebets-app .home-final-side .club-crest { width: 20px !important; height: 20px !important; }
+  #root #housebets-app .home-final-side strong { font-size: 12px !important; }
+  #root #housebets-app .home-final-score { width: 48px; font-size: 16px !important; }
+  #root #housebets-app .mybets-page { gap: 10px !important; }
+  #root #housebets-app .mybets-summary-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px !important;
+    padding: 12px !important;
+  }
+  #root #housebets-app .mybets-summary-heading h2 { font-size: 19px !important; }
+  #root #housebets-app .mybets-summary-heading p { font-size: 12px !important; }
+  #root #housebets-app .mybets-summary-cards { gap: 5px !important; }
+  #root #housebets-app .mybets-summary-cards > span {
+    min-width: 61px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 3px !important;
+    padding: 7px 8px !important;
+    font-size: 11px !important;
+  }
+  #root #housebets-app .mybets-summary-cards b { font-size: 15px !important; }
+  #root #housebets-app .mybets-controls {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px !important;
+    padding: 9px !important;
+  }
+  #root #housebets-app .bet-filter-tabs { min-height: 40px; }
+  #root #housebets-app .bet-filter-tabs button { flex: 1; min-height: 40px !important; }
+  #root #housebets-app .mybets-filter-controls {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 7px !important;
+  }
+  #root #housebets-app .mybets-search { grid-column: 1 / -1; }
+  #root #housebets-app .date-filter,
+  #root #housebets-app .mybets-search { min-height: 44px !important; }
+  #root #housebets-app .bet-table-header { display: none !important; }
+  #root #housebets-app .bet-table-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 10px 12px !important;
+    padding: 12px !important;
+  }
+  #root #housebets-app .bet-placed { grid-column: 1; grid-row: 1; }
+  #root #housebets-app .bet-result-cell { grid-column: 2; grid-row: 1; justify-content: flex-end !important; }
+  #root #housebets-app .bet-row-event { grid-column: 1 / -1; grid-row: 2; }
+  #root #housebets-app .bet-row-number { min-width: 0; font-size: 12px !important; }
+  #root #housebets-app .bet-row-number::before { font-size: 11px !important; }
+  #root #housebets-app .bet-detail-panel { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 390px) {
+  #root #housebets-app .fieldside-schedule-heading h2 { font-size: 18px !important; }
+  #root #housebets-app .home-final-card { padding: 11px !important; }
+  #root #housebets-app .mybets-summary-row { gap: 6px !important; }
+  #root #housebets-app .mybets-summary-cards > span { min-width: 56px !important; padding: 7px 6px !important; }
+}
+@media (max-width: 350px) {
+  #root #housebets-app .mybets-summary-row { grid-template-columns: minmax(0, 1fr); }
+  #root #housebets-app .mybets-summary-cards > span { flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #root #housebets-app .home-fixture-lane .home-fixture-card { animation: none !important; }
+  #root #housebets-app .fieldside-schedule-heading > button { transition: none !important; }
+}

@@ -29,6 +29,7 @@ import './match-pitch-hero.css';
 import './hubie-hero.css';
 import './home-results.css';
 import './audit-completion.css';
+import './approved-ui-revisions.css';
 export type { Fixture, Selection } from './types';
 type Page = 'home' | 'live' | 'football' | 'match' | 'activity';
 type ActivityTab = 'slip' | 'bets';
@@ -50,12 +51,12 @@ function getSampleMarkets(fixture: Fixture): SampleMarket[] {
     { title: 'Double chance', sub: '90 minutes · cover two outcomes', category: 'Popular', options: [`${fixture.home} or Draw`, `${fixture.home} or ${fixture.away}`, `Draw or ${fixture.away}`], odds: [1.28, 1.32, 1.48] },
     { title: 'Total goals', sub: 'Full time total · line 2.5', category: 'Goals', options: ['Over 2.5', 'Under 2.5'], odds: [1.88, 1.92] },
     { title: 'Both teams to score', sub: 'Full time · yes or no', category: 'Goals', options: ['Yes', 'No'], odds: [1.74, 2.05] },
-    { title: 'First-half result', sub: 'First 45 minutes · 1X2 sample', category: 'Halves', options: [fixture.home, 'Draw', fixture.away], odds: [2.35, 2.05, 4.20] },
+    { title: 'First-half result', sub: 'First 45 minutes · 1X2', category: 'Halves', options: [fixture.home, 'Draw', fixture.away], odds: [2.35, 2.05, 4.20] },
     { title: 'Second-half total goals', sub: 'Second half only · line 1.5', category: 'Halves', options: ['Over 1.5', 'Under 1.5'], odds: [1.95, 1.85] },
     { title: 'Asian handicap', sub: '90 minutes · home -0.5 / away +0.5', category: 'Handicaps', options: [`${fixture.home} -0.5`, `${fixture.away} +0.5`], odds: [2.10, 1.78] },
     { title: '3-way handicap', sub: '90 minutes · home starts one goal behind', category: 'Handicaps', options: [`${fixture.home} -1`, 'Handicap draw', `${fixture.away} +1`], odds: [3.50, 3.70, 1.87] },
     { title: 'Anytime goalscorer', sub: 'Invented player labels · no real player data', category: 'Goalscorers', options: [homePlayer, awayPlayer], odds: [2.60, 3.10] },
-    { title: 'Next goalscorer', sub: 'Next sample goal · invented player labels', category: 'Goalscorers', options: [homePlayer, awayPlayer, 'No further goal'], odds: [4.20, 5.40, 2.65] },
+    { title: 'Next goalscorer', sub: 'Next goal · invented player labels', category: 'Goalscorers', options: [homePlayer, awayPlayer, 'No further goal'], odds: [4.20, 5.40, 2.65] },
     { title: 'Total corners', sub: '90 minutes · total line 9.5', category: 'Corners & cards', options: ['Over 9.5', 'Under 9.5'], odds: [1.95, 1.85] },
     { title: 'Total cards', sub: '90 minutes · total line 3.5', category: 'Corners & cards', options: ['Over 3.5', 'Under 3.5'], odds: [1.88, 1.92] },
     { title: 'Most corners', sub: '90 minutes · team with more corners', category: 'Corners & cards', options: [fixture.home, 'Draw', fixture.away], odds: [2.05, 7.50, 2.20] },
@@ -183,11 +184,11 @@ const mobileSports = [
 ];
 
 const pageLabels: Record<Page, { crumb: string; title: string; subtitle: string }> = {
-  home: { crumb: 'Sports', title: 'Matchday', subtitle: 'Real club identities. Simulated fixtures, scores and odds.' },
-  live: { crumb: 'Live now', title: 'Matches in play', subtitle: 'Every score and price on this board is a simulation.' },
-  football: { crumb: 'Football', title: 'Football fixtures', subtitle: 'Browse club matchups and choose one demo outcome.' },
-  match: { crumb: 'Match centre', title: 'Match centre', subtitle: 'One fixture, its sample details and six market groups.' },
-  activity: { crumb: 'Your bets', title: 'Bet slip & My bets', subtitle: 'A single-pick slip and a local record of demo states.' },
+  home: { crumb: 'Sports', title: 'Matchday', subtitle: 'Club fixtures, scores and odds.' },
+  live: { crumb: 'Live now', title: 'Matches in play', subtitle: 'Scores and odds are examples; there is no live feed.' },
+  football: { crumb: 'Football', title: 'Football fixtures', subtitle: 'Browse club matchups and choose one price.' },
+  match: { crumb: 'Match centre', title: 'Match centre', subtitle: 'One fixture across six market groups.' },
+  activity: { crumb: 'Your bets', title: 'Bet slip & My bets', subtitle: 'One pick at a time, with a local bet record.' },
 };
 
 const initialBets: DemoBet[] = [
@@ -385,7 +386,7 @@ function App() {
       return;
     }
     if (fixture.suspended || suspendedFixtureIds.includes(fixture.id)) {
-      setNotice({ type: 'warning', text: 'Market suspended. This sample selection is temporarily unavailable.' });
+      setNotice({ type: 'warning', text: 'Market suspended. This selection is unavailable for now.' });
       return;
     }
     if (!selectedMarket || !selectedMarket.options[pickIndex] || !Number.isFinite(selectedMarket.odds[pickIndex])) return;
@@ -610,7 +611,7 @@ function App() {
           </div>
         )}
         {page === 'home' && <HomePage fixtures={visibleFixtures} featuredId={homeFeatured?.id} navigate={navigate} makeSelection={makeSelection} selection={selection} priceOverrides={priceOverrides} onCompetition={openCompetition} onChooseSport={selectMobileSport} searchQuery={query} clearSearch={() => setQuery('')} />}
-        {page === 'live' && <LivePage fixtures={visibleFixtures} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} sportFilter={liveSportFilter} setSportFilter={setLiveSportFilter} competitionFilter={liveCompetitionFilter} setCompetitionFilter={setLiveCompetitionFilter} searchQuery={query} clearSearch={() => setQuery('')} selection={selection} />}
+        {page === 'live' && <LivePage fixtures={visibleFixtures} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} sportFilter={liveSportFilter} setSportFilter={setLiveSportFilter} competitionFilter={liveCompetitionFilter} setCompetitionFilter={setLiveCompetitionFilter} searchQuery={query} selection={selection} />}
         {page === 'football' && <FootballPage fixtures={visibleFixtures} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} sportFilter={sportFilter} setSportFilter={setSportFilter} footballScope={footballScope} setFootballScope={setFootballScope} favourites={favourites} toggleFavourite={toggleFavourite} searchQuery={query} clearSearch={() => setQuery('')} selection={selection} />}
         {page === 'match' && (
           <MatchPage
@@ -673,7 +674,7 @@ function App() {
             cancelFail={() => setFailNext(false)}
           />
         </details>
-        <footer className="page-footer"><span className="footer-mark">HB</span><span><strong>Sample data only.</strong> Fixtures, prices and returns are simulated; no real bets or money are connected. Club marks belong to their owners.</span></footer>
+        <footer className="page-footer"><span className="footer-mark">HB</span><span><strong>Demo board.</strong> Fixtures, prices and returns are examples. No real players, bets or money are connected. Club marks belong to their owners.</span></footer>
       </main>
 
       <aside className="right-rail" aria-label="Demo activity panel">
@@ -744,7 +745,7 @@ function MobileSportsHeader({ page, navigate, onChooseSport }: { page: Page; nav
         {destinations.map((destination) => <button key={destination.page} className={`sports-index-item ${page === destination.page ? 'active' : ''}`} aria-current={page === destination.page ? 'page' : undefined} aria-pressed={page === destination.page} onClick={() => navigate(destination.page)}>{destination.name}{destination.count && <span>{destination.count}</span>}</button>)}
         {mobileSports.filter((sport) => sport.name === 'Tennis' || sport.name === 'Basketball').map((sport) => <button key={sport.name} className="sports-index-item sport-preview" aria-pressed={false} onClick={() => onChooseSport(sport.name)}>{sport.name}</button>)}
       </div>
-      <span className="sports-index-note">Simulated football fixtures</span>
+      <span className="sports-index-note">Football fixtures</span>
     </nav>
   );
 }
@@ -796,10 +797,10 @@ function HomePage({ fixtures, featuredId, navigate, makeSelection, selection, pr
       </nav>
       <ActiveFilterRow items={searchQuery.trim() ? [{ label: `Search: ${searchQuery.trim()}`, clear: clearSearch }] : []} clearAll={clearSearch} />
       <section className="top-competitions" aria-label="Top competitions">
-        <div className="top-competition-heading"><div><h2>Top competitions</h2><p>Jump to a league board</p></div><span>Simulated fixtures</span></div>
+        <div className="top-competition-heading"><div><h2>Top competitions</h2><p>Jump to a league board</p></div></div>
         <div className="top-competition-list">{topCompetitions.map((competition) => <button key={competition.name} onClick={() => onCompetition(competition.name)}><CompetitionLogo competition={competition.name} /><span>{competition.name === 'UEFA Champions League' ? 'Champions League' : competition.name}</span><Icon name="arrow" size={14} /></button>)}</div>
       </section>
-      <div className="fieldside-schedule-heading"><div><h2>Live now &amp; starting soon</h2><p>Sample scores, kick-off times and prices</p></div><button aria-label="View full board" onClick={() => navigate('live')}><span className="fieldside-board-label">View full board</span><Icon name="arrow" size={14} /></button></div>
+      <div className="fieldside-schedule-heading"><div><h2>Live now &amp; starting soon</h2><p>Scores, kick-off times and prices</p></div><button aria-label="View full board" onClick={() => navigate('live')}><span className="fieldside-board-label">View full board</span><Icon name="arrow" size={14} /></button></div>
       <div className={`home-fixture-lanes${hasBothLanes ? '' : ' is-single'}`}>
         {[
           { id: 'live', label: 'Live now', rows: liveRows },
@@ -813,10 +814,10 @@ function HomePage({ fixtures, featuredId, navigate, makeSelection, selection, pr
         </section>)}
       </div>
       {finalRows.length > 0 && <section className="ledger-lane fieldside-lane home-final-samples">
-        <header className="ledger-lane-heading"><span className="lane-status-mark" aria-hidden="true" /><div><h3>Final samples</h3></div><span className="ledger-lane-count">{finalRows.length} {finalRows.length === 1 ? 'match' : 'matches'}</span></header>
+        <header className="ledger-lane-heading"><span className="lane-status-mark" aria-hidden="true" /><div><h3>Final results</h3></div><span className="ledger-lane-count">{finalRows.length} {finalRows.length === 1 ? 'match' : 'matches'}</span></header>
         <div className="home-final-list">{finalRows.map((fixture) => <HomeFinalSampleCard key={fixture.id} fixture={fixture} navigate={navigate} />)}</div>
       </section>}
-      <div className="info-band"><span className="info-mark">i</span><span>Real club names and crests. Matchups, schedules, scores, odds, player labels and demo USDT are simulated.</span><Badge variant="warning">Demo only</Badge></div>
+      <div className="info-band"><span className="info-mark">i</span><span>Club names and crests are authentic; fixtures, scores, odds, stakes and returns are examples.</span><Badge variant="warning">Demo board</Badge></div>
     </div>
   );
 }
@@ -830,11 +831,11 @@ function HomeFinalSampleCard({ fixture, navigate }: { fixture: Fixture; navigate
       type="button"
       data-fixture-id={fixture.id}
       onClick={() => navigate('match', fixture.id)}
-      aria-label={`Open final sample: ${fixture.home} ${homeScore}, ${fixture.away} ${awayScore}. ${fixture.competition}, ${fixture.round}. Market closed.`}
+      aria-label={`Open match: ${fixture.home} ${homeScore}, ${fixture.away} ${awayScore}. ${fixture.competition}, ${fixture.round}. Market closed.`}
     >
       <span className="home-final-card-meta">
         <span className="home-final-card-competition"><CompetitionLogo competition={fixture.competition} /><span>{fixture.competition}</span><i aria-hidden="true">·</i><span>{fixture.round}</span></span>
-        <span className="home-final-card-status">Final sample</span>
+        <span className="home-final-card-status">Final</span>
       </span>
       <span className="home-final-scoreline">
         <span className="home-final-side"><ClubCrest club={fixture.home} /><strong>{fixture.home}</strong></span>
@@ -881,33 +882,23 @@ function HomeFixtureCard({ fixture, navigate, makeSelection, selection, priceOve
           </span>)}
         </button>
         <div className="home-fixture-market">
-          <div className="home-fixture-market-heading"><span>Match result</span><span>1X2</span></div>
-          {fixture.suspended ? <>
-            <div className="home-fixture-suspended" role="status" aria-label={`Market suspended for ${fixture.home} v ${fixture.away}`}><Icon name="lock" size={13} /><span>Market suspended</span></div>
-            <div className="home-fixture-odds is-suspended">
-              {fixture.odds.map((_, index) => {
-                const odd = getMarketOdds(fixture, 'Match result', index, priceOverrides);
-                return <button key={index} type="button" className="home-fixture-odd" disabled aria-label={`${outcomes[index]} at ${odd.toFixed(2)} — market suspended`}>
-                  <span>{['1', 'Draw', '2'][index]}</span><strong>{odd.toFixed(2)}</strong>
-                </button>;
-              })}
-            </div>
-          </> : <div className="home-fixture-odds">
+          <div className="home-fixture-market-heading"><span>Match result</span><span className={fixture.suspended ? 'home-fixture-market-state is-suspended' : ''}>{fixture.suspended ? 'Suspended' : '1X2'}</span></div>
+          <div className={`home-fixture-odds${fixture.suspended ? ' is-suspended' : ''}`} aria-label={fixture.suspended ? 'Match result odds, suspended' : 'Match result odds'}>
             {fixture.odds.map((_, index) => {
               const odd = getMarketOdds(fixture, 'Match result', index, priceOverrides);
               const selected = selection?.fixtureId === fixture.id && selection.market === 'Match result' && selection.label === outcomes[index];
-              return <button key={index} className={`home-fixture-odd${selected ? ' is-selected' : ''}`} aria-pressed={selected} onClick={() => makeSelection(fixture, index, 'Match result')} aria-label={`Select ${outcomes[index]} at ${odd.toFixed(2)}`}>
+              return <button key={index} type="button" className={`home-fixture-odd${selected ? ' is-selected' : ''}`} disabled={fixture.suspended} onClick={() => makeSelection(fixture, index, 'Match result')} aria-pressed={selected} aria-label={fixture.suspended ? `${outcomes[index]} at ${odd.toFixed(2)} — market suspended` : `Select ${outcomes[index]} at ${odd.toFixed(2)}`}>
                 <span>{['1', 'Draw', '2'][index]}</span><strong>{odd.toFixed(2)}</strong>
               </button>;
             })}
-          </div>}
+          </div>
         </div>
       </div>
     </article>
   );
 }
 
-function LivePage({ fixtures: rows, navigate, makeSelection, priceOverrides, favourites, toggleFavourite, sportFilter, setSportFilter, competitionFilter, setCompetitionFilter, searchQuery, clearSearch, selection }: {
+function LivePage({ fixtures: rows, navigate, makeSelection, priceOverrides, favourites, toggleFavourite, sportFilter, setSportFilter, competitionFilter, setCompetitionFilter, searchQuery, selection }: {
   fixtures: Fixture[];
   navigate: Navigate;
   makeSelection: (fixture: Fixture, pickIndex: number, market?: string) => void;
@@ -919,7 +910,6 @@ function LivePage({ fixtures: rows, navigate, makeSelection, priceOverrides, fav
   competitionFilter: string;
   setCompetitionFilter: (value: string) => void;
   searchQuery: string;
-  clearSearch: () => void;
   selection: Selection | null;
 }) {
   const sports = ['All sports', 'Football', 'Tennis', 'Basketball', 'Cricket'];
@@ -939,14 +929,9 @@ function LivePage({ fixtures: rows, navigate, makeSelection, priceOverrides, fav
         </div>
         <label className="live-filter-select"><span>Competition</span><select aria-label="Filter live board by competition" value={competitionFilter} onChange={(event) => setCompetitionFilter(event.currentTarget.value)}><option>All competitions</option>{competitions.map((competition) => <option key={competition}>{competition}</option>)}</select></label>
       </section>
-      <ActiveFilterRow items={[
-        ...(searchQuery.trim() ? [{ label: `Search: ${searchQuery.trim()}`, clear: clearSearch }] : []),
-        ...(sportFilter !== 'Football' ? [{ label: `Sport: ${sportFilter}`, clear: () => setSportFilter('Football') }] : []),
-        ...(competitionFilter !== 'All competitions' ? [{ label: `Competition: ${competitionFilter}`, clear: () => setCompetitionFilter('All competitions') }] : []),
-      ]} clearAll={() => { clearSearch(); setSportFilter('Football'); setCompetitionFilter('All competitions'); }} />
-      <div className="listing-toolbar live-summary-toolbar"><div className="listing-filter-tabs"><button className={liveRows.length ? 'active' : ''}><span className="pulse-dot" /> Live now <b>{String(liveRows.length).padStart(2, '0')}</b></button>{!liveRows.length && upcomingRows.length > 0 && <span className="starting-soon-indicator">Starting soon <b>{String(upcomingRows.length).padStart(2, '0')}</b></span>}</div><div className="filter-note"><span className="live-dot" /> Sample scores · not a real-time feed</div></div>
-      {liveGroups.length > 0 ? <div key={`${sportFilter}-${competitionFilter}`} className="live-result-surface"><div className="desktop-competition-list">{liveGroups.map(([competition, group]) => <CompetitionBlock key={competition} competition={competition} fixtures={group} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} selection={selection} />)}</div></div> : upcomingGroups.length > 0 ? <section key={`${sportFilter}-${competitionFilter}`} className="starting-soon-block live-result-surface"><header><span className="eyebrow">No sample match currently in play</span><h2>Starting soon</h2><p>Upcoming fictional fixtures matching these filters.</p></header><div className="desktop-competition-list">{upcomingGroups.map(([competition, group]) => <CompetitionBlock key={competition} competition={competition} fixtures={group} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} selection={selection} />)}</div></section> : <EmptyState title={searchQuery.trim() ? 'No sample fixtures match that search' : `No live or upcoming ${sportFilter === 'All sports' ? 'sample' : sportFilter.toLowerCase()} fixtures`} copy={searchQuery.trim() ? 'Try another team, competition, player label or market.' : 'Try another sport or competition. This board contains football samples only.'} />}
-      <div className="info-band"><span className="info-mark">i</span><span>Live labels, scores, clocks and odds are simulated examples. Filter results never connect to a live feed.</span><Badge variant="warning">Sample data</Badge></div>
+      <div className="listing-toolbar live-summary-toolbar"><div className="listing-filter-tabs"><button className={liveRows.length ? 'active' : ''}><span className="pulse-dot" /> Live now <b>{String(liveRows.length).padStart(2, '0')}</b></button>{!liveRows.length && upcomingRows.length > 0 && <span className="starting-soon-indicator">Starting soon <b>{String(upcomingRows.length).padStart(2, '0')}</b></span>}</div><div className="filter-note"><span className="live-dot" /> No live feed</div></div>
+      {liveGroups.length > 0 ? <div key={`${sportFilter}-${competitionFilter}`} className="live-result-surface"><div className="desktop-competition-list">{liveGroups.map(([competition, group]) => <CompetitionBlock key={competition} competition={competition} fixtures={group} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} selection={selection} />)}</div></div> : upcomingGroups.length > 0 ? <section key={`${sportFilter}-${competitionFilter}`} className="starting-soon-block live-result-surface"><header><span className="eyebrow">No match in play</span><h2>Starting soon</h2><p>Upcoming fixtures match these filters.</p></header><div className="desktop-competition-list">{upcomingGroups.map(([competition, group]) => <CompetitionBlock key={competition} competition={competition} fixtures={group} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} selection={selection} />)}</div></section> : <EmptyState title={searchQuery.trim() ? 'No fixtures match that search' : `No live or upcoming ${sportFilter === 'All sports' ? '' : sportFilter.toLowerCase() + ' '} fixtures`} copy={searchQuery.trim() ? 'Try another team, competition, player label or market.' : 'Try another sport or competition. This board contains football fixtures only.'} />}
+      <div className="info-band"><span className="info-mark">i</span><span>Scores, clocks and odds are examples, not a live feed.</span><Badge variant="warning">Demo board</Badge></div>
     </div>
   );
 }
@@ -1039,15 +1024,14 @@ function FixtureRow({ fixture, navigate, makeSelection, priceOverrides, selectio
         <div className="fixture-team-stack"><span><ClubCrest club={fixture.home} /><strong>{fixture.home}</strong>{fixture.homeScore !== undefined && <b>{fixture.homeScore}</b>}</span><span><ClubCrest club={fixture.away} /><strong>{fixture.away}</strong>{fixture.awayScore !== undefined && <b>{fixture.awayScore}</b>}</span></div>
       </Frame.Content>
       <Frame.Actions>
-        <div className="fixture-market-head"><span>Match result</span></div>
+        <div className="fixture-market-head"><span>Match result</span>{fixture.status !== 'FINISHED' && fixture.suspended && <span className="market-status">Suspended</span>}</div>
         <div className="row-market-actions">
-          {fixture.status === 'FINISHED' && <div className="row-suspended market-closed"><Icon name="lock" size={13} /> Sample market closed</div>}
-          {fixture.status !== 'FINISHED' && fixture.suspended && <div className="row-suspended"><Icon name="lock" size={13} /> Sample market suspended</div>}
-          {fixture.status !== 'FINISHED' && !fixture.suspended && <div className="row-odds">{fixture.odds.map((_, index) => {
+          {fixture.status === 'FINISHED' && <div className="row-suspended market-closed"><Icon name="lock" size={13} /> Market closed</div>}
+          {fixture.status !== 'FINISHED' && <div className={`row-odds${fixture.suspended ? ' is-suspended' : ''}`}>{fixture.odds.map((_, index) => {
             const odd = getMarketOdds(fixture, 'Match result', index, priceOverrides);
             const label = index === 0 ? fixture.home : index === 1 ? 'Draw' : fixture.away;
             const selected = selection?.fixtureId === fixture.id && selection.market === 'Match result' && selection.label === label;
-            return <button key={index} type="button" className={`row-odd${selected ? ' is-selected' : ''}`} onClick={(event) => { event.stopPropagation(); makeSelection(fixture, index); }} aria-pressed={selected} aria-label={`Select ${label} at ${odd.toFixed(2)}${selected ? ', selected, activate again to remove' : ''}`}><small>{['1', 'Draw', '2'][index]}</small><strong>{odd.toFixed(2)}</strong></button>;
+            return <button key={index} type="button" className={`row-odd${selected ? ' is-selected' : ''}`} disabled={fixture.suspended} onClick={(event) => { event.stopPropagation(); makeSelection(fixture, index); }} aria-pressed={selected} aria-label={fixture.suspended ? `${label} ${odd.toFixed(2)}, market suspended` : `Select ${label} at ${odd.toFixed(2)}${selected ? ', selected, activate again to remove' : ''}`}><small>{['1', 'Draw', '2'][index]}</small><strong>{odd.toFixed(2)}</strong></button>;
           })}</div>}
           {fixture.status !== 'FINISHED' && <button className="extra-market-count" onClick={(event) => { event.stopPropagation(); navigate('match', fixture.id); }}>+{fixture.extraMarkets} markets <span>↗</span></button>}
         </div>
@@ -1211,13 +1195,13 @@ function SelectionCard({ variant, idPrefix, selection, stake, setStake, slipMess
       </div>
       {pendingOdds !== null && <div className="state-banner state-warning"><span>↗</span><div><strong>Odds have changed</strong><small>{selection.odds.toFixed(2)} → {pendingOdds.toFixed(2)} · accept to keep going</small></div><Button size="sm" className="accept-odds-button" onClick={acceptNewOdds}>Accept {pendingOdds.toFixed(2)}</Button></div>}
       {marketSuspended && <div className="state-banner state-warning"><Icon name="lock" size={17} /><div><strong>Market suspended</strong><small>This sample selection is temporarily unavailable.</small></div></div>}
-      <label className="stake-label" htmlFor={stakeId}>Stake <span>Demo USDT</span></label>
-      <div className="stake-input-row"><span className="stake-currency">USDT</span><Input id={stakeId} type="number" min="1" step="0.01" value={stake} onChange={(event) => setStake(event.currentTarget.value)} className="stake-input" aria-label="Demo USDT stake" aria-invalid={invalidStake} aria-describedby={invalidStake ? hintId : undefined} /></div>
+      <label className="stake-label" htmlFor={stakeId}>Stake <span>USDT</span></label>
+      <div className="stake-input-row"><span className="stake-currency">USDT</span><Input id={stakeId} type="number" min="1" step="0.01" value={stake} onChange={(event) => setStake(event.currentTarget.value)} className="stake-input" aria-label="USDT stake" aria-invalid={invalidStake} aria-describedby={invalidStake ? hintId : undefined} /></div>
       <p id={hintId} className={`stake-hint ${invalidStake ? 'stake-error' : ''}`} aria-live="polite">{invalidStake ? 'Enter 1.00 or more, up to 2 decimals.' : 'Minimum 1.00'}</p>
-      <div className="return-line"><span>Possible return</span><strong><RollingNumber duration={reducedMotion ? 0 : 320} value={estimatedReturn} format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} className="rolling-return" /> <small>demo units</small></strong></div>
+      <div className="return-line"><span>Possible return</span><strong><RollingNumber duration={reducedMotion ? 0 : 320} value={estimatedReturn} format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} className="rolling-return" /> <small>USDT</small></strong></div>
       {slipMessage && <div className={`placement-feedback placement-feedback--${slipMessage.type}`} role={slipMessage.type === 'error' ? 'alert' : 'status'} aria-live={slipMessage.type === 'error' ? 'assertive' : 'polite'}>{slipMessage.text}</div>}
       <Button className="place-button" disabled={disabled} onClick={placeDemoBet}>Place demo bet</Button>
-      <p className="slip-disclaimer">Single demo · no real money</p>
+      <p className="slip-disclaimer">Single pick · no real money</p>
     </Card>
   );
 }
@@ -1237,8 +1221,8 @@ function MyBetsView({ bets, filter, setFilter, cashOutBet }: { bets: DemoBet[]; 
   const settledCount = bets.filter((bet) => bet.status === 'settled').length;
   return (
     <div className="mybets-page">
-      <div className="mybets-summary-row"><div><span className="eyebrow">Bet history</span><h2 className="activity-section-title">A clear record of every demo pick</h2></div><div className="mybets-summary-cards"><span><b>{String(openCount).padStart(2, '0')}</b> Open</span><span><b>{String(settledCount).padStart(2, '0')}</b> Settled</span></div></div>
-      <div className="mybets-controls"><div className="bet-filter-tabs"><button className={filter === 'open' ? 'active' : ''} onClick={() => setFilter('open')}>Open <span>{openCount}</span></button><button className={filter === 'settled' ? 'active' : ''} onClick={() => setFilter('settled')}>Settled <span>{settledCount}</span></button></div><div className="mybets-filter-controls"><label className="date-filter"><Icon name="clock" size={14} /><select aria-label="Filter by date" value={dateRange} onChange={(event) => setDateRange(event.currentTarget.value)}><option>All time</option><option>Today</option><option>Last 7 days</option><option>Last 30 days</option></select></label><label className="date-filter sport-filter"><select aria-label="Filter by sport" value={sport} onChange={(event) => setSport(event.currentTarget.value)}><option>All sports</option><option>Football</option></select><span>⌄</span></label><div className="mybets-search"><Icon name="search" size={14} /><Input aria-label="Search demo bets" placeholder="Search bets" value={search} onChange={(event) => setSearch(event.currentTarget.value)} size="sm" /></div></div></div>
+      <div className="mybets-summary-row"><div className="mybets-summary-heading"><h2 className="activity-section-title">Bet history</h2><p>Your local record of single picks</p></div><div className="mybets-summary-cards"><span><b>{String(openCount).padStart(2, '0')}</b> Open</span><span><b>{String(settledCount).padStart(2, '0')}</b> Settled</span></div></div>
+      <div className="mybets-controls"><div className="bet-filter-tabs" role="tablist" aria-label="Filter bet history"><button className={filter === 'open' ? 'active' : ''} role="tab" aria-selected={filter === 'open'} onClick={() => setFilter('open')}>Open <span>{openCount}</span></button><button className={filter === 'settled' ? 'active' : ''} role="tab" aria-selected={filter === 'settled'} onClick={() => setFilter('settled')}>Settled <span>{settledCount}</span></button></div><div className="mybets-filter-controls"><label className="date-filter"><Icon name="clock" size={14} /><select aria-label="Filter by date" value={dateRange} onChange={(event) => setDateRange(event.currentTarget.value)}><option>All time</option><option>Today</option><option>Last 7 days</option><option>Last 30 days</option></select></label><label className="date-filter sport-filter"><select aria-label="Filter by sport" value={sport} onChange={(event) => setSport(event.currentTarget.value)}><option>All sports</option><option>Football</option></select><Icon name="chevron" size={14} /></label><div className="mybets-search"><Icon name="search" size={14} /><Input aria-label="Search bets" placeholder="Search bets" value={search} onChange={(event) => setSearch(event.currentTarget.value)} size="sm" /></div></div></div>
       <ActiveFilterRow items={[
         ...(dateRange !== 'All time' ? [{ label: `Date: ${dateRange}`, clear: () => setDateRange('All time') }] : []),
         ...(sport !== 'All sports' ? [{ label: `Sport: ${sport}`, clear: () => setSport('All sports') }] : []),
@@ -1249,8 +1233,8 @@ function MyBetsView({ bets, filter, setFilter, cashOutBet }: { bets: DemoBet[]; 
           <div className="bet-table-header"><span>Placed</span><span>Bet / event</span><span>Odds</span><span>Stake</span><span>Returns</span><span>Result</span></div>
           {filteredBets.map((bet) => <BetRecord key={bet.id} bet={bet} cashOutBet={cashOutBet} />)}
         </div>
-      ) : <EmptyState title={`No ${filter} bets match these filters`} copy="Change the time range or search, or place a fictional single from the slip." />}
-      <div className="history-foot"><span className="info-mark">i</span><span>History is local to this prototype and is not linked to an account or stored as a real bet.</span></div>
+      ) : <EmptyState title={`No ${filter} bets match these filters`} copy="Change the time range or search, or choose a price from the board." />}
+      <div className="history-foot"><span className="info-mark">i</span><span>This record stays in the prototype and is not linked to an account or real bets.</span></div>
     </div>
   );
 }
@@ -1260,19 +1244,19 @@ function BetRecord({ bet, cashOutBet }: { bet: DemoBet; cashOutBet: (id: string)
   return (
     <Card className={`bet-record ${expanded ? 'expanded' : ''}`} size="sm">
       <button className="bet-table-row" onClick={() => setExpanded((current) => !current)} aria-expanded={expanded}>
-        <span className="bet-placed">{formatBetPlacedAt(bet.placedAtMs)}<small>Demo ref · {bet.id.slice(-5).toUpperCase()}</small></span>
-        <span className="bet-row-event"><strong>{bet.selection}</strong><small><ClubPair fixtureId={bet.fixtureId} />{bet.fixture}</small><em><CompetitionLogo competition={bet.competition} /><span>{bet.competition} · {bet.market}</span></em></span>
+        <span className="bet-placed">{formatBetPlacedAt(bet.placedAtMs)}<small>Ref · {bet.id.slice(-5).toUpperCase()}</small></span>
+        <span className="bet-row-event"><strong>{bet.selection}</strong><small>{bet.fixture}</small><em><span>{bet.competition} · {bet.market}</span></em></span>
         <strong className="bet-row-number" data-label="Odds">{bet.odds.toFixed(2)}</strong>
         <strong className="bet-row-number" data-label="Stake">{bet.stake.toFixed(2)} <i>USDT</i></strong>
         <strong className="bet-row-number return-number" data-label="Return">{bet.returns.toFixed(2)} <i>USDT</i></strong>
         <span className="bet-result-cell">{bet.status === 'open' ? <Badge variant="info" dot>Open</Badge> : <Badge variant="success">Settled</Badge>}<Icon name="chevron" size={14} /></span>
       </button>
       {expanded && <div className="bet-detail-panel">
-        <div><small>Fixture</small><strong>{bet.fixture}</strong></div><div><small>Competition</small><strong><CompetitionLogo competition={bet.competition} />{bet.competition}</strong></div><div><small>Selection</small><strong>{bet.selection} · {bet.market}</strong></div>
-        <div><small>Accepted odds</small><strong>{bet.odds.toFixed(2)}</strong></div><div><small>Demo stake</small><strong>{formatDemoUSDT(bet.stake)}</strong></div><div><small>Est. return</small><strong>{formatDemoUSDT(bet.returns)}</strong></div>
-        <div className="bet-lifecycle"><div className="bet-step complete"><span>01</span><strong>Demo bet placed</strong><small>{formatBetPlacedAt(bet.placedAtMs)}</small></div><div className={`bet-step ${bet.status === 'settled' ? 'complete' : 'pending'}`}><span>{bet.status === 'settled' ? '02' : '…'}</span><strong>{bet.status === 'settled' ? 'Sample settled' : 'Awaiting sample settlement'}</strong><small>{bet.status === 'settled' ? (bet.result ?? 'Final sample result') : 'No live event feed'}</small></div></div>
+        <div><small>Fixture</small><strong>{bet.fixture}</strong></div><div><small>Competition</small><strong>{bet.competition}</strong></div><div><small>Selection</small><strong>{bet.selection} · {bet.market}</strong></div>
+        <div><small>Accepted odds</small><strong>{bet.odds.toFixed(2)}</strong></div><div><small>Stake</small><strong>{formatDemoUSDT(bet.stake)}</strong></div><div><small>Est. return</small><strong>{formatDemoUSDT(bet.returns)}</strong></div>
+        <div className="bet-lifecycle"><div className="bet-step complete"><span>01</span><strong>Bet placed</strong><small>{formatBetPlacedAt(bet.placedAtMs)}</small></div><div className={`bet-step ${bet.status === 'settled' ? 'complete' : 'pending'}`}><span>{bet.status === 'settled' ? '02' : '…'}</span><strong>{bet.status === 'settled' ? 'Settled' : 'Awaiting settlement'}</strong><small>{bet.status === 'settled' ? (bet.result ?? 'Final result') : 'No live event feed'}</small></div></div>
         {bet.result && <span className={`result-note ${bet.result.includes('Won') || bet.result.includes('Cashed') ? 'result-won' : ''}`}>{bet.result}</span>}
-        {bet.status === 'open' && <span className="cashout-summary">Sample cash out value <b>{formatDemoUSDT(bet.cashout ?? bet.returns)}</b><Button variant="outline" size="sm" className="cashout-button" onClick={(event) => { event.stopPropagation(); cashOutBet(bet.id); }}>Demo cash out <Icon name="arrow" size={13} /></Button></span>}
+        {bet.status === 'open' && <span className="cashout-summary">Cash-out value <b>{formatDemoUSDT(bet.cashout ?? bet.returns)}</b><Button variant="outline" size="sm" className="cashout-button" onClick={(event) => { event.stopPropagation(); cashOutBet(bet.id); }}>Cash out <Icon name="arrow" size={13} /></Button></span>}
       </div>}
     </Card>
   );
@@ -1307,7 +1291,7 @@ function CompactBets({ bets, cashOutBet, openFullBets }: { bets: DemoBet[]; cash
   return (
     <div className="compact-bets">
       <div className="compact-summary"><span>{open.length} OPEN</span><span>{bets.length - open.length} SETTLED</span></div>
-      {open.slice(0, 2).map((bet) => <div className="compact-bet" key={bet.id}><div className="compact-bet-top"><Badge variant="info" dot>Open</Badge><strong>{bet.odds.toFixed(2)}</strong></div><b>{bet.selection}</b><small><ClubPair fixtureId={bet.fixtureId} />{bet.fixture}</small><div className="compact-bet-return">{bet.stake.toFixed(2)} → <strong>{formatDemoUSDT(bet.cashout ?? bet.returns)}</strong></div><Button variant="outline" size="sm" className="compact-cashout" onClick={() => cashOutBet(bet.id)}>Demo cash out</Button></div>)}
+      {open.slice(0, 2).map((bet) => <div className="compact-bet" key={bet.id}><div className="compact-bet-top"><Badge variant="info" dot>Open</Badge><strong>{bet.odds.toFixed(2)}</strong></div><b>{bet.selection}</b><small>{bet.fixture}</small><div className="compact-bet-return">{bet.stake.toFixed(2)} → <strong>{formatDemoUSDT(bet.cashout ?? bet.returns)}</strong></div><Button variant="outline" size="sm" className="compact-cashout" onClick={() => cashOutBet(bet.id)}>Cash out</Button></div>)}
       {open.length === 0 && <p className="compact-empty">No open sample bets right now.</p>}
       <Button variant="ghost" size="sm" className="view-history-button" onClick={openFullBets}>View My Bets <Icon name="arrow" size={13} /></Button>
     </div>
