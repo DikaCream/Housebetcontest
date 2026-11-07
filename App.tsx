@@ -34,7 +34,7 @@ import './approved-ui-revisions.css';
 import './live-mobile-refinements.css';
 import './mybets-mobile-refinements.css';
 export type { Fixture, Selection } from './types';
-type Page = 'home' | 'live' | 'football' | 'match' | 'activity';
+type Page = 'home' | 'menu' | 'live' | 'football' | 'match' | 'activity';
 type ActivityTab = 'slip' | 'bets';
 type BetStatus = 'open' | 'settled';
 type Navigate = (page: Page, fixtureId?: string) => void;
@@ -201,7 +201,7 @@ const navItems: { id: Page; label: string; icon: string; count?: string }[] = [
 ];
 
 // Keep mobile reading/focus order aligned with the central Bets destination.
-const mobileNavItems = [navItems[0], navItems[1], navItems[4], navItems[2], navItems[3]];
+const mobileNavItems: typeof navItems = [{ id: 'menu', label: 'Menu', icon: 'menu' }, navItems[1], navItems[4], navItems[2], navItems[3]];
 
 const mobileSports = [
   { name: 'Football', icon: 'ball' },
@@ -214,6 +214,7 @@ const mobileSports = [
 
 const pageLabels: Record<Page, { crumb: string; title: string; subtitle: string }> = {
   home: { crumb: 'Sports', title: 'Matchday', subtitle: 'Club fixtures, scores and odds.' },
+  menu: { crumb: 'Menu', title: 'Menu', subtitle: 'Sports and your saved favourites.' },
   live: { crumb: 'Live now', title: 'Matches in play', subtitle: 'Scores and odds are examples; there is no live feed.' },
   football: { crumb: 'Football', title: 'Football fixtures', subtitle: 'Browse club matchups and choose one price.' },
   match: { crumb: 'Match centre', title: 'Match centre', subtitle: 'One fixture across six market groups.' },
@@ -260,6 +261,7 @@ function Icon({ name, size = 18 }: { name: string; size?: number }) {
   const common = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true as const };
   switch (name) {
     case 'home': return <svg {...common}><path d="m3 10 9-7 9 7"/><path d="M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg>;
+    case 'menu': return <svg {...common}><path d="M4 6h16M4 12h16M4 18h16"/></svg>;
     case 'live': return <svg {...common}><path d="M4 9v6M8 6v12M12 3v18M16 7v10M20 10v4"/></svg>;
     case 'tennis': return <svg {...common}><circle cx="12" cy="12" r="9"/><path d="M5.5 5.5c4 1 6.8 4 7.6 8.1.4 2.2-.2 4-1.8 5.8M18.5 5.5c-4 1-6.8 4-7.6 8.1-.4 2.2.2 4 1.8 5.8"/></svg>;
     case 'basketball': return <svg {...common}><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M9 3.6c4.1 4.5 4.1 12.3 0 16.8M15 3.6c-4.1 4.5-4.1 12.3 0 16.8"/></svg>;
@@ -301,7 +303,7 @@ function App() {
   const [liveSportFilter, setLiveSportFilter] = useState('Football');
   const [liveCompetitionFilter, setLiveCompetitionFilter] = useState('All competitions');
   const [favourites, setFavourites] = useState<string[]>(['Premier League', 'Arsenal']);
-  const [following, setFollowing] = useState<string[]>(['Arsenal']);
+  const following = favourites;
   const [footballScope, setFootballScope] = useState<'live-upcoming' | 'all'>('live-upcoming');
   const [marketCategory, setMarketCategory] = useState('Popular');
   const [marketQuery, setMarketQuery] = useState('');
@@ -413,13 +415,44 @@ function App() {
     setFootballScope('all');
     navigate('football');
   }
+  function openMenuSport(sport: string) {
+    setQuery('');
+    if (sport === 'Football') {
+      setSportFilter('All football');
+      setFootballScope('all');
+      navigate('football');
+      return;
+    }
+    setLiveSportFilter(sport);
+    setLiveCompetitionFilter('All competitions');
+    navigate('live');
+    setNotice({ type: 'info', text: `No ${sport} fixtures are included in this football-only demo yet.` });
+  }
+
+  function openFavourite(item: string) {
+    setQuery('');
+    if (fixtures.some((fixture) => fixture.competition === item)) {
+      openCompetition(item);
+      return;
+    }
+    const fixture = fixtures.find((candidate) => candidate.home === item || candidate.away === item);
+    if (fixture) {
+      navigate('match', fixture.id);
+      return;
+    }
+    setSportFilter('All football');
+    setFootballScope('all');
+    setQuery(item);
+    navigate('football');
+  }
+
 
   function toggleFavourite(item: string) {
     setFavourites((current) => current.includes(item) ? current.filter((entry) => entry !== item) : [...current, item]);
   }
 
   function toggleFollow(team: string) {
-    setFollowing((current) => current.includes(team) ? current.filter((entry) => entry !== team) : [...current, team]);
+    toggleFavourite(team);
   }
 
   function toggleMarket(title: string) {
@@ -567,7 +600,7 @@ function App() {
     setNotice({ type: 'success', text: `New odds accepted: ${pendingOdds.toFixed(2)}.` });
   }
 
-  const compactLabels: Record<Page, string> = { home: 'Home', live: 'Live', football: 'Football', match: 'Match', activity: 'Bets' };
+  const compactLabels: Record<Page, string> = { home: 'Home', menu: 'Menu', live: 'Live', football: 'Football', match: 'Match', activity: 'Bets' };
   const nav = (compact = false) => (
     <>
       {(compact ? mobileNavItems : navItems).map((item) => (
@@ -625,6 +658,27 @@ function App() {
       <aside className="left-rail" aria-label="Sports navigation">
         <div className="rail-section-label">Your board</div>
         <nav className="primary-nav">{nav()}</nav>
+        <section className="sidebar-favourites" aria-labelledby="sidebar-favourites-heading">
+          <div className="sidebar-favourites-heading">
+            <h2 id="sidebar-favourites-heading">Favourites</h2>
+            <span aria-label={`${favourites.length} favourites`}>{favourites.length}</span>
+          </div>
+          {favourites.length > 0 ? <div className="sidebar-favourite-list">
+            {favourites.map((item) => {
+              const isCompetition = fixtures.some((fixture) => fixture.competition === item);
+              return <div className="sidebar-favourite-row" key={item}>
+                <button type="button" className="sidebar-favourite-open" onClick={() => openFavourite(item)} aria-label={`Open ${item}`} title={item}>
+                  {isCompetition ? <CompetitionLogo competition={item} className="sidebar-favourite-logo" /> : <ClubCrest club={item} className="sidebar-favourite-logo" />}
+                  <span className="sidebar-favourite-copy"><strong>{item}</strong><small>{isCompetition ? 'Competition' : 'Team'}</small></span>
+                </button>
+                <button type="button" className="sidebar-favourite-remove" onClick={() => toggleFavourite(item)} aria-label={`Remove ${item} from favourites`} title={`Remove ${item} from favourites`}><Icon name="close" size={14} /></button>
+              </div>;
+            })}
+          </div> : <div className="sidebar-favourites-empty">
+            <p>No favourites yet. Save a team with the star or Follow button.</p>
+            <button type="button" onClick={() => openMenuSport('Football')}>Browse football</button>
+          </div>}
+        </section>
         <div className="rail-note">
           <span className="rail-note-mark">HB</span>
           <strong>Sample board.</strong>
@@ -663,6 +717,7 @@ function App() {
           </div>
         )}
         {page === 'home' && <HomePage fixtures={visibleFixtures} featuredId={homeFeatured?.id} navigate={navigate} makeSelection={makeSelection} selection={selection} priceOverrides={priceOverrides} onCompetition={openCompetition} onChooseSport={selectMobileSport} favourites={favourites} toggleFavourite={toggleFavourite} openMarket={openMarket} />}
+        {page === 'menu' && <MenuPage favourites={favourites} onChooseSport={openMenuSport} onOpenFavourite={openFavourite} toggleFavourite={toggleFavourite} onBrowseFootball={() => openMenuSport('Football')} />}
         {page === 'live' && <LivePage fixtures={visibleFixtures} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} sportFilter={liveSportFilter} setSportFilter={setLiveSportFilter} competitionFilter={liveCompetitionFilter} setCompetitionFilter={setLiveCompetitionFilter} searchQuery={query} selection={selection} openMarket={openMarket} />}
         {page === 'football' && <FootballPage fixtures={visibleFixtures} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} sportFilter={sportFilter} setSportFilter={setSportFilter} footballScope={footballScope} setFootballScope={setFootballScope} favourites={favourites} toggleFavourite={toggleFavourite} selection={selection} openMarket={openMarket} />}
         {page === 'match' && (
@@ -802,6 +857,55 @@ function MobileSportsHeader({ page, navigate, onChooseSport }: { page: Page; nav
 }
 
 
+function MenuPage({ favourites, onChooseSport, onOpenFavourite, toggleFavourite, onBrowseFootball }: {
+  favourites: string[];
+  onChooseSport: (sport: string) => void;
+  onOpenFavourite: (item: string) => void;
+  toggleFavourite: (item: string) => void;
+  onBrowseFootball: () => void;
+}) {
+  return (
+    <div className="page-stack menu-page">
+      <section className="menu-section" aria-labelledby="menu-sports-heading">
+        <div className="menu-section-heading">
+          <div><h2 id="menu-sports-heading">Sports</h2><p>Choose a sport to open its board.</p></div>
+        </div>
+        <div className="menu-sport-grid">
+          {mobileSports.map((sport) => <button key={sport.name} type="button" className="menu-sport-button" onClick={() => onChooseSport(sport.name)}>
+            <span className="menu-sport-icon"><Icon name={sport.icon} size={18} /></span>
+            <span className="menu-sport-name">{sport.name}</span>
+            <span className="menu-sport-description">{sport.name === 'Football' ? 'Fixtures and leagues' : 'Open sport board'}</span>
+            <Icon name="chevron" size={16} />
+          </button>)}
+        </div>
+      </section>
+      <section className="menu-section" aria-labelledby="menu-favourites-heading">
+        <div className="menu-section-heading">
+          <div><h2 id="menu-favourites-heading">Favourites</h2><p>Open a saved team or competition.</p></div>
+          <span className="menu-favourite-count" aria-label={`${favourites.length} favourites`}>{favourites.length}</span>
+        </div>
+        {favourites.length > 0 ? <div className="menu-favourite-list">
+          {favourites.map((item) => {
+            const isCompetition = fixtures.some((fixture) => fixture.competition === item);
+            return <div className="menu-favourite-row" key={item}>
+              <button type="button" className="menu-favourite-open" onClick={() => onOpenFavourite(item)} aria-label={`Open ${item}`}>
+                <span className="menu-favourite-marker"><Icon name={isCompetition ? 'grid' : 'star'} size={17} /></span>
+                <span className="menu-favourite-copy"><strong>{item}</strong><small>{isCompetition ? 'Competition' : 'Team'}</small></span>
+                <Icon name="chevron" size={16} />
+              </button>
+              <button type="button" className="menu-favourite-remove" onClick={() => toggleFavourite(item)} aria-label={`Remove ${item} from favourites`} title={`Remove ${item} from favourites`}><Icon name="close" size={16} /></button>
+            </div>;
+          })}
+        </div> : <div className="menu-favourites-empty">
+          <span className="menu-favourite-marker"><Icon name="star" size={17} /></span>
+          <div><strong>No favourites yet</strong><p>Save a team from a match card and it will appear here.</p></div>
+          <button type="button" onClick={onBrowseFootball}>Browse football</button>
+        </div>}
+      </section>
+      <p className="menu-demo-note">This demo includes sample football fixtures only. Other sports show an empty board until fixtures are available.</p>
+    </div>
+  );
+}
 function HomePage({ fixtures, featuredId, navigate, makeSelection, selection, priceOverrides, onCompetition, onChooseSport, favourites, toggleFavourite, openMarket }: {
   fixtures: Fixture[];
   featuredId?: string;
@@ -876,6 +980,7 @@ function HomeFixtureCard({ fixture, navigate, makeSelection, selection, priceOve
   openMarket: (fixtureId: string, category: string) => void;
   mobileScoreboard?: boolean;
 }) {
+  const [favouritePressCount, setFavouritePressCount] = useState(0);
   const outcomes = [fixture.home, 'Draw', fixture.away];
   const isFinished = isFinishedFixture(fixture);
   const isActivelyLive = isActivelyLiveFixture(fixture);
@@ -889,7 +994,9 @@ function HomeFixtureCard({ fixture, navigate, makeSelection, selection, priceOve
         <button className="match-card-competition" type="button" onClick={() => navigate('match', fixture.id)} aria-label={`Open ${fixture.home} v ${fixture.away} match centre`}>
           <CompetitionLogo competition={fixture.competition} /><span>{fixture.competition}</span><i aria-hidden="true">·</i><small>{fixture.round}</small>
         </button>
-        <button className={`match-card-favourite${favourite ? ' selected' : ''}`} type="button" aria-pressed={favourite} onClick={() => toggleFavourite(fixture.home)} aria-label={favourite ? `Remove ${fixture.home} favourite` : `Favourite ${fixture.home}`}><Icon name="star" size={16} /></button>
+        <button className={`match-card-favourite${favourite ? ' selected' : ''}`} type="button" aria-pressed={favourite} aria-label={`Favourite ${fixture.home}`} title={favourite ? `Remove ${fixture.home} from favourites` : `Add ${fixture.home} to favourites`} onClick={(event) => { event.stopPropagation(); setFavouritePressCount((count) => count + 1); toggleFavourite(fixture.home); }}>
+          <span key={favouritePressCount} className={`favourite-star${favouritePressCount ? ' is-animated' : ''}`} aria-hidden="true"><Icon name="star" size={16} /></span>
+        </button>
       </div>
       <div className={`match-card-status${isActivelyLive ? ' is-live' : isHalfTime ? ' is-halftime' : isFinished ? ' is-fulltime' : ' is-upcoming'}`}>
         {isActivelyLive ? <><div className="match-card-clock"><strong>{fixture.time}</strong><span aria-hidden="true">·</span><span>{fixturePeriodText(fixture)}</span></div><MatchLiveSignal /></> : isHalfTime ? <><span className="match-card-period-tag is-halftime" aria-label="HT, half-time">HT</span><span>Half-time</span></> : isFinished ? <><span className="match-card-period-tag is-fulltime" aria-label="FT, full time">FT</span><span>Full time</span></> : <><strong className="match-card-kickoff">{kickoff}</strong><span className="match-card-period-tag is-upcoming">UPCOMING</span></>}

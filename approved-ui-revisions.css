@@ -567,20 +567,45 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #8F96A8;
-  background: transparent;
-  border: 1px solid transparent;
+  color: #8F96A8 !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
   border-radius: 4px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: color 140ms ease-out, background-color 140ms ease-out, border-color 140ms ease-out;
 }
-#root #housebets-app .match-card-favourite svg { fill: transparent; stroke: currentColor; }
+#root #housebets-app .match-card-favourite svg { fill: transparent; stroke: currentColor; transition: fill 140ms ease-out; }
 #root #housebets-app .match-card-favourite.selected {
-  color: #02F8F8;
-  background: rgba(2, 248, 248, .07);
-  border-color: #164654;
+  color: #02F8F8 !important;
+  background: rgba(2, 248, 248, .07) !important;
+  border-color: #164654 !important;
 }
-#root #housebets-app .match-card-favourite.selected svg { fill: rgba(2, 248, 248, .17); }
+#root #housebets-app .match-card-favourite.selected svg { fill: currentColor; }
+#root #housebets-app .favourite-star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center;
+}
+/* The keyed icon replays this response only on an explicit button press. */
+#root #housebets-app .match-card-favourite[aria-pressed="true"] .favourite-star.is-animated {
+  animation: housebets-favourite-add 320ms cubic-bezier(.2, .8, .3, 1);
+}
+#root #housebets-app .match-card-favourite[aria-pressed="false"] .favourite-star.is-animated {
+  animation: housebets-favourite-remove 180ms ease-out;
+}
+@keyframes housebets-favourite-add {
+  0% { transform: scale(.82) rotate(-14deg); }
+  55% { transform: scale(1.24) rotate(8deg); filter: drop-shadow(0 0 3px rgba(2, 248, 248, .38)); }
+  78% { transform: scale(.96) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+@keyframes housebets-favourite-remove {
+  0%, 100% { transform: scale(1); }
+  45% { transform: scale(.8); }
+}
 #root #housebets-app .match-card-status {
   min-width: 0;
   min-height: 34px;
@@ -925,10 +950,286 @@
   #root #housebets-app .match-card-team > strong { font-size: 13px; }
   #root #housebets-app .match-card-clock { gap: 5px; }
 }
+
+/* Desktop favourites share Menu's state; all styling stays inside the left rail. */
+#root #housebets-app .sidebar-favourites {
+  flex-shrink: 0;
+  min-width: 0;
+  margin: 0 0 20px;
+  padding: 15px 0 0;
+  border-top: 1px solid #29404A;
+}
+#root #housebets-app .sidebar-favourites-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 8px;
+  margin-bottom: 8px;
+}
+#root #housebets-app .sidebar-favourites-heading h2 {
+  margin: 0;
+  color: #A5B8BE;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+#root #housebets-app .sidebar-favourites-heading > span { color: #02F8F8; font-size: 11px; font-variant-numeric: tabular-nums; }
+#root #housebets-app .sidebar-favourite-list { display: grid; gap: 3px; }
+#root #housebets-app .sidebar-favourite-row { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) 28px; gap: 2px; }
+#root #housebets-app .sidebar-favourite-open {
+  min-width: 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  color: #E3ECEE;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  text-align: left;
+  cursor: pointer;
+}
+#root #housebets-app .sidebar-favourite-open:hover { background: #0E202A; border-color: #29404A; }
+#root #housebets-app .sidebar-favourite-logo { flex: 0 0 18px; width: 18px; height: 18px; }
+#root #housebets-app .sidebar-favourite-copy { min-width: 0; display: grid; gap: 2px; }
+#root #housebets-app .sidebar-favourite-copy strong { overflow: hidden; color: #E3ECEE; font-size: 12px; font-weight: 500; line-height: 1.3; text-overflow: ellipsis; white-space: nowrap; }
+#root #housebets-app .sidebar-favourite-copy small { color: #8F96A8; font-size: 10px; line-height: 1.2; }
+#root #housebets-app .sidebar-favourite-remove {
+  min-width: 28px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: #8F96A8;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#root #housebets-app .sidebar-favourite-remove:hover { color: #FF8197; background: #28191E; border-color: #603341; }
+#root #housebets-app .sidebar-favourites :is(button:focus-visible) { outline: 2px solid #02F8F8; outline-offset: 1px; }
+#root #housebets-app .sidebar-favourites-empty { padding: 0 8px; }
+#root #housebets-app .sidebar-favourites-empty p { margin: 0 0 8px; color: #9EAFB3; font-size: 12px; line-height: 1.5; }
+#root #housebets-app .sidebar-favourites-empty button { width: 100%; min-height: 44px; padding: 6px; color: #C4F4F1; background: #0E202A; border: 1px solid #29404A; border-radius: 4px; font-size: 12px; cursor: pointer; }
+
+/* Menu uses the existing matchday palette and spacing without changing other pages. */
+#root #housebets-app .menu-page {
+  width: 100%;
+  max-width: 980px;
+  gap: 12px;
+  padding-bottom: 18px;
+}
+#root #housebets-app .menu-section {
+  padding: 15px;
+  background: #0B1A21;
+  border: 1px solid #29404A;
+  border-radius: 4px;
+}
+#root #housebets-app .menu-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 11px;
+}
+#root #housebets-app .menu-section-heading h2 {
+  margin: 0;
+  color: #F3F8F8;
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -.02em;
+  line-height: 1.25;
+}
+#root #housebets-app .menu-section-heading p {
+  margin: 4px 0 0;
+  color: #A5B8BE;
+  font-size: 13px;
+  line-height: 1.4;
+}
+#root #housebets-app .menu-sport-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+#root #housebets-app .menu-sport-button {
+  min-width: 0;
+  min-height: 58px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 16px;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 2px 9px;
+  padding: 8px 9px;
+  color: #E3ECEE;
+  background: #0E202A;
+  border: 1px solid #29404A;
+  border-radius: 3px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+#root #housebets-app .menu-sport-button:hover {
+  background: #102C36;
+  border-color: #2A6473;
+}
+#root #housebets-app .menu-sport-icon {
+  width: 32px;
+  height: 32px;
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  color: #02F8F8;
+  background: #06171D;
+  border: 1px solid #29404A;
+}
+#root #housebets-app .menu-sport-name {
+  min-width: 0;
+  overflow: hidden;
+  color: #F3F8F8;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#root #housebets-app .menu-sport-description {
+  min-width: 0;
+  overflow: hidden;
+  color: #9EAFB3;
+  font-size: 11px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#root #housebets-app .menu-sport-button > svg { grid-column: 3; grid-row: 1 / span 2; color: #8F96A8; }
+#root #housebets-app .menu-favourite-count {
+  min-width: 26px;
+  height: 26px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 6px;
+  color: #02F8F8;
+  background: #06171D;
+  border: 1px solid #29404A;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+#root #housebets-app .menu-favourite-list { display: grid; gap: 6px; }
+#root #housebets-app .menu-favourite-row {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  gap: 6px;
+}
+#root #housebets-app .menu-favourite-open {
+  min-width: 0;
+  min-height: 50px;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 16px;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 9px;
+  color: #E3ECEE;
+  background: #0E202A;
+  border: 1px solid #29404A;
+  border-radius: 3px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+#root #housebets-app .menu-favourite-open:hover {
+  background: #102C36;
+  border-color: #2A6473;
+}
+#root #housebets-app .menu-favourite-marker {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  color: #02F8F8;
+  background: #06171D;
+  border: 1px solid #29404A;
+}
+#root #housebets-app .menu-favourite-copy { min-width: 0; display: grid; gap: 2px; }
+#root #housebets-app .menu-favourite-copy strong {
+  overflow: hidden;
+  color: #F3F8F8;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#root #housebets-app .menu-favourite-copy small { color: #9EAFB3; font-size: 11px; line-height: 1.2; }
+#root #housebets-app .menu-favourite-open > svg { color: #8F96A8; }
+#root #housebets-app .menu-favourite-remove {
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  color: #A5B8BE;
+  background: #0E202A;
+  border: 1px solid #29404A;
+  border-radius: 3px;
+  cursor: pointer;
+}
+#root #housebets-app .menu-favourite-remove:hover {
+  color: #FF8197;
+  background: #28191E;
+  border-color: #603341;
+}
+#root #housebets-app .menu-favourites-empty {
+  min-height: 58px;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 9px;
+  color: #D7E2E5;
+  background: #0E202A;
+  border: 1px dashed #29404A;
+}
+#root #housebets-app .menu-favourites-empty strong { color: #F3F8F8; font-size: 13px; }
+#root #housebets-app .menu-favourites-empty p { margin: 2px 0 0; color: #9EAFB3; font-size: 12px; }
+#root #housebets-app .menu-favourites-empty > button {
+  min-height: 44px;
+  padding: 0 10px;
+  color: #C4F4F1;
+  background: #0B1A21;
+  border: 1px solid #29404A;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+#root #housebets-app .menu-demo-note { margin: 0; color: #8F96A8; font-size: 12px; line-height: 1.45; }
+@media (max-width: 760px) {
+  #root #housebets-app .menu-sport-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #root #housebets-app .menu-section { padding: 12px; }
+}
+@media (max-width: 370px) {
+  #root #housebets-app .menu-sport-button { grid-template-columns: 30px minmax(0, 1fr) 14px; gap: 2px 6px; padding: 7px 6px; }
+  #root #housebets-app .menu-sport-icon { width: 28px; height: 28px; }
+  #root #housebets-app .menu-sport-name { font-size: 13px; }
+  #root #housebets-app .menu-favourites-empty { grid-template-columns: 32px minmax(0, 1fr); }
+  #root #housebets-app .menu-favourites-empty > button { grid-column: 2; justify-self: start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #root #housebets-app .menu-sport-button,
+  #root #housebets-app .menu-favourite-open { transition: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   #root #housebets-app .match-live-signal .match-live-signal-wave { animation: none !important; opacity: .8; }
   #root #housebets-app .match-card-more-markets,
   #root #housebets-app .match-card-odd { transition: none !important; }
   #root #housebets-app .match-card-odd:is(:hover,:active,.is-selected) { transform: none; }
   #root #housebets-app .match-card-odd::after { animation: none !important; }
+  #root #housebets-app .match-card-favourite,
+  #root #housebets-app .match-card-favourite svg { transition: none !important; }
+  #root #housebets-app .favourite-star.is-animated { animation: none !important; transform: none; filter: none; }
 }
