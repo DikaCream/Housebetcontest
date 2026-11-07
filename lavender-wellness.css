@@ -1,7 +1,7 @@
 /*
- * Housebets — Official Sports palette (color-only iteration).
+ * Housebets — Official Sports palette and compact mobile touchline dock.
  * Paint sourced from the live official /id/sports CSS on 6 November 2026.
- * Existing geometry, typography, radii, hierarchy and responsive rules are frozen.
+ * Desktop geometry stays unchanged; the mobile dock owns its scoped geometry.
  * Product structure, PanelUI components and demo state logic stay unchanged.
  * This final theme uses a stable app ID to override the legacy specificity
  * without editing the preceding layout/style history.
@@ -305,12 +305,54 @@ html, body, #root { background: #041015 !important; color: #f9f9fb !important; }
   #root #housebets-app .mybets-filter-controls { gap: 8px; }
   #root #housebets-app .bet-table-row { padding: 16px !important; }
   #root #housebets-app .bet-detail-panel { padding: 16px !important; }
-  #root #housebets-app .mobile-nav { left: 10px !important; right: 10px !important; bottom: max(8px,env(safe-area-inset-bottom)) !important; width: auto !important; height: 68px !important; padding: 6px !important; gap: 2px; background: #0b1920 !important; border: 1px solid #0d2531 !important; border-radius: 24px !important; }
-  #root #housebets-app .mobile-nav .nav-link { min-height: 54px !important; height: 54px !important; padding: 6px 4px !important; border-radius: 18px !important; gap: 3px; }
-  #root #housebets-app .mobile-nav .nav-label { font-size: 12px !important; }
-  #root #housebets-app .mobile-nav .nav-count { font-size: 10px !important; min-width: 18px; height: 15px; line-height: 15px; }
+  /* Touchline dock: quiet chrome, five direct destinations, one ticket accent.
+     Explicit geometry also clears inherited heights from earlier design layers. */
+  #root #housebets-app {
+    --hb-mobile-safe-bottom: env(safe-area-inset-bottom, 0px);
+    --hb-mobile-nav-height: calc(60px + var(--hb-mobile-safe-bottom));
+  }
+  #root #housebets-app .main-content { padding-bottom: calc(var(--hb-mobile-nav-height) + 24px) !important; }
+  #root #housebets-app[data-has-selection="true"]:not([data-page="activity"]) .main-content { padding-bottom: calc(var(--hb-mobile-nav-height) + 84px) !important; }
+  #root #housebets-app .mobile-nav {
+    top: auto !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+    width: 100% !important; max-width: none; height: var(--hb-mobile-nav-height) !important;
+    min-height: var(--hb-mobile-nav-height) !important; margin: 0 !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)); grid-template-rows: 52px;
+    align-content: start; align-items: center; gap: 0 !important;
+    padding: 3px 8px calc(4px + var(--hb-mobile-safe-bottom)) !important;
+    background: #0b1920 !important; border: 0 !important; border-top: 1px solid #29404a !important;
+    border-radius: 0 !important; box-sizing: border-box; overflow: visible !important;
+    box-shadow: none !important; backdrop-filter: none !important;
+  }
+  #root #housebets-app .mobile-nav .nav-link {
+    min-width: 0; width: 100%; min-height: 52px !important; height: 52px !important;
+    padding: 2px 0 !important; gap: 2px !important; border: 0 !important;
+    border-radius: 8px !important; color: #9fb2b8 !important; background: transparent !important;
+    box-shadow: none !important; overflow: visible; touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 140ms ease-out, background-color 140ms ease-out, transform 120ms ease-out;
+  }
+  #root #housebets-app .mobile-nav .nav-link.is-active { color: #02f8f8 !important; background: transparent !important; box-shadow: none !important; }
+  #root #housebets-app .mobile-nav .nav-icon { display: grid !important; place-items: center; width: 32px !important; height: 28px !important; color: inherit !important; }
+  #root #housebets-app .mobile-nav .nav-icon svg { width: 20px !important; height: 20px !important; }
+  #root #housebets-app .mobile-nav .nav-label { color: inherit !important; font-size: 12px !important; font-weight: 500; line-height: 16px; letter-spacing: 0 !important; }
+  #root #housebets-app .mobile-nav [data-destination="activity"] .nav-icon { background: #c4f4f1 !important; color: #041015 !important; border-radius: 8px; }
+  #root #housebets-app .mobile-nav [data-destination="activity"].is-active .nav-icon { background: #02f8f8 !important; }
+  #root #housebets-app .mobile-nav .nav-count {
+    display: inline-flex; align-items: center; justify-content: center;
+    top: 0 !important; right: calc(50% - 29px) !important; min-width: 18px !important;
+    height: 16px !important; padding: 0 3px; color: #c4f4f1 !important;
+    background: #0e202a !important; border: 1px solid #29404a !important;
+    font-size: 10px !important; line-height: 14px; font-variant-numeric: tabular-nums;
+  }
+  #root #housebets-app .mobile-nav .nav-slip-count { color: #041015 !important; background: #02f8f8 !important; border-color: #0b1920 !important; }
+  #root #housebets-app .mobile-nav .nav-link:active { background: #0e202a !important; transform: scale(.96); }
+  #root #housebets-app .mobile-nav .nav-link:focus-visible { outline: 2px solid #02f8f8 !important; outline-offset: -2px !important; }
+  @media (hover: hover) {
+    #root #housebets-app .mobile-nav .nav-link:hover { background: #0e202a !important; }
+  }
   #root #housebets-app[data-page="activity"] .mobile-slip-bar { display: none !important; }
-  #root #housebets-app .mobile-slip-bar { left: 16px !important; right: 16px !important; bottom: 84px !important; min-height: 60px !important; border: 1px solid #02f8f84d !important; border-radius: 20px !important; padding: 10px 14px !important; background: #c4f4f1 !important; color: #041015 !important; }
+  #root #housebets-app .mobile-slip-bar { left: 16px !important; right: 16px !important; width: auto !important; bottom: calc(var(--hb-mobile-nav-height) + 8px) !important; min-height: 52px !important; border: 1px solid #02f8f84d !important; border-radius: 12px !important; padding: 6px 12px !important; background: #c4f4f1 !important; color: #041015 !important; }
   #root #housebets-app .mobile-slip-count { background: #02f8f8 !important; color: #041015 !important; border-radius: 50%; }
   #root #housebets-app .mobile-slip-summary small { color: #041015 !important; }
   #root #housebets-app .mobile-slip-open { color: #041015 !important; font-size: 12px !important; }

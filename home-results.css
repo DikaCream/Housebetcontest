@@ -1,0 +1,186 @@
+/* Focused Home treatment for final results and unavailable sample prices. */
+#root #housebets-app .home-final-samples {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+#root #housebets-app .home-final-samples > .ledger-lane-heading {
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 9px !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 0 0 8px !important;
+  border-bottom: 1px solid #173843 !important;
+}
+#root #housebets-app .home-final-samples > .ledger-lane-heading > div {
+  flex: 1 1 auto;
+  min-width: 0;
+  align-items: flex-start;
+}
+#root #housebets-app .home-final-samples .lane-status-mark {
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  background: #9aafb4;
+}
+#root #housebets-app .home-final-samples .ledger-lane-heading h3 {
+  margin: 0;
+  color: #eff7f8 !important;
+  font-size: 16px !important;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: left;
+}
+#root #housebets-app .home-final-samples .ledger-lane-count {
+  color: #9aafb4 !important;
+  font-size: 12px !important;
+}
+#root #housebets-app .home-final-list {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 9px;
+}
+#root #housebets-app .home-final-card {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  gap: 11px;
+  padding: 13px 14px;
+  color: #eef6f7 !important;
+  background: #0b1a21 !important;
+  border: 1px solid #1b3943 !important;
+  border-radius: 14px !important;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(196, 244, 241, .04);
+  transition: background-color 140ms ease, border-color 140ms ease, transform 120ms ease;
+}
+#root #housebets-app .home-final-card:hover {
+  background: #0e202a !important;
+  border-color: #294b56 !important;
+}
+#root #housebets-app .home-final-card:active { transform: translateY(1px); }
+#root #housebets-app .home-final-card:focus-visible { outline: 2px solid #c4f4f1 !important; outline-offset: 3px !important; }
+#root #housebets-app .home-final-card-meta {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 7px 10px;
+}
+#root #housebets-app .home-final-card-competition {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #c4d2d5 !important;
+  font-size: 12px;
+  line-height: 1.25;
+}
+#root #housebets-app .home-final-card-competition > span { min-width: 0; }
+#root #housebets-app .home-final-card-competition > i { color: #789198; font-style: normal; }
+#root #housebets-app .home-final-card-status {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  color: #c4f4f1 !important;
+  background: #102b33 !important;
+  border: 1px solid #1b4650 !important;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+#root #housebets-app .home-final-scoreline {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+#root #housebets-app .home-final-side {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+#root #housebets-app .home-final-side strong {
+  min-width: 0;
+  color: #f0f6f7 !important;
+  font-size: 13px !important;
+  font-weight: 550;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+#root #housebets-app .home-final-side--away { justify-content: flex-end; text-align: right; }
+#root #housebets-app .home-final-side .club-crest { flex: 0 0 22px; width: 22px !important; height: 22px !important; }
+#root #housebets-app .home-final-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #f7fbfb !important;
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+#root #housebets-app .home-final-score i { color: #82969b; font-size: 14px; font-style: normal; }
+#root #housebets-app .home-final-card-footer {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+#root #housebets-app .home-final-closed {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #aab9bd !important;
+  background: transparent !important;
+  border: 0 !important;
+  font-size: 11px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+#root #housebets-app .home-fixture-suspended {
+  justify-content: flex-start;
+  padding: 0 10px;
+  color: #f0d4ad !important;
+  background: #282219 !important;
+  border-color: #55452f !important;
+  border-radius: 8px !important;
+  font-weight: 600;
+}
+#root #housebets-app .home-fixture-odds.is-suspended { gap: 6px; }
+#root #housebets-app .home-fixture-odds.is-suspended .home-fixture-odd:disabled {
+  color: #bac5c9 !important;
+  background: #101c22 !important;
+  border-color: #34434a !important;
+  opacity: .72;
+  cursor: not-allowed;
+  box-shadow: none !important;
+}
+#root #housebets-app .home-fixture-odds.is-suspended .home-fixture-odd:disabled span { color: #a8b5ba !important; }
+#root #housebets-app .home-fixture-odds.is-suspended .home-fixture-odd:disabled strong { color: #d1dadd !important; }
+@media (min-width: 1200px) {
+  #root #housebets-app .home-final-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 390px) {
+  #root #housebets-app .home-final-card { padding: 12px; gap: 10px; }
+  #root #housebets-app .home-final-scoreline { gap: 6px; }
+  #root #housebets-app .home-final-side { gap: 5px; }
+  #root #housebets-app .home-final-side strong { font-size: 12px !important; }
+  #root #housebets-app .home-final-side .club-crest { flex-basis: 20px; width: 20px !important; height: 20px !important; }
+  #root #housebets-app .home-final-score { gap: 5px; font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #root #housebets-app .home-final-card { transition: none !important; }
+  #root #housebets-app .home-final-card:active { transform: none; }
+}
