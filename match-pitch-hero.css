@@ -92,3 +92,492 @@
     background-position: center 52% !important;
   }
 }
+
+
+/* Match Center: a compact, aligned scoreboard with a quiet pitch-line backdrop. */
+#root #housebets-app.app-shell[data-page="match"] .match-page-stack {
+  gap: 12px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .page-heading {
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .page-heading .eyebrow {
+  display: none !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .page-heading h1 {
+  margin: 0;
+  color: #F9F9FB;
+  font-size: 24px !important;
+  font-weight: 500 !important;
+  line-height: 1.15 !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .page-subtitle {
+  margin-top: 4px !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .page-search {
+  min-height: 40px !important;
+  height: 40px;
+  margin-bottom: 12px !important;
+  padding: 6px 12px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .page-search input {
+  font-size: 12px !important;
+  line-height: 18px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-toolbar {
+  min-height: 32px !important;
+  gap: 6px 8px !important;
+  font-size: 11px !important;
+  line-height: 1.3 !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-back {
+  min-height: 32px !important;
+  padding: 0 3px !important;
+  font-size: 11px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .fixture-picker {
+  min-height: 32px !important;
+  height: 32px;
+  max-width: 190px;
+  padding: 0 8px !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-toolbar > :last-child {
+  min-height: 24px !important;
+  padding: 4px 8px !important;
+  border-radius: 5px !important;
+  font-size: 10px !important;
+  line-height: 1.2 !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: 0 !important;
+  padding: 12px 14px !important;
+  background: #0B1920 !important;
+  border-radius: 10px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-hero::before {
+  display: block !important;
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: url('/fieldside-pitch-illustration.svg') center 68% / cover no-repeat !important;
+  content: "" !important;
+  opacity: .2;
+  pointer-events: none;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-hero-top {
+  gap: 8px;
+  padding-bottom: 7px;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .competition-label {
+  gap: 6px;
+  font-size: 11px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-competition-logo,
+#root #housebets-app.app-shell[data-page="match"] .competition-label .competition-mark {
+  flex-basis: 18px;
+  width: 18px !important;
+  height: 18px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-hero-actions {
+  gap: 5px;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-fav {
+  min-width: 36px !important;
+  min-height: 36px !important;
+  width: 36px !important;
+  height: 36px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-status-line {
+  gap: 5px;
+  font-size: 10px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-hero .upcoming-tag {
+  min-height: 22px !important;
+  padding: 3px 7px !important;
+  font-size: 10px !important;
+  line-height: 1.2 !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-hero-teams {
+  min-height: 0 !important;
+  grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 12px 4px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-hero-teams .match-team {
+  min-width: 0 !important;
+  width: min(100%, 260px) !important;
+  display: grid !important;
+  grid-template-columns: 24px minmax(0, 1fr) !important;
+  grid-template-rows: auto auto !important;
+  align-items: center !important;
+  justify-self: start;
+  gap: 4px 7px !important;
+  text-align: left !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-hero-teams .match-team.align-right {
+  grid-template-columns: minmax(0, 1fr) 24px !important;
+  justify-self: end;
+  text-align: right !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-club-crest {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  width: 24px !important;
+  height: 24px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  object-fit: contain;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-team.align-right .match-club-crest {
+  grid-column: 2;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-team > strong {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  color: #F9F9FB !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  overflow-wrap: normal;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-team.align-right > strong {
+  grid-column: 1;
+  text-align: right;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-team > small {
+  display: none !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .follow-chip {
+  grid-column: 1 / -1;
+  justify-self: start;
+  min-width: 64px !important;
+  min-height: 32px !important;
+  height: 32px;
+  margin: 0 !important;
+  padding: 0 8px !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  line-height: 1.2 !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-team.align-right .follow-chip {
+  justify-self: end;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-score {
+  min-width: 0;
+  gap: 4px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-score > span:first-child {
+  font-size: 28px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-score i {
+  padding: 0 2px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-score-phase,
+#root #housebets-app.app-shell[data-page="match"] .match-score small {
+  font-size: 10px !important;
+  line-height: 1.25 !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-score > .upcoming-tag {
+  max-width: 100%;
+  min-height: 20px !important;
+  padding: 3px 5px !important;
+  font-size: 9px !important;
+  white-space: normal;
+  text-align: center;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-hero-bottom {
+  min-height: 26px !important;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  padding-top: 6px !important;
+  font-size: 10px !important;
+  line-height: 1.3 !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-fixture-details {
+  padding: 10px 12px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-details-heading > div {
+  gap: 4px;
+  font-size: 12px;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-details-heading strong {
+  font-size: 12px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .match-details-heading > button {
+  min-height: 36px !important;
+  padding: 0 8px !important;
+  font-size: 11px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .market-search {
+  min-height: 40px !important;
+  padding: 6px 12px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .market-search input {
+  font-size: 12px !important;
+}
+
+#root #housebets-app.app-shell[data-page="match"] .market-search-note {
+  font-size: 11px !important;
+}
+
+@media (max-width: 760px) {
+  #root #housebets-app.app-shell[data-page="match"] .page-heading {
+    align-items: flex-start;
+    margin-bottom: 10px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .page-heading h1 {
+    font-size: 20px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .page-search {
+    margin-bottom: 10px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-toolbar {
+    flex-wrap: wrap;
+    gap: 4px 7px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-toolbar-divider,
+  #root #housebets-app.app-shell[data-page="match"] .match-toolbar > span:not(.match-toolbar-divider):not(.match-toolbar-spacer),
+  #root #housebets-app.app-shell[data-page="match"] .match-toolbar-spacer {
+    display: none !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .fixture-picker {
+    flex: 1 1 132px;
+    max-width: min(48vw, 184px);
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-hero {
+    padding: 10px 12px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-hero-teams {
+    grid-template-columns: minmax(0, 1fr) 62px minmax(0, 1fr) !important;
+    gap: 6px !important;
+    padding: 10px 2px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-hero-teams .match-team {
+    gap: 4px 6px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-team > strong {
+    font-size: 12px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .follow-chip {
+    min-height: 36px !important;
+    height: 36px;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-score > span:first-child {
+    font-size: 24px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  #root #housebets-app.app-shell[data-page="match"] .match-hero-teams {
+    grid-template-columns: minmax(0, 1fr) 54px minmax(0, 1fr) !important;
+    gap: 4px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-hero-teams .match-team {
+    grid-template-columns: 22px minmax(0, 1fr) !important;
+    gap: 4px 5px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-hero-teams .match-team.align-right {
+    grid-template-columns: minmax(0, 1fr) 22px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-club-crest {
+    min-width: 22px !important;
+    min-height: 22px !important;
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-team > strong {
+    font-size: 11px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-score > span:first-child {
+    font-size: 22px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-hero-bottom {
+    font-size: 9px !important;
+  }
+}
+
+
+/* Mobile redline: keep long club names in the text column, not the crest column. */
+@media (max-width: 760px) {
+  #root #housebets-app.app-shell[data-page="match"] .match-toolbar {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-toolbar > .match-toolbar-divider,
+  #root #housebets-app.app-shell[data-page="match"] .match-toolbar > span:nth-of-type(2),
+  #root #housebets-app.app-shell[data-page="match"] .match-toolbar > .match-toolbar-spacer {
+    display: none !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-back {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 36px !important;
+    min-height: 36px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .fixture-picker {
+    flex: 1 1 132px;
+    width: min(184px, calc(100vw - 212px));
+    max-width: min(184px, calc(100vw - 212px));
+    height: 36px !important;
+    min-height: 36px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-hero-teams {
+    grid-template-columns: minmax(0, 1fr) 76px minmax(0, 1fr) !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-hero-teams .match-team.align-right {
+    grid-template-columns: minmax(0, 1fr) 24px !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-club-crest {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-team.align-right .match-club-crest {
+    grid-column: 2 !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-team > strong {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    justify-self: stretch !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-team.align-right > strong {
+    grid-column: 1 !important;
+    text-align: right !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-team > .follow-chip {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-team.align-right > .follow-chip {
+    justify-self: end !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-team > strong {
+    font-size: 12px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  #root #housebets-app.app-shell[data-page="match"] .match-hero-teams {
+    grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1fr) !important;
+  }
+}
+
+
+/* Final sizing guards for the existing inherited match styles. */
+#root #housebets-app.app-shell[data-page="match"] .match-team > strong {
+  min-height: 0 !important;
+  height: auto !important;
+  display: block !important;
+}
+
+@media (max-width: 760px) {
+  #root #housebets-app.app-shell[data-page="match"] .fixture-picker {
+    width: min(184px, calc(100vw - 212px)) !important;
+    max-width: min(184px, calc(100vw - 212px)) !important;
+  }
+
+  #root #housebets-app.app-shell[data-page="match"] .match-toolbar > span:not(.match-toolbar-divider):not(.match-toolbar-spacer):last-child {
+    display: inline-flex !important;
+  }
+}
+
+
+/* Match Center uses competition names as text; keep the club crests untouched. */
+#root #housebets-app.app-shell[data-page="match"] .match-hero-top .match-competition-logo {
+  display: none !important;
+}

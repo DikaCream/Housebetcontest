@@ -1,0 +1,145 @@
+#root #housebets-app .top-matches-carousel {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  color: #f3fbfb;
+  background: transparent;
+}
+
+#root #housebets-app .top-matches-carousel__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  margin-bottom: 14px;
+}
+
+#root #housebets-app .top-matches-carousel__heading h2 {
+  min-width: 0;
+  margin: 0;
+  color: #f3fbfb;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+#root #housebets-app .top-matches-carousel__controls {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+#root #housebets-app .top-matches-carousel__arrow {
+  display: inline-grid;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  place-items: center;
+  color: #02f8f8;
+  background: #0b1a21;
+  border: 1px solid #29404a;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
+}
+
+#root #housebets-app .top-matches-carousel__arrow:hover:not(:disabled) {
+  color: #060f14;
+  background: #02f8f8;
+  border-color: #02f8f8;
+}
+
+#root #housebets-app .top-matches-carousel__arrow:focus-visible,
+#root #housebets-app .top-matches-carousel__track:focus-visible {
+  outline: 2px solid #02f8f8;
+  outline-offset: 3px;
+}
+
+#root #housebets-app .top-matches-carousel__arrow:disabled {
+  color: #29404a;
+  background: #0b1a21;
+  border-color: #0e202a;
+  cursor: default;
+  opacity: 0.7;
+}
+
+#root #housebets-app .top-matches-carousel__arrow svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+#root #housebets-app .top-matches-carousel__track {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  padding: 1px 1px 8px;
+  scroll-padding-inline: 1px;
+  scroll-snap-type: x mandatory;
+  scrollbar-color: #29404a transparent;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+#root #housebets-app .top-matches-carousel__track::-webkit-scrollbar {
+  height: 5px;
+}
+
+#root #housebets-app .top-matches-carousel__track::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#root #housebets-app .top-matches-carousel__track::-webkit-scrollbar-thumb {
+  background: #29404a;
+  border-radius: 5px;
+}
+
+#root #housebets-app .top-matches-carousel__track > * {
+  flex: 0 0 min(360px, calc(100% - 24px));
+  min-width: 0;
+  max-width: min(360px, calc(100% - 24px));
+  scroll-snap-align: start;
+}
+
+@media (max-width: 719px) {
+  #root #housebets-app .top-matches-carousel__controls {
+    display: none;
+  }
+
+  #root #housebets-app .top-matches-carousel__heading {
+    margin-bottom: 12px;
+  }
+
+  #root #housebets-app .top-matches-carousel__heading h2 {
+    font-size: 17px;
+  }
+
+  #root #housebets-app .top-matches-carousel__track {
+    gap: 10px;
+    padding-bottom: 6px;
+  }
+
+  #root #housebets-app .top-matches-carousel__track > * {
+    flex-basis: 87%;
+    max-width: 87%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #root #housebets-app .top-matches-carousel__arrow {
+    transition: none;
+  }
+}

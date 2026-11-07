@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Badge } from 'panelui-web/badge';
 import { Button } from 'panelui-web/button';
@@ -10,6 +10,7 @@ import ClubCrest from './ClubCrest';
 import CompetitionLogo from './CompetitionLogo';
 import HubieMatchHero from './HubieMatchHero';
 import MatchLiveSignal from './MatchLiveSignal';
+import TopMatchesCarousel from './TopMatchesCarousel';
 import MobileSheet from './MobileSheet';
 import './global.css';
 import './housebets-brand.css';
@@ -303,6 +304,8 @@ function App() {
   const [marketCategory, setMarketCategory] = useState('Popular');
   const [marketQuery, setMarketQuery] = useState('');
   const [collapsedMarkets, setCollapsedMarkets] = useState<string[]>([]);
+  const [marketJumpRequest, setMarketJumpRequest] = useState(0);
+  const handledMarketJump = useRef(0);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
   const activeMeta = pageLabels[page];
   const openCount = bets.filter((bet) => bet.status === 'open').length;
@@ -331,6 +334,15 @@ function App() {
     return () => window.clearTimeout(timer);
   }, [notice]);
 
+  useEffect(() => {
+    if (page !== 'match' || marketJumpRequest === handledMarketJump.current) return;
+    const directory = document.getElementById('match-market-directory');
+    if (!directory) return;
+    handledMarketJump.current = marketJumpRequest;
+    directory.querySelector('[role="tab"][aria-selected="true"]')?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'auto' });
+    directory.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }, [page, matchFixtureId, marketJumpRequest]);
+
   function updateStake(value: string) {
     setStake(value);
     if (isValidStake(value)) setSlipMessage(null);
@@ -353,18 +365,24 @@ function App() {
     setNotice(message);
   }
 
-  function navigate(next: Page, fixtureId?: string) {
+  function navigate(next: Page, fixtureId?: string, scrollToTop = true) {
     if (next === 'match' && fixtureId) setMatchFixtureId(fixtureId);
     if (next !== page) setNotice(null);
     setPage(next);
     setMobileSheetOpen(false);
-    scrollPageTop();
+    if (scrollToTop) scrollPageTop();
   }
 
   function openMarket(fixtureId: string, category: string) {
+    const targetFixture = fixtures.find((fixture) => fixture.id === fixtureId);
+    if (targetFixture) {
+      const categoryTitles = getSampleMarkets(targetFixture).filter((market) => market.category === category).map((market) => market.title);
+      setCollapsedMarkets((current) => current.filter((title) => !categoryTitles.includes(title)));
+    }
     setMarketCategory(category);
     setMarketQuery('');
-    navigate('match', fixtureId);
+    setMarketJumpRequest((current) => current + 1);
+    navigate('match', fixtureId, false);
   }
 
   function openFullBets() {
@@ -821,6 +839,10 @@ function HomePage({ fixtures, featuredId, navigate, makeSelection, selection, pr
     { name: 'Bundesliga' },
   ];
   const sports = ['Football', 'Tennis', 'Basketball', 'Cricket'];
+  const topMatches = ['real-madrid-arsenal', 'arsenal-brighton', 'man-city-tottenham', 'liverpool-man-utd', 'dortmund-bayern', 'napoli-milan'].flatMap((id) => {
+    const fixture = fixtures.find((item) => item.id === id);
+    return fixture && !isFinishedFixture(fixture) ? [fixture] : [];
+  });
   const liveRows = schedule.filter(isLiveFixture);
   const upcomingRows = schedule.filter((fixture) => fixture.status === 'UPCOMING');
   const finalRows = schedule.filter(isFinishedFixture);
@@ -836,6 +858,7 @@ function HomePage({ fixtures, featuredId, navigate, makeSelection, selection, pr
         <div className="top-competition-heading"><div><h2>Top competitions</h2><p>Jump to a league board</p></div></div>
         <div className="top-competition-list">{topCompetitions.map((competition) => <button key={competition.name} onClick={() => onCompetition(competition.name)}><CompetitionLogo competition={competition.name} /><span>{competition.name === 'UEFA Champions League' ? 'Champions League' : competition.name}</span><Icon name="arrow" size={14} /></button>)}</div>
       </section>
+      {topMatches.length > 0 && <TopMatchesCarousel>{topMatches.map((fixture) => <HomeFixtureCard key={fixture.id} fixture={fixture} navigate={navigate} makeSelection={makeSelection} selection={selection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} openMarket={openMarket} />)}</TopMatchesCarousel>}
       <div className="fieldside-schedule-heading"><div><h2>Live now &amp; starting soon</h2><p>Scores, kick-off times and prices</p></div><button aria-label="View full board" onClick={() => navigate('live')}><span className="fieldside-board-label">View full board</span><Icon name="arrow" size={14} /></button></div>
       <div className={`home-fixture-lanes${hasBothLanes ? '' : ' is-single'}`}>
         {[
@@ -873,10 +896,6 @@ function HomeFixtureCard({ fixture, navigate, makeSelection, selection, priceOve
   const isActivelyLive = isActivelyLiveFixture(fixture);
   const isHalfTime = fixture.status === 'LIVE' && fixture.phase === 'HT';
   const favourite = favourites.includes(fixture.home);
-  const marketCounts = getSampleMarkets(fixture).reduce<Record<string, number>>((counts, market) => {
-    counts[market.category] = (counts[market.category] ?? 0) + 1;
-    return counts;
-  }, {});
   const kickoff = `${fixture.date === 'TOMORROW' ? 'Tomorrow' : fixture.date === 'TODAY' ? 'Today' : fixture.date ?? 'Today'} · ${fixture.time}`;
 
   return (
@@ -905,17 +924,11 @@ function HomeFixtureCard({ fixture, navigate, makeSelection, selection, priceOve
               const odd = getMarketOdds(fixture, 'Match result', index, priceOverrides);
               const selected = selection?.fixtureId === fixture.id && selection.market === 'Match result' && selection.label === outcomes[index];
               return <button key={index} type="button" className={`match-card-odd${selected ? ' is-selected' : ''}`} onClick={() => makeSelection(fixture, index, 'Match result')} aria-pressed={selected} aria-label={`Select ${outcomes[index]} at ${odd.toFixed(2)}${selected ? ', selected' : ''}`}>
-                <span>{['1', 'X', '2'][index]}</span><strong>{odd.toFixed(2)}</strong>
+                <span>{['1', 'Draw', '2'][index]}</span><strong>{odd.toFixed(2)}</strong>
               </button>;
             })}
           </div>}
-          {!isFinished && <details className="match-card-more-markets">
-            <summary aria-label={`More markets for ${fixture.home} v ${fixture.away}`}><span>More markets</span><b>+{fixture.extraMarkets}</b><Icon name="chevron" size={14} /></summary>
-            <div className="match-card-market-menu" aria-label="More market groups">
-              {marketGroups.map((group) => <button key={group} type="button" onClick={() => openMarket(fixture.id, group)}><span>{group}</span><b>{marketCounts[group] ?? 0}</b></button>)}
-              <button type="button" className="is-all-markets" onClick={() => openMarket(fixture.id, 'All markets')}><span>All markets</span><b>{getSampleMarkets(fixture).length}</b></button>
-            </div>
-          </details>}
+          {!isFinished && <button className="match-card-more-markets" type="button" onClick={() => openMarket(fixture.id, 'Handicaps')} aria-label={`More markets for ${fixture.home} v ${fixture.away}: open Handicaps`}><span>More markets</span><b>+{fixture.extraMarkets}</b><Icon name="chevron" size={14} /></button>}
         </div>
       </section>
     </article>
@@ -1087,7 +1100,7 @@ function MatchPage({ fixture, fixtures: fixtureOptions, priceOverrides, marketSu
       {marketUnavailable && <div className={`match-market-alert ${isFinished ? 'closed' : ''}`} role="status"><Icon name="lock" size={16} /><div><strong>{unavailableLabel}</strong><span>{isFinished ? 'This sample event has ended; its prices cannot be selected.' : 'Prices for this sample event are temporarily unavailable.'}</span></div></div>}
       <div className="market-search-row"><div className="market-search"><Icon name="search" size={15} /><Input aria-label="Search markets or players" placeholder="Search markets or players" value={marketQuery} onChange={(event) => setMarketQuery(event.currentTarget.value)} size="sm" />{marketQuery && <button type="button" className="market-search-clear" onClick={() => setMarketQuery('')} aria-label="Clear market search"><Icon name="close" size={14} /></button>}</div><span className="market-search-note"><Icon name="ticket" size={13} /> One selection at a time</span></div>
       <ActiveFilterRow items={marketQuery.trim() ? [{ label: `Market search: ${marketQuery.trim()}`, clear: () => setMarketQuery('') }] : []} clearAll={() => setMarketQuery('')} />
-      <div className="market-toolbar"><div><p className="eyebrow">Market directory</p><span className="market-count-line">{shown.length} of {markets.length} sample markets · 6 groups</span></div><div className="market-tabs" role="tablist" aria-label="Market categories">{categories.map((category) => <button key={category.name} className={`market-tab ${marketCategory === category.name ? 'selected' : ''}`} onClick={() => { setMarketCategory(category.name); setMarketQuery(''); }} role="tab" aria-selected={marketCategory === category.name}>{category.name} <span>{String(category.count).padStart(2, '0')}</span></button>)}</div></div>
+      <div className="market-toolbar" id="match-market-directory"><div><p className="eyebrow">Market directory</p><span className="market-count-line">{shown.length} of {markets.length} sample markets · 6 groups</span></div><div className="market-tabs" role="tablist" aria-label="Market categories">{categories.map((category) => <button key={category.name} className={`market-tab ${marketCategory === category.name ? 'selected' : ''}`} onClick={() => { setMarketCategory(category.name); setMarketQuery(''); }} role="tab" aria-selected={marketCategory === category.name}>{category.name} <span>{String(category.count).padStart(2, '0')}</span></button>)}</div></div>
       <div className="market-directory">{shown.map((market) => <MarketSection key={market.title} title={market.title} sub={market.sub} count={market.options.length} options={market.options} odds={market.odds} fixture={fixture} market={market.title} makeSelection={makeSelection} selected={selection} priceOverrides={priceOverrides} collapsed={collapsedMarkets.includes(market.title)} toggle={() => toggleMarket(market.title)} disabled={marketUnavailable} />)}</div>
       {!shown.length && <EmptyState title="No markets match that search" copy="Try a shorter term or clear the sample-market search." />}
       <div className="info-band"><span className="info-mark">i</span><span>Real club identities; simulated event details, prices and player labels. No real player data, live feeds or money.</span><Badge variant="warning">Simulation</Badge></div>
