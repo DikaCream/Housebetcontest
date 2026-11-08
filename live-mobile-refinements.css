@@ -268,10 +268,10 @@
   }
 
   #root #housebets-app.app-shell[data-page="live"] .live-result-surface .match-card-favourite {
-    width: 34px !important;
-    min-width: 34px !important;
-    height: 34px !important;
-    flex-basis: 34px !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    flex-basis: 44px !important;
     border-radius: 8px !important;
   }
 
@@ -387,25 +387,24 @@
 
 }
 
-/* Shared pulse keyframes used by all MatchLiveSignal render paths. */
+/* Shared motion for every MatchLiveSignal: a quiet outline halo and breathing dot. */
 @keyframes home-live-badge-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255,83,104,.12); }
-  50% { box-shadow: 0 0 0 3px rgba(255,83,104,.24); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(240,68,82,0); }
+  50% { box-shadow: 0 0 0 2px rgba(240,68,82,.12); }
 }
 
 @keyframes home-live-core-pulse {
-  0%, 100% { opacity: .68; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: .68; transform: scale(.88); box-shadow: 0 0 0 0 rgba(240,68,82,.14); }
+  50% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 2px rgba(240,68,82,.22); }
 }
 
 /* One shared treatment for every active MatchLiveSignal, regardless of page or column. */
 #root #housebets-app .match-live-signal {
-  color: #FF5368 !important;
-  background: rgba(78,12,25,.42) !important;
-  border: 1px solid rgba(255,83,104,.7) !important;
+  color: #F04452 !important;
+  background: transparent !important;
+  border-color: currentColor !important;
   border-radius: 999px !important;
-  box-shadow: 0 0 0 0 rgba(255,83,104,.12) !important;
-  animation: home-live-badge-pulse 1.8s ease-in-out infinite;
+  animation: home-live-badge-pulse 2s ease-in-out infinite;
 }
 
 #root #housebets-app .match-live-signal > strong {
@@ -413,7 +412,15 @@
 }
 
 #root #housebets-app .match-live-signal .match-live-signal-core {
-  animation: home-live-core-pulse 1.2s ease-in-out infinite;
+  width: 8px !important;
+  min-width: 8px !important;
+  height: 8px !important;
+  display: block !important;
+  flex: 0 0 8px !important;
+  background-color: #F04452 !important;
+  border-radius: 50% !important;
+  transform-origin: center;
+  animation: home-live-core-pulse 1.25s ease-in-out infinite;
 }
 
 /* Match Center: keep the league label and its one status badge on one balanced row. */
@@ -438,8 +445,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   #root #housebets-app .match-live-signal,
-  #root #housebets-app .match-live-signal .match-live-signal-core,
-  #root #housebets-app .match-live-signal .match-live-signal-wave {
+  #root #housebets-app .match-live-signal .match-live-signal-core {
     animation: none !important;
   }
 }

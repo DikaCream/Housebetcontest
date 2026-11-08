@@ -560,10 +560,10 @@
   white-space: nowrap;
 }
 #root #housebets-app .match-card-favourite {
-  width: 40px;
-  min-width: 40px;
-  height: 40px;
-  flex: 0 0 40px;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -578,9 +578,9 @@
 }
 #root #housebets-app .match-card-favourite svg { fill: transparent; stroke: currentColor; transition: fill 140ms ease-out; }
 #root #housebets-app .match-card-favourite.selected {
-  color: #02F8F8 !important;
-  background: rgba(2, 248, 248, .07) !important;
-  border-color: #164654 !important;
+  color: #FFD43B !important;
+  background: transparent !important;
+  border-color: transparent !important;
 }
 #root #housebets-app .match-card-favourite.selected svg { fill: currentColor; }
 #root #housebets-app .favourite-star {
@@ -672,49 +672,37 @@
 }
 #root #housebets-app .match-card-period-tag.is-upcoming { color: #A8BAC0; }
 #root #housebets-app .match-live-signal {
-  min-height: 23px;
+  min-height: 20px;
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  padding: 2px 7px;
-  color: #FF8197;
-  background: #29171D;
-  border: 1px solid #603341;
-  border-radius: 3px;
+  gap: 4px;
+  padding: 1px 6px;
+  color: #F04452;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 999px;
   line-height: 1;
   white-space: nowrap;
 }
-#root #housebets-app .match-live-signal svg {
-  width: 16px;
-  height: 15px;
-  overflow: visible;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.25;
-  stroke-linecap: round;
+#root #housebets-app .match-live-signal-core {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  display: inline-block;
+  background: currentColor;
+  border-radius: 50%;
 }
-#root #housebets-app .match-live-signal .match-live-signal-core { fill: currentColor; stroke: none; }
-#root #housebets-app .match-live-signal .match-live-signal-wave {
-  opacity: .48;
-  animation: match-broadcast-wave 1.5s ease-in-out infinite;
-}
-#root #housebets-app .match-live-signal-wave--mid { animation-delay: .18s; }
-#root #housebets-app .match-live-signal-wave--far { animation-delay: .36s; }
 #root #housebets-app .match-live-signal strong {
   color: inherit;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
-  letter-spacing: .045em;
-}
-@keyframes match-broadcast-wave {
-  0%, 100% { opacity: .42; }
-  50% { opacity: 1; }
+  letter-spacing: .035em;
 }
 #root #housebets-app .live-board-signal { display: inline-flex; align-items: center; margin-left: 3px; }
-#root #housebets-app .live-board-signal .match-live-signal { min-height: 21px; padding: 1px 4px; }
-#root #housebets-app .live-board-signal .match-live-signal strong { display: none; }
+#root #housebets-app .live-board-signal .match-live-signal { min-height: 20px; padding: 1px 5px; }
+#root #housebets-app .live-board-signal .match-live-signal strong { display: inline; }
 #root #housebets-app .match-card-teams {
   width: 100%;
   min-width: 0;
@@ -901,12 +889,12 @@
   outline-offset: 2px;
 }
 #root #housebets-app #match-market-directory { scroll-margin-top: 96px; }
-#root #housebets-app .match-card-status .match-live-signal { min-height: 24px; }
+#root #housebets-app .match-card-status .match-live-signal { min-height: 20px; }
 #root #housebets-app .match-status-line { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
 #root #housebets-app .match-status-line > span:last-child { color: #D7E2E5; font-variant-numeric: tabular-nums; }
 #root #housebets-app .match-card-period-tag.match-status-tag { min-height: 22px; }
 #root #housebets-app .hubie-hero-status { gap: 8px; flex-wrap: wrap; }
-#root #housebets-app .hubie-hero-status .match-live-signal { color: #FF8197; }
+#root #housebets-app .hubie-hero-status .match-live-signal { color: #F04452; }
 #root #housebets-app .hubie-hero-state-tag { color: #DCE8EA; }
 #root #housebets-app .hubie-hero-state-tag.is-halftime { color: #E7D6B3; }
 #root #housebets-app .hubie-hero-state-tag.is-fulltime { color: #C4F4F1; }
@@ -1224,7 +1212,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #root #housebets-app .match-live-signal .match-live-signal-wave { animation: none !important; opacity: .8; }
   #root #housebets-app .match-card-more-markets,
   #root #housebets-app .match-card-odd { transition: none !important; }
   #root #housebets-app .match-card-odd:is(:hover,:active,.is-selected) { transform: none; }
