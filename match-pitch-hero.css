@@ -179,9 +179,10 @@
   position: absolute;
   z-index: 0;
   inset: 0;
-  background: url('/fieldside-pitch-illustration.svg') center 68% / cover no-repeat !important;
+  border-radius: inherit;
+  background: url('/match-pitch-lines.svg') center 68% / cover no-repeat !important;
   content: "" !important;
-  opacity: .2;
+  opacity: .13;
   pointer-events: none;
 }
 

@@ -3,6 +3,7 @@ import type { Fixture, Selection } from './types';
 import ClubCrest from './ClubCrest';
 import CompetitionLogo from './CompetitionLogo';
 import MatchLiveSignal from './MatchLiveSignal';
+import { OddsChangeCue, matchesOddsMovement, useRecentOddsMovement } from './OddsChangeContext';
 
 const shortClubName = (club: string) => club === 'Brighton & Hove Albion' ? 'Brighton' : club;
 
@@ -17,6 +18,7 @@ type Props = {
 /** Official Housebets Hubie sprite, locally bundled; no promotional or live data. */
 export default function HubieMatchHero({ fixture, odds, selection, onOpen, onSelect }: Props) {
   const outcomes = [fixture.home, 'Draw', fixture.away];
+  const recentOddsMovement = useRecentOddsMovement();
   const isLive = fixture.status === 'LIVE' && fixture.phase !== 'FT';
   const isHalfTime = isLive && fixture.phase === 'HT';
   const isActivelyLive = isLive && !isHalfTime;
@@ -45,7 +47,8 @@ export default function HubieMatchHero({ fixture, odds, selection, onOpen, onSel
         {isFinished ? <div className="hubie-hero-closed">Market closed</div> : <div className="hubie-hero-odds">
           {odds.map((odd, index) => {
             const selected = selection?.fixtureId === fixture.id && selection.market === 'Match result' && selection.label === outcomes[index];
-            return <button type="button" key={outcomes[index]} className={`hubie-hero-odd${selected ? ' is-selected' : ''}`} disabled={fixture.suspended || isFinished} onClick={() => onSelect(index)} aria-pressed={selected} aria-label={fixture.suspended ? `${outcomes[index]} at ${odd.toFixed(2)}, market suspended` : isFinished ? `${outcomes[index]} at ${odd.toFixed(2)}, market closed` : `Select ${outcomes[index]} at ${odd.toFixed(2)}`}><span>{['1', 'Draw', '2'][index]}</span><strong>{odd.toFixed(2)}</strong></button>;
+            const movement = matchesOddsMovement(recentOddsMovement, fixture.id, 'Match result', outcomes[index]);
+            return <button type="button" key={outcomes[index]} className={`hubie-hero-odd${selected ? ' is-selected' : ''}`} disabled={fixture.suspended || isFinished} onClick={() => onSelect(index)} aria-pressed={selected} aria-label={fixture.suspended ? `${outcomes[index]} at ${odd.toFixed(2)}, market suspended` : isFinished ? `${outcomes[index]} at ${odd.toFixed(2)}, market closed` : `Select ${outcomes[index]} at ${odd.toFixed(2)}`}><span>{['1', 'Draw', '2'][index]}</span><strong>{odd.toFixed(2)}</strong><OddsChangeCue movement={movement} /></button>;
           })}
         </div>}
         </>}

@@ -143,3 +143,26 @@
     transition: none;
   }
 }
+
+#root #housebets-app .top-matches-carousel .match-fixture-card.is-top-match-pitch {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+#root #housebets-app .top-matches-carousel .match-fixture-card.is-top-match-pitch::before {
+  display: block;
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: inherit;
+  background: url('/match-pitch-lines.svg') center 68% / cover no-repeat;
+  content: "";
+  opacity: .13;
+  pointer-events: none;
+}
+
+#root #housebets-app .top-matches-carousel .match-fixture-card.is-top-match-pitch > * {
+  position: relative;
+  z-index: 1;
+}

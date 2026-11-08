@@ -1,0 +1,167 @@
+/* Small, action-led refinements for the existing five-screen demo flow. */
+
+/* Keep time/phase/status in the same two visual lanes for every fixture state. */
+#root #housebets-app .match-card-status {
+  min-height: 34px;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 10px;
+}
+#root #housebets-app .match-card-status.is-live > .match-live-signal {
+  justify-self: end;
+  margin-left: 0 !important;
+}
+#root #housebets-app .match-card-status.is-halftime > :last-child,
+#root #housebets-app .match-card-status.is-fulltime > :last-child,
+#root #housebets-app .match-card-status.is-upcoming > :last-child {
+  justify-self: end;
+}
+#root #housebets-app .match-card-status.is-upcoming > .match-card-kickoff { min-width: 0; }
+
+/* A closed/suspended market occupies the same row as selectable odds. */
+#root #housebets-app .match-card-market-actions { align-items: stretch; }
+#root #housebets-app .match-card-market-actions > :is(.match-card-odds, .match-card-lock-panel, .match-card-more-markets) {
+  min-height: 44px;
+}
+#root #housebets-app .match-card-odds > .match-card-odd,
+#root #housebets-app .match-card-market-actions > .match-card-lock-panel {
+  min-height: 44px;
+}
+#root #housebets-app .match-card-market-actions > .match-card-lock-panel {
+  height: 100%;
+  align-self: stretch;
+}
+
+/* The same short directional cue follows the changed price wherever it appears. */
+#root #housebets-app :is(.match-card-odd, .hubie-hero-odd, .odds-button, .pick-odds) {
+  position: relative;
+  isolation: isolate;
+}
+#root #housebets-app :is(.match-card-odd, .hubie-hero-odd, .odds-button, .pick-odds) > :not(.odds-change-flash):not(.odds-change-cue) {
+  position: relative;
+  z-index: 1;
+}
+#root #housebets-app .odds-change-flash {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border: 1px solid transparent;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: odds-change-flash 1050ms ease-out both;
+}
+#root #housebets-app .odds-change-flash--up {
+  background: rgba(2, 248, 248, .14);
+  border-color: rgba(2, 248, 248, .6);
+}
+#root #housebets-app .odds-change-flash--down {
+  background: rgba(255, 129, 151, .14);
+  border-color: rgba(255, 129, 151, .62);
+}
+#root #housebets-app .odds-change-cue {
+  position: absolute !important;
+  z-index: 2;
+  top: 3px;
+  right: 3px;
+  width: 15px;
+  height: 15px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: #02f8f8 !important;
+  background: rgba(6, 15, 20, .92);
+  border: 1px solid rgba(41, 64, 74, .9);
+  border-radius: 4px;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  pointer-events: none;
+  animation: odds-change-cue 1050ms ease-out both;
+}
+#root #housebets-app .odds-change-cue--down { color: #ff8197 !important; }
+#root #housebets-app .pick-odds > .odds-change-cue { top: -4px; right: -5px; }
+
+@keyframes odds-change-flash {
+  0%, 100% { opacity: 0; }
+  14% { opacity: .9; }
+  62% { opacity: .42; }
+}
+@keyframes odds-change-cue {
+  0% { opacity: 0; transform: translateY(2px) scale(.88); }
+  16% { opacity: 1; transform: translateY(0) scale(1); }
+  76% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+#root #housebets-app .slip-next-step {
+  margin: 6px 0 0;
+  color: #91a9af;
+  font-size: 11px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+/* A real sequence, kept to a single quiet line inside the existing phone slip. */
+@media (max-width: 760px) {
+  #root #housebets-app .mobile-demo-path {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: center;
+    gap: 5px;
+    margin: 0;
+    padding: 8px 12px;
+    color: #91a9af;
+    background: #0b1a21;
+    border-bottom: 1px solid #29404a;
+    list-style: none;
+  }
+  #root #housebets-app .mobile-demo-path > li {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-self: center;
+    gap: 5px;
+    white-space: nowrap;
+    color: #8299a0;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  #root #housebets-app .mobile-demo-path .demo-step-index {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 17px;
+    display: grid;
+    place-items: center;
+    color: #91a9af;
+    border: 1px solid #29404a;
+    border-radius: 50%;
+    font-size: 9px;
+    font-variant-numeric: tabular-nums;
+  }
+  #root #housebets-app .mobile-demo-path > li[data-state="done"] { color: #a8c2c7; }
+  #root #housebets-app .mobile-demo-path > li[data-state="done"] .demo-step-index {
+    color: #02f8f8;
+    border-color: #28616a;
+  }
+  #root #housebets-app .mobile-demo-path > li[data-state="current"] {
+    color: #e0f4f3;
+    font-weight: 650;
+  }
+  #root #housebets-app .mobile-demo-path > li[data-state="current"] .demo-step-index {
+    color: #041015;
+    background: #02f8f8;
+    border-color: #02f8f8;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #root #housebets-app .odds-change-flash,
+  #root #housebets-app .odds-change-cue {
+    animation: none !important;
+  }
+  #root #housebets-app .odds-change-flash { opacity: .36; }
+  #root #housebets-app .odds-change-cue { opacity: 1; }
+}

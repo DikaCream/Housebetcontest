@@ -12,6 +12,8 @@ import HubieMatchHero from './HubieMatchHero';
 import MatchLiveSignal from './MatchLiveSignal';
 import TopMatchesCarousel from './TopMatchesCarousel';
 import MobileSheet from './MobileSheet';
+import { OddsChangeCue, OddsMovementProvider, matchesOddsMovement, oddsOverrideKey, useRecentOddsMovement } from './OddsChangeContext';
+import type { OddsMovement } from './OddsChangeContext';
 import './global.css';
 import './housebets-brand.css';
 import './total-redesign.css';
@@ -33,6 +35,7 @@ import './audit-completion.css';
 import './approved-ui-revisions.css';
 import './live-mobile-refinements.css';
 import './mybets-mobile-refinements.css';
+import './demo-flow-polish.css';
 import './quick-bet.css';
 export type { Fixture, Selection } from './types';
 type Page = 'home' | 'menu' | 'live' | 'football' | 'match' | 'activity';
@@ -73,7 +76,6 @@ function fixtureSearchText(fixture: Fixture) {
 }
 
 type OddsOverrides = Record<string, number>;
-const oddsOverrideKey = (fixtureId: string, market: string, label: string) => `${fixtureId}::${market}::${label}`;
 function getMarketOdds(fixture: Fixture, market: string, pickIndex: number, overrides: OddsOverrides) {
   const definition = getSampleMarkets(fixture).find((item) => item.title === market);
   const label = definition?.options[pickIndex];
@@ -212,6 +214,7 @@ const mobileSports = [
   { name: 'Volleyball', icon: 'volleyball' },
   { name: 'Handball', icon: 'ball' },
 ];
+const mobileMenuSports = [mobileSports[0], { name: 'American Football', icon: 'ball' }, ...mobileSports.slice(1)];
 
 const pageLabels: Record<Page, { crumb: string; title: string; subtitle: string }> = {
   home: { crumb: 'Sports', title: 'Matchday', subtitle: 'Club fixtures, scores and odds.' },
@@ -285,6 +288,7 @@ function Icon({ name, size = 18 }: { name: string; size?: number }) {
 
 function App() {
   const [page, setPage] = useState<Page>('home');
+  const menuReturnPage = useRef<Page | null>(null);
   const [matchFixtureId, setMatchFixtureId] = useState(fixtures[0].id);
   const [activityTab, setActivityTab] = useState<ActivityTab>('slip');
   const [betFilter, setBetFilter] = useState<BetStatus>('open');
@@ -294,6 +298,8 @@ function App() {
   const [priceOverrides, setPriceOverrides] = useState<OddsOverrides>({});
   const [stake, setStake] = useState('10');
   const [pendingOdds, setPendingOdds] = useState<number | null>(null);
+  const [recentOddsMovement, setRecentOddsMovement] = useState<OddsMovement | null>(null);
+  const oddsMovementToken = useRef(0);
   const [suspendedFixtureIds, setSuspendedFixtureIds] = useState<string[]>([]);
   const [failNext, setFailNext] = useState(false);
   const [notice, setNotice] = useState<Notice | null>(null);
@@ -341,6 +347,15 @@ function App() {
   }, [notice]);
 
   useEffect(() => {
+    if (!recentOddsMovement) return;
+    const token = recentOddsMovement.token;
+    const timer = window.setTimeout(() => {
+      setRecentOddsMovement((current) => current?.token === token ? null : current);
+    }, 1050);
+    return () => window.clearTimeout(timer);
+  }, [recentOddsMovement]);
+
+  useEffect(() => {
     if (page !== 'match' || marketJumpRequest === handledMarketJump.current) return;
     const directory = document.getElementById('match-market-directory');
     if (!directory) return;
@@ -377,6 +392,17 @@ function App() {
     setPage(next);
     setMobileSheetOpen(false);
     if (scrollToTop) scrollPageTop();
+  }
+
+  function handleMenuTabPress() {
+    if (page === 'menu') {
+      const previousPage = menuReturnPage.current ?? 'home';
+      menuReturnPage.current = null;
+      navigate(previousPage);
+      return;
+    }
+    menuReturnPage.current = page;
+    navigate('menu');
   }
 
   function openMarket(fixtureId: string, category: string) {
@@ -417,6 +443,7 @@ function App() {
     setFootballScope('all');
     navigate('football');
   }
+
   function openMenuSport(sport: string) {
     setQuery('');
     if (sport === 'Football') {
@@ -447,7 +474,6 @@ function App() {
     setQuery(item);
     navigate('football');
   }
-
 
   function toggleFavourite(item: string) {
     setFavourites((current) => current.includes(item) ? current.filter((entry) => entry !== item) : [...current, item]);
@@ -598,7 +624,9 @@ function App() {
 
   function acceptNewOdds() {
     if (!selection || pendingOdds === null) return;
-    setPriceOverrides((current) => ({ ...current, [oddsOverrideKey(selection.fixtureId, selection.market, selection.label)]: pendingOdds }));
+    const key = oddsOverrideKey(selection.fixtureId, selection.market, selection.label);
+    setPriceOverrides((current) => ({ ...current, [key]: pendingOdds }));
+    setRecentOddsMovement({ key, direction: pendingOdds > selection.odds ? 'up' : 'down', token: ++oddsMovementToken.current });
     setSelection({ ...selection, odds: pendingOdds });
     setPendingOdds(null);
     setSlipMessage(null);
@@ -606,6 +634,22 @@ function App() {
   }
 
   const compactLabels: Record<Page, string> = { home: 'Home', menu: 'Menu', live: 'Live', football: 'Football', match: 'Match', activity: 'Bets' };
+  const currentMobileJourneyStep = railTab === 'bets' ? 2 : selection ? 1 : 0;
+  const renderDemoLab = () => <DemoLab
+    selection={selection}
+    canPlaceDemoBet={Boolean(selection && isValidStake(stake) && pendingOdds === null && !selectedFixtureSuspended)}
+    pendingOdds={pendingOdds}
+    marketSuspended={demoFixtureSuspended}
+    fixtureLabel={`${demoFixture.home} v ${demoFixture.away}`}
+    failNext={failNext}
+    openCount={openCount}
+    simulateOddsChange={simulateOddsChange}
+    toggleSuspended={() => toggleFixtureSuspension(demoFixtureId)}
+    setFailNext={() => { setFailNext(true); setNotice({ type: 'warning', text: 'The next demo placement will fail. Tap again to cancel.' }); }}
+    placeDemoBet={placeDemoBet}
+    settleOpenBet={settleOpenBet}
+    cancelFail={() => setFailNext(false)}
+  />;
   const nav = (compact = false) => (
     <>
       {(compact ? mobileNavItems : navItems).map((item) => (
@@ -617,18 +661,22 @@ function App() {
           data-destination={item.id}
           aria-current={page === item.id ? 'page' : undefined}
           aria-expanded={compact && item.id === 'activity' ? mobileSheetOpen : undefined}
-          aria-label={compact && item.id === 'activity' ? `Bets${selection ? ', 1 selection' : ''}` : item.label}
+          aria-label={compact && item.id === 'activity' ? selection ? 'Open bet slip, 1 selection' : 'Open bet slip and My Bets' : item.label}
           onClick={() => {
             if (compact && item.id === 'activity') {
               if (mobileSheetOpen) setMobileSheetOpen(false);
               else openFullSlip();
               return;
             }
+            if (compact && item.id === 'menu') {
+              handleMenuTabPress();
+              return;
+            }
             navigate(item.id);
           }}
         >
           <span className="nav-icon"><Icon name={item.icon} size={18} /></span>
-          <span className="nav-label">{compact ? compactLabels[item.id] : item.id === 'activity' ? 'Slip & bets' : item.label}</span>
+          <span className="nav-label">{compact ? item.id === 'activity' && selection ? 'Bet slip' : compactLabels[item.id] : item.id === 'activity' ? 'Slip & bets' : item.label}</span>
           {item.count && <span className="nav-count">{item.count}</span>}
           {item.id === 'activity' && selection && (compact
             ? <span className="nav-count nav-slip-count" aria-hidden="true">1</span>
@@ -639,6 +687,7 @@ function App() {
   );
 
   return (
+    <OddsMovementProvider value={recentOddsMovement}>
     <div id="housebets-app" className="app-shell" data-page={page} data-has-selection={Boolean(selection)} data-sheet-open={mobileSheetOpen} data-quick-bet-open={quickBetOpen} data-design="original-matchday" data-theme="lavender">
       <StatusBar style="light" />
       <header className="topbar">
@@ -723,24 +772,10 @@ function App() {
         )}
         <details className="inline-demo-lab inline-demo-lab--desktop">
           <summary><Icon name="grid" size={15} /><span>Demo state controls</span><small>Odds · suspend · failure</small><b>＋</b></summary>
-          <DemoLab
-            selection={selection}
-            canPlaceDemoBet={Boolean(selection && isValidStake(stake) && pendingOdds === null && !selectedFixtureSuspended)}
-            pendingOdds={pendingOdds}
-            marketSuspended={demoFixtureSuspended}
-            fixtureLabel={`${demoFixture.home} v ${demoFixture.away}`}
-            failNext={failNext}
-            openCount={openCount}
-            simulateOddsChange={simulateOddsChange}
-            toggleSuspended={() => toggleFixtureSuspension(demoFixtureId)}
-            setFailNext={() => { setFailNext(true); setNotice({ type: 'warning', text: 'The next demo placement will fail. Tap again to cancel.' }); }}
-            placeDemoBet={placeDemoBet}
-            settleOpenBet={settleOpenBet}
-            cancelFail={() => setFailNext(false)}
-          />
+          {renderDemoLab()}
         </details>
         {page === 'home' && <HomePage fixtures={visibleFixtures} featuredId={homeFeatured?.id} navigate={navigate} makeSelection={makeSelection} selection={selection} priceOverrides={priceOverrides} onCompetition={openCompetition} onChooseSport={selectMobileSport} favourites={favourites} toggleFavourite={toggleFavourite} openMarket={openMarket} />}
-        {page === 'menu' && <MenuPage favourites={favourites} onChooseSport={openMenuSport} onOpenFavourite={openFavourite} toggleFavourite={toggleFavourite} onBrowseFootball={() => openMenuSport('Football')} />}
+        {page === 'menu' && <MenuPage favourites={favourites} onChooseSport={openMenuSport} onOpenCompetition={(competition) => { setQuery(''); openCompetition(competition); }} onOpenFavourite={openFavourite} toggleFavourite={toggleFavourite} onBrowseFootball={() => openMenuSport('Football')} />}
         {page === 'live' && <LivePage fixtures={visibleFixtures} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} sportFilter={liveSportFilter} setSportFilter={setLiveSportFilter} competitionFilter={liveCompetitionFilter} setCompetitionFilter={setLiveCompetitionFilter} searchQuery={query} selection={selection} openMarket={openMarket} />}
         {page === 'football' && <FootballPage fixtures={visibleFixtures} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} sportFilter={sportFilter} setSportFilter={setSportFilter} footballScope={footballScope} setFootballScope={setFootballScope} favourites={favourites} toggleFavourite={toggleFavourite} selection={selection} openMarket={openMarket} />}
         {page === 'match' && (
@@ -786,21 +821,7 @@ function App() {
         )}
         <details className="inline-demo-lab inline-demo-lab--mobile">
           <summary><Icon name="grid" size={15} /><span>Demo state controls</span><small>Prototype only</small><b>＋</b></summary>
-          <DemoLab
-            selection={selection}
-            canPlaceDemoBet={Boolean(selection && isValidStake(stake) && pendingOdds === null && !selectedFixtureSuspended)}
-            pendingOdds={pendingOdds}
-            marketSuspended={demoFixtureSuspended}
-            fixtureLabel={`${demoFixture.home} v ${demoFixture.away}`}
-            failNext={failNext}
-            openCount={openCount}
-            simulateOddsChange={simulateOddsChange}
-            toggleSuspended={() => toggleFixtureSuspension(demoFixtureId)}
-            setFailNext={() => { setFailNext(true); setNotice({ type: 'warning', text: 'The next demo placement will fail. Tap again to cancel.' }); }}
-            placeDemoBet={placeDemoBet}
-            settleOpenBet={settleOpenBet}
-            cancelFail={() => setFailNext(false)}
-          />
+          {renderDemoLab()}
         </details>
         <footer className="page-footer"><span className="footer-mark">HB</span><span><strong>Demo board.</strong> Fixtures, prices and returns are examples. No real players, bets or money are connected. Club marks belong to their owners.</span></footer>
       </main>
@@ -821,21 +842,7 @@ function App() {
         </div>
         <details className="rail-demo-disclosure">
           <summary><span>Prototype controls</span><small>Session only</small><b>＋</b></summary>
-          <DemoLab
-            selection={selection}
-            canPlaceDemoBet={Boolean(selection && isValidStake(stake) && pendingOdds === null && !selectedFixtureSuspended)}
-            pendingOdds={pendingOdds}
-            marketSuspended={demoFixtureSuspended}
-            fixtureLabel={`${demoFixture.home} v ${demoFixture.away}`}
-            failNext={failNext}
-            openCount={openCount}
-            simulateOddsChange={simulateOddsChange}
-            toggleSuspended={() => toggleFixtureSuspension(demoFixtureId)}
-            setFailNext={() => { setFailNext(true); setNotice({ type: 'warning', text: 'The next demo placement will fail. Tap again to cancel.' }); }}
-            placeDemoBet={placeDemoBet}
-            settleOpenBet={settleOpenBet}
-            cancelFail={() => setFailNext(false)}
-          />
+          {renderDemoLab()}
         </details>
       </aside>
 
@@ -883,6 +890,12 @@ function App() {
               </div>
               <button className="mobile-sheet-close" onClick={() => setMobileSheetOpen(false)} aria-label="Close bet slip"><Icon name="close" size={18} /></button>
             </div>
+            <ol className="mobile-demo-path" aria-label="Single-pick demo journey">
+              {['Pick one price', 'Potential return', 'My Bets'].map((label, index) => {
+                const state = index === currentMobileJourneyStep ? 'current' : index < currentMobileJourneyStep ? 'done' : 'upcoming';
+                return <li key={label} data-state={state} aria-current={state === 'current' ? 'step' : undefined}><span className="demo-step-index">{String(index + 1).padStart(2, '0')}</span><span>{label}</span></li>;
+              })}
+            </ol>
             <div key={selectionMotionKey} className="mobile-sheet-body slip-refresh" data-has-selection={Boolean(selection)}>
               {railTab === 'slip'
                 ? <SlipPanel idPrefix="mobile" selection={selection} stake={stake} setStake={updateStake} slipMessage={slipMessage} pendingOdds={pendingOdds} marketSuspended={selectedFixtureSuspended} estimatedReturn={estimatedReturn} clearSelection={clearSelection} acceptNewOdds={acceptNewOdds} placeDemoBet={placeDemoBet} navigate={navigate} />
@@ -908,9 +921,9 @@ function App() {
       )}
       <nav className="mobile-nav" aria-label="Mobile navigation">{nav(true)}</nav>
     </div>
+    </OddsMovementProvider>
   );
 }
-
 
 function FloatingQuickBet({ selection, railTab, setTab, stake, setStake, slipMessage, pendingOdds, marketSuspended, estimatedReturn, clearSelection, acceptNewOdds, placeDemoBet, navigate, bets, openCount, cashOutBet, openFullBets, onClose }: {
   selection: Selection;
@@ -973,52 +986,137 @@ function MobileSportsHeader({ page, navigate, onChooseSport }: { page: Page; nav
 }
 
 
-function MenuPage({ favourites, onChooseSport, onOpenFavourite, toggleFavourite, onBrowseFootball }: {
+function MenuPage({ favourites, onChooseSport, onOpenCompetition, onOpenFavourite, toggleFavourite, onBrowseFootball }: {
   favourites: string[];
   onChooseSport: (sport: string) => void;
+  onOpenCompetition: (competition: string) => void;
   onOpenFavourite: (item: string) => void;
   toggleFavourite: (item: string) => void;
   onBrowseFootball: () => void;
 }) {
+  const [expandedSport, setExpandedSport] = useState<string | null>('Football');
+  const [mobileFavouritesExpanded, setMobileFavouritesExpanded] = useState(false);
+  const menuCompetitions = [
+    'Premier League',
+    'UEFA Champions League',
+    'Ligue 1',
+    'Bundesliga',
+    'LaLiga',
+    'Serie A',
+    'UEFA Europa League',
+    'UEFA Conference League',
+  ];
+  const sportPanelId = (sport: string) => `menu-mobile-sport-${sport.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
   return (
     <div className="page-stack menu-page">
-      <section className="menu-section" aria-labelledby="menu-sports-heading">
-        <div className="menu-section-heading">
-          <div><h2 id="menu-sports-heading">Sports</h2><p>Choose a sport to open its board.</p></div>
-        </div>
-        <div className="menu-sport-grid">
-          {mobileSports.map((sport) => <button key={sport.name} type="button" className="menu-sport-button" onClick={() => onChooseSport(sport.name)}>
-            <span className="menu-sport-icon"><Icon name={sport.icon} size={18} /></span>
-            <span className="menu-sport-name">{sport.name}</span>
-            <span className="menu-sport-description">{sport.name === 'Football' ? 'Fixtures and leagues' : 'Open sport board'}</span>
-            <Icon name="chevron" size={16} />
-          </button>)}
-        </div>
-      </section>
-      <section className="menu-section" aria-labelledby="menu-favourites-heading">
-        <div className="menu-section-heading">
-          <div><h2 id="menu-favourites-heading">Favourites</h2><p>Open a saved team or competition.</p></div>
-          <span className="menu-favourite-count" aria-label={`${favourites.length} favourites`}>{favourites.length}</span>
-        </div>
-        {favourites.length > 0 ? <div className="menu-favourite-list">
-          {favourites.map((item) => {
-            const isCompetition = fixtures.some((fixture) => fixture.competition === item);
-            return <div className="menu-favourite-row" key={item}>
-              <button type="button" className="menu-favourite-open" onClick={() => onOpenFavourite(item)} aria-label={`Open ${item}`}>
-                <span className="menu-favourite-marker"><Icon name={isCompetition ? 'grid' : 'star'} size={17} /></span>
-                <span className="menu-favourite-copy"><strong>{item}</strong><small>{isCompetition ? 'Competition' : 'Team'}</small></span>
-                <Icon name="chevron" size={16} />
-              </button>
-              <button type="button" className="menu-favourite-remove" onClick={() => toggleFavourite(item)} aria-label={`Remove ${item} from favourites`} title={`Remove ${item} from favourites`}><Icon name="close" size={16} /></button>
-            </div>;
-          })}
-        </div> : <div className="menu-favourites-empty">
-          <span className="menu-favourite-marker"><Icon name="star" size={17} /></span>
-          <div><strong>No favourites yet</strong><p>Save a team from a match card and it will appear here.</p></div>
-          <button type="button" onClick={onBrowseFootball}>Browse football</button>
-        </div>}
-      </section>
-      <p className="menu-demo-note">This demo includes sample football fixtures only. Other sports show an empty board until fixtures are available.</p>
+      <div className="menu-mobile-content">
+        <section className="menu-mobile-sports" aria-labelledby="menu-mobile-sports-heading">
+          <div className="menu-mobile-heading"><h2 id="menu-mobile-sports-heading">Sports</h2><span>Choose a sport or league</span></div>
+          <div className="menu-mobile-sport-list">
+            {mobileMenuSports.map((sport) => {
+              const isExpanded = expandedSport === sport.name;
+              const panelId = sportPanelId(sport.name);
+              return (
+                <section className={`menu-mobile-sport${isExpanded ? ' is-expanded' : ''}`} key={sport.name}>
+                  <h3 className="menu-mobile-sport-heading">
+                    <button type="button" className="menu-mobile-sport-toggle" aria-controls={panelId} aria-expanded={isExpanded} onClick={() => setExpandedSport((current) => current === sport.name ? null : sport.name)}>
+                      <span className="menu-mobile-sport-icon"><Icon name={sport.icon} size={20} /></span>
+                      <span className="menu-mobile-sport-name">{sport.name}</span>
+                      <span className="menu-mobile-sport-chevron" aria-hidden="true"><Icon name="chevron" size={16} /></span>
+                    </button>
+                  </h3>
+                  <div id={panelId} className="menu-mobile-sport-panel" hidden={!isExpanded}>
+                    {sport.name === 'Football' ? <div className="menu-mobile-league-list" role="group" aria-label="Football competitions">
+                      {menuCompetitions.map((competition) => {
+                        const sampleCount = fixtures.filter((fixture) => fixture.competition === competition).length;
+                        const hasCompetitionLogo = ['Premier League', 'UEFA Champions League', 'Ligue 1', 'Bundesliga', 'LaLiga', 'Serie A'].includes(competition);
+                        return <button type="button" className="menu-mobile-league" key={competition} onClick={() => onOpenCompetition(competition)} aria-label={`Open ${competition}${sampleCount ? `, ${sampleCount} sample ${sampleCount === 1 ? 'fixture' : 'fixtures'}` : ', no sample fixtures'}`}>
+                          <span className="menu-mobile-league-mark">{hasCompetitionLogo ? <CompetitionLogo competition={competition} /> : <span className="menu-mobile-league-fallback"><Icon name="grid" size={15} /></span>}</span>
+                          <span className="menu-mobile-league-copy"><strong>{competition}</strong><small>{sampleCount ? `${sampleCount} sample ${sampleCount === 1 ? 'fixture' : 'fixtures'}` : 'No sample fixtures'}</small></span>
+                          {sampleCount > 0 && <span className="menu-mobile-league-count" aria-hidden="true">{sampleCount}</span>}
+                          <Icon name="chevron" size={15} />
+                        </button>;
+                      })}
+                    </div> : <div className="menu-mobile-empty-sport">
+                      <div><strong>No {sport.name.toLowerCase()} samples yet</strong><p>This demo currently includes sample football fixtures only.</p></div>
+                      <button type="button" onClick={() => onChooseSport(sport.name)}>View {sport.name}</button>
+                    </div>}
+                  </div>
+                </section>
+              );
+            })}
+          </div>
+        </section>
+        <section className={`menu-mobile-favourites${mobileFavouritesExpanded ? ' is-expanded' : ''}`} aria-labelledby="menu-mobile-favourites-heading">
+          <h2 className="menu-mobile-favourites-heading">
+            <button type="button" id="menu-mobile-favourites-heading" className="menu-mobile-favourites-toggle" aria-controls="menu-mobile-favourites-panel" aria-expanded={mobileFavouritesExpanded} onClick={() => setMobileFavouritesExpanded((expanded) => !expanded)}>
+              <span className="menu-mobile-favourites-icon"><Icon name="star" size={18} /></span>
+              <span className="menu-mobile-favourites-copy"><strong>Favourites</strong><small>Open a saved team or competition.</small></span>
+              <span className="menu-mobile-favourites-count" aria-label={`${favourites.length} favourites`}>{favourites.length}</span>
+              <span className="menu-mobile-favourites-chevron" aria-hidden="true"><Icon name="chevron" size={16} /></span>
+            </button>
+          </h2>
+          <div id="menu-mobile-favourites-panel" className="menu-mobile-favourites-panel" hidden={!mobileFavouritesExpanded}>
+            {favourites.length > 0 ? <div className="menu-favourite-list">
+              {favourites.map((item) => {
+                const isCompetition = fixtures.some((fixture) => fixture.competition === item);
+                return <div className="menu-favourite-row" key={item}>
+                  <button type="button" className="menu-favourite-open" onClick={() => onOpenFavourite(item)} aria-label={`Open ${item}`}>
+                    <span className="menu-favourite-marker"><Icon name={isCompetition ? 'grid' : 'star'} size={17} /></span>
+                    <span className="menu-favourite-copy"><strong>{item}</strong><small>{isCompetition ? 'Competition' : 'Team'}</small></span>
+                    <Icon name="chevron" size={16} />
+                  </button>
+                  <button type="button" className="menu-favourite-remove" onClick={() => toggleFavourite(item)} aria-label={`Remove ${item} from favourites`} title={`Remove ${item} from favourites`}><Icon name="close" size={16} /></button>
+                </div>;
+              })}
+            </div> : <div className="menu-favourites-empty">
+              <span className="menu-favourite-marker"><Icon name="star" size={17} /></span>
+              <div><strong>No favourites yet</strong><p>Save a team from a match card and it will appear here.</p></div>
+              <button type="button" onClick={onBrowseFootball}>Browse football</button>
+            </div>}
+          </div>
+        </section>
+        <p className="menu-demo-note">Only sample football fixtures are included. Other sports and leagues without samples open an empty board.</p>
+      </div>
+      <div className="menu-desktop-content">
+        <section className="menu-section" aria-labelledby="menu-sports-heading">
+          <div className="menu-section-heading">
+            <div><h2 id="menu-sports-heading">Sports</h2><p>Choose a sport to open its board.</p></div>
+          </div>
+          <div className="menu-sport-grid">
+            {mobileSports.map((sport) => <button key={sport.name} type="button" className="menu-sport-button" onClick={() => onChooseSport(sport.name)}>
+              <span className="menu-sport-icon"><Icon name={sport.icon} size={18} /></span>
+              <span className="menu-sport-name">{sport.name}</span>
+              <span className="menu-sport-description">{sport.name === 'Football' ? 'Fixtures and leagues' : 'Open sport board'}</span>
+              <Icon name="chevron" size={16} />
+            </button>)}
+          </div>
+        </section>
+        <section className="menu-section" aria-labelledby="menu-favourites-heading">
+          <div className="menu-section-heading">
+            <div><h2 id="menu-favourites-heading">Favourites</h2><p>Open a saved team or competition.</p></div>
+            <span className="menu-favourite-count" aria-label={`${favourites.length} favourites`}>{favourites.length}</span>
+          </div>
+          {favourites.length > 0 ? <div className="menu-favourite-list">
+            {favourites.map((item) => {
+              const isCompetition = fixtures.some((fixture) => fixture.competition === item);
+              return <div className="menu-favourite-row" key={item}>
+                <button type="button" className="menu-favourite-open" onClick={() => onOpenFavourite(item)} aria-label={`Open ${item}`}>
+                  <span className="menu-favourite-marker"><Icon name={isCompetition ? 'grid' : 'star'} size={17} /></span>
+                  <span className="menu-favourite-copy"><strong>{item}</strong><small>{isCompetition ? 'Competition' : 'Team'}</small></span>
+                  <Icon name="chevron" size={16} />
+                </button>
+                <button type="button" className="menu-favourite-remove" onClick={() => toggleFavourite(item)} aria-label={`Remove ${item} from favourites`} title={`Remove ${item} from favourites`}><Icon name="close" size={16} /></button>
+              </div>;
+            })}
+          </div> : <div className="menu-favourites-empty">
+            <span className="menu-favourite-marker"><Icon name="star" size={17} /></span>
+            <div><strong>No favourites yet</strong><p>Save a team from a match card and it will appear here.</p></div>
+            <button type="button" onClick={onBrowseFootball}>Browse football</button>
+          </div>}
+        </section>
+        <p className="menu-demo-note">This demo includes sample football fixtures only. Other sports show an empty board until fixtures are available.</p>
+      </div>
     </div>
   );
 }
@@ -1083,7 +1181,7 @@ function HomePage({ fixtures, featuredId, navigate, makeSelection, selection, pr
           );
         })}</div>
       </section>
-      {topMatches.length > 0 && <TopMatchesCarousel>{topMatches.map((fixture) => <HomeFixtureCard key={fixture.id} fixture={fixture} navigate={navigate} makeSelection={makeSelection} selection={selection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} openMarket={openMarket} />)}</TopMatchesCarousel>}
+      {topMatches.length > 0 && <TopMatchesCarousel>{topMatches.map((fixture) => <HomeFixtureCard key={fixture.id} fixture={fixture} navigate={navigate} makeSelection={makeSelection} selection={selection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} openMarket={openMarket} topMatchPitchLines />)}</TopMatchesCarousel>}
       <div className="fieldside-schedule-heading"><div><h2>Live now &amp; starting soon</h2><p>Scores, kick-off times and prices</p></div><button aria-label="View full board" onClick={() => navigate('live')}><span className="fieldside-board-label">View full board</span><Icon name="arrow" size={14} /></button></div>
       <div className={`home-fixture-lanes${hasBothLanes ? '' : ' is-single'}`}>
         {[
@@ -1106,7 +1204,7 @@ function HomePage({ fixtures, featuredId, navigate, makeSelection, selection, pr
   );
 }
 
-function HomeFixtureCard({ fixture, navigate, makeSelection, selection, priceOverrides, favourites, toggleFavourite, openMarket, mobileScoreboard = false }: {
+function HomeFixtureCard({ fixture, navigate, makeSelection, selection, priceOverrides, favourites, toggleFavourite, openMarket, mobileScoreboard = false, topMatchPitchLines = false }: {
   fixture: Fixture;
   navigate: Navigate;
   makeSelection: (fixture: Fixture, pickIndex: number, market?: string) => void;
@@ -1116,9 +1214,11 @@ function HomeFixtureCard({ fixture, navigate, makeSelection, selection, priceOve
   toggleFavourite: (item: string) => void;
   openMarket: (fixtureId: string, category: string) => void;
   mobileScoreboard?: boolean;
+  topMatchPitchLines?: boolean;
 }) {
   const [favouritePressCount, setFavouritePressCount] = useState(0);
   const outcomes = [fixture.home, 'Draw', fixture.away];
+  const recentOddsMovement = useRecentOddsMovement();
   const isFinished = isFinishedFixture(fixture);
   const isActivelyLive = isActivelyLiveFixture(fixture);
   const isHalfTime = fixture.status === 'LIVE' && fixture.phase === 'HT';
@@ -1126,7 +1226,7 @@ function HomeFixtureCard({ fixture, navigate, makeSelection, selection, priceOve
   const kickoff = `${fixture.date === 'TOMORROW' ? 'Tomorrow' : fixture.date === 'TODAY' ? 'Today' : fixture.date ?? 'Today'} · ${fixture.time}`;
 
   return (
-    <article className={`match-fixture-card${fixture.suspended ? ' is-suspended' : ''}`} data-fixture-id={fixture.id} data-phase={fixture.phase ?? fixture.status}>
+    <article className={`match-fixture-card${fixture.suspended ? ' is-suspended' : ''}${topMatchPitchLines ? ' is-top-match-pitch' : ''}`} data-fixture-id={fixture.id} data-phase={fixture.phase ?? fixture.status}>
       <div className="match-card-header">
         <button className="match-card-competition" type="button" onClick={() => navigate('match', fixture.id)} aria-label={`Open ${fixture.home} v ${fixture.away} match centre`}>
           <CompetitionLogo competition={fixture.competition} /><span>{fixture.competition}</span><i aria-hidden="true">·</i><small>{fixture.round}</small>
@@ -1159,9 +1259,12 @@ function HomeFixtureCard({ fixture, navigate, makeSelection, selection, priceOve
             {fixture.odds.map((_, index) => {
               const odd = getMarketOdds(fixture, 'Match result', index, priceOverrides);
               const selected = selection?.fixtureId === fixture.id && selection.market === 'Match result' && selection.label === outcomes[index];
-              return <button key={index} type="button" className={`match-card-odd${selected ? ' is-selected' : ''}`} onClick={() => makeSelection(fixture, index, 'Match result')} aria-pressed={selected} aria-label={`Select ${outcomes[index]} at ${odd.toFixed(2)}${selected ? ', selected' : ''}`}>
-                <span>{['1', 'Draw', '2'][index]}</span><strong>{odd.toFixed(2)}</strong>
-              </button>;
+              const movement = matchesOddsMovement(recentOddsMovement, fixture.id, 'Match result', outcomes[index]);
+              return (
+                <button key={index} type="button" className={`match-card-odd${selected ? ' is-selected' : ''}`} onClick={() => makeSelection(fixture, index, 'Match result')} aria-pressed={selected} aria-label={`Select ${outcomes[index]} at ${odd.toFixed(2)}${selected ? ', selected' : ''}`}>
+                  <span>{['1', 'Draw', '2'][index]}</span><strong>{odd.toFixed(2)}</strong><OddsChangeCue movement={movement} />
+                </button>
+              );
             })}
           </div>}
           {!isFinished && <button className="match-card-more-markets" type="button" onClick={() => openMarket(fixture.id, 'Handicaps')} aria-label={`More markets for ${fixture.home} v ${fixture.away}: open Handicaps`}><span>More markets</span><b>+{fixture.extraMarkets}</b><Icon name="chevron" size={14} /></button>}
@@ -1327,9 +1430,9 @@ function MatchPage({ fixture, fixtures: fixtureOptions, priceOverrides, marketSu
       <Card className={`match-hero ${fixture.id === 'real-madrid-arsenal' ? 'has-pitch-illustration' : ''}`} size="default">
         <div className="match-hero-top"><span className="competition-label"><CompetitionLogo competition={fixture.competition} className="match-competition-logo" /><span className="match-competition-name">{fixture.competition}</span><span className="match-round-name"><span className="mini-divider">/</span>{fixture.round}</span></span><div className="match-hero-actions">{isLive || isFinished ? <span className="match-status-line"><FixtureStatusBadge fixture={fixture} /></span> : null}</div></div>
         <div className="match-hero-teams">
-          <div className="match-team"><ClubCrest club={fixture.home} className="match-club-crest" /><strong>{fixture.home}</strong><small>Home side</small><button className={`follow-chip ${following.includes(fixture.home) ? 'following' : ''}`} onClick={() => toggleFollow(fixture.home)}>{following.includes(fixture.home) ? <><Icon name="star" size={14} /> Following</> : <><Icon name="plus" size={14} /> Follow</>}</button></div>
+          <div className="match-team"><ClubCrest club={fixture.home} className="match-club-crest" /><strong>{fixture.home}</strong><small>Home side</small><button type="button" className={`follow-chip ${following.includes(fixture.home) ? 'following' : ''}`} aria-label={`Follow ${fixture.home}`} aria-pressed={following.includes(fixture.home)} title={following.includes(fixture.home) ? `Unfollow ${fixture.home}` : `Follow ${fixture.home}`} onClick={() => toggleFollow(fixture.home)}>{following.includes(fixture.home) ? <><Icon name="star" size={14} /> Following</> : <><Icon name="plus" size={14} /> Follow</>}</button></div>
           <div className="match-score"><span>{fixture.homeScore !== undefined ? <>{fixture.homeScore}<i>:</i>{fixture.awayScore}</> : 'VS'}</span>{isLive ? <span className="match-score-phase">{fixture.phase === 'HT' ? 'Half-time' : `${fixture.time} · ${fixturePeriodText(fixture)}`}</span> : isFinished ? <span className="match-score-phase">FT · Full time</span> : <Badge variant="secondary" className="upcoming-tag">{`${fixture.date ?? 'UPCOMING'} · ${fixture.time}`}</Badge>}<small>{isLive ? 'Simulated score · 90 min' : isFinished ? 'Final sample result' : 'Simulated kick-off'}</small></div>
-          <div className="match-team align-right"><ClubCrest club={fixture.away} className="match-club-crest" /><strong>{fixture.away}</strong><small>Away side</small><button className={`follow-chip ${following.includes(fixture.away) ? 'following' : ''}`} onClick={() => toggleFollow(fixture.away)}>{following.includes(fixture.away) ? <><Icon name="star" size={14} /> Following</> : <><Icon name="plus" size={14} /> Follow</>}</button></div>
+          <div className="match-team align-right"><ClubCrest club={fixture.away} className="match-club-crest" /><strong>{fixture.away}</strong><small>Away side</small><button type="button" className={`follow-chip ${following.includes(fixture.away) ? 'following' : ''}`} aria-label={`Follow ${fixture.away}`} aria-pressed={following.includes(fixture.away)} title={following.includes(fixture.away) ? `Unfollow ${fixture.away}` : `Follow ${fixture.away}`} onClick={() => toggleFollow(fixture.away)}>{following.includes(fixture.away) ? <><Icon name="star" size={14} /> Following</> : <><Icon name="plus" size={14} /> Follow</>}</button></div>
         </div>
         <div className="match-hero-bottom"><span>{fixture.id === 'real-madrid-arsenal' ? 'Illustrated pitch · simulated fixture' : 'Simulated fixture · no live feed'}</span><span>{fixture.competition} · {fixture.round}</span></div>
       </Card>
@@ -1362,13 +1465,17 @@ function MarketSection({ title, sub, count, options, odds, fixture, market = 'Ma
   toggle: () => void;
   disabled: boolean;
 }) {
+  const recentOddsMovement = useRecentOddsMovement();
   return (
     <Card className={`market-card ${title === 'Double chance' ? 'market-card--double-chance' : ''} ${collapsed ? 'is-collapsed' : ''}`} size="sm">
       <button className="market-card-heading" onClick={toggle} aria-expanded={!collapsed}>
         <span><strong>{title}</strong><small>{sub}</small></span><span className="market-card-heading-right"><span className="market-count">{String(count).padStart(2, '0')} outcomes</span><span className="market-collapse-icon">{collapsed ? '+' : '−'}</span></span>
       </button>
       {!collapsed && <div className={`market-outcomes ${options.length === 2 ? 'two-outcomes' : ''} ${options.length === 3 ? 'three-outcomes' : ''}`}>
-        {options.map((label, i) => <OddsButton key={label} label={label} odds={getMarketOdds(fixture, market, i, priceOverrides)} selected={selected?.fixtureId === fixture.id && selected.market === market && selected.label === label} disabled={disabled} onClick={() => makeSelection(fixture, i, market)} />)}
+        {options.map((label, i) => {
+          const movement = matchesOddsMovement(recentOddsMovement, fixture.id, market, label);
+          return <OddsButton key={label} label={label} odds={getMarketOdds(fixture, market, i, priceOverrides)} selected={selected?.fixtureId === fixture.id && selected.market === market && selected.label === label} disabled={disabled} movement={movement} onClick={() => makeSelection(fixture, i, market)} />;
+        })}
       </div>}
     </Card>
   );
@@ -1428,6 +1535,8 @@ function SelectionCard({ variant, idPrefix, selection, stake, setStake, slipMess
   acceptNewOdds: () => void;
   placeDemoBet: () => void;
 }) {
+  const recentOddsMovement = useRecentOddsMovement();
+  const selectionMovement = matchesOddsMovement(recentOddsMovement, selection.fixtureId, selection.market, selection.label);
   const disabled = pendingOdds !== null || marketSuspended || !isValidStake(stake);
   const stakeId = `${idPrefix}-stake`;
   const hintId = `${idPrefix}-stake-hint`;
@@ -1441,20 +1550,21 @@ function SelectionCard({ variant, idPrefix, selection, stake, setStake, slipMess
       </div>
       <div className="selection-pick">
         <div><strong>{selection.label}</strong><small><ClubPair fixtureId={selection.fixtureId} />{selection.fixture}</small></div>
-        <div className="pick-odds"><span>Odds</span><RollingNumber duration={reducedMotion ? 0 : 320} value={selection.odds} format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} className="rolling-odds" /></div>
+        <div className="pick-odds"><span>Odds</span><RollingNumber duration={reducedMotion ? 0 : 320} value={selection.odds} format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} className="rolling-odds" /><OddsChangeCue movement={selectionMovement} /></div>
       </div>
       {pendingOdds !== null && <div className="state-banner state-warning"><span>↗</span><div><strong>Odds have changed</strong><small>{selection.odds.toFixed(2)} → {pendingOdds.toFixed(2)} · accept to keep going</small></div><Button size="sm" className="accept-odds-button" onClick={acceptNewOdds}>Accept {pendingOdds.toFixed(2)}</Button></div>}
       {marketSuspended && <div className="state-banner state-warning"><Icon name="lock" size={17} /><div><strong>Market suspended</strong><small>This sample selection is temporarily unavailable.</small></div></div>}
       <label className="stake-label" htmlFor={stakeId}>Stake <span>USDT</span></label>
       <div className="stake-input-row"><span className="stake-currency">USDT</span><Input id={stakeId} type="number" min="1" step="0.01" value={stake} onChange={(event) => setStake(event.currentTarget.value)} className="stake-input" aria-label="USDT stake" aria-invalid={invalidStake} aria-describedby={invalidStake ? hintId : undefined} /></div>
-      <p id={hintId} className={`stake-hint ${invalidStake ? 'stake-error' : ''}`} aria-live="polite">{invalidStake ? 'Enter 1.00 or more, up to 2 decimals.' : 'Minimum 1.00'}</p>
       {variant === 'compact' && <div className="quick-bet-stakes" role="group" aria-label="Quick stake amounts">
         {[5, 10, 25].map((amount) => <button key={amount} type="button" aria-pressed={Number(stake) === amount} className={Number(stake) === amount ? 'is-active' : ''} onClick={() => setStake(String(amount))}>{amount} USDT</button>)}
       </div>}
-      <div className="return-line"><span>Possible return</span><strong><RollingNumber duration={reducedMotion ? 0 : 320} value={estimatedReturn} format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} className="rolling-return" /> <small>USDT</small></strong></div>
+      <p id={hintId} className={`stake-hint ${invalidStake ? 'stake-error' : ''}`} aria-live="polite">{invalidStake ? 'Enter 1.00 or more, up to 2 decimals.' : 'Minimum 1.00'}</p>
+      <div className="return-line"><span>Potential return</span><strong><RollingNumber duration={reducedMotion ? 0 : 320} value={estimatedReturn} format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} className="rolling-return" /> <small>USDT</small></strong></div>
       {slipMessage && <div className={`placement-feedback placement-feedback--${slipMessage.type}`} role={slipMessage.type === 'error' ? 'alert' : 'status'} aria-live={slipMessage.type === 'error' ? 'assertive' : 'polite'}>{slipMessage.text}</div>}
       <Button className="place-button" disabled={disabled} onClick={placeDemoBet}>Place demo bet</Button>
       <p className="slip-disclaimer">Single pick · no real money</p>
+      <p className="slip-next-step">After placing, find this sample in My Bets.</p>
     </Card>
   );
 }
@@ -1576,8 +1686,8 @@ function DemoLab({ selection, canPlaceDemoBet, pendingOdds, marketSuspended, fix
   );
 }
 
-function OddsButton({ label, odds, onClick, compact = false, selected = false, disabled = false }: { label: string; odds: number; onClick: () => void; compact?: boolean; selected?: boolean; disabled?: boolean }) {
-  return <Button variant="outline" size="sm" aria-pressed={selected} disabled={disabled} className={`odds-button ${compact ? 'odds-compact' : ''} ${selected ? 'is-selected' : ''}`} onClick={(event) => { event.stopPropagation(); onClick(); }}><span className="odds-label">{label}</span><RollingNumber duration={320} value={odds} format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} className="odds-value" /></Button>;
+function OddsButton({ label, odds, onClick, compact = false, selected = false, disabled = false, movement }: { label: string; odds: number; onClick: () => void; compact?: boolean; selected?: boolean; disabled?: boolean; movement: OddsMovement | null }) {
+  return <Button variant="outline" size="sm" aria-pressed={selected} disabled={disabled} className={`odds-button ${compact ? 'odds-compact' : ''} ${selected ? 'is-selected' : ''}`} onClick={(event) => { event.stopPropagation(); onClick(); }}><span className="odds-label">{label}</span><RollingNumber duration={320} value={odds} format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} className="odds-value" /><OddsChangeCue movement={movement} /></Button>;
 }
 
 function EmptyState({ title, copy }: { title: string; copy: string }) {

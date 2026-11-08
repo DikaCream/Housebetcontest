@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" fill="none">
+  <!-- Transparent field markings only; no turf, stadium, logos or imagery. -->
+  <g stroke="#A4C7CD" stroke-width="4">
+    <path d="M0 404h1600v496H0z"/>
+    <path d="M800 404v496"/>
+    <ellipse cx="800" cy="652" rx="174" ry="84"/>
+    <path d="M0 493h253v318H0M1600 493h-253v318h253"/>
+    <path d="M0 568h94v168H0M1600 568h-94v168h94"/>
+    <path d="M0 604a48 48 0 0 1 0 96M1600 604a48 48 0 0 0 0 96"/>
+  </g>
+</svg>
