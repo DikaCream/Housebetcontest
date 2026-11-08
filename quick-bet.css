@@ -1,0 +1,554 @@
+/* Quick Bet: one floating view over the existing single-selection state. */
+#root #housebets-app .quick-bet-float {
+  position: fixed !important;
+  z-index: 88 !important;
+  right: 16px !important;
+  bottom: 18px !important;
+  width: 304px !important;
+  max-width: calc(100vw - 32px);
+  max-height: min(430px, calc(100dvh - 92px)) !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #F8FBFB !important;
+  background: #0B1A21 !important;
+  border: 1px solid #29404A !important;
+  border-top-color: #3E747B !important;
+  border-radius: 14px 14px 4px 14px !important;
+  box-shadow: 0 20px 54px #0009, 0 2px 12px #0006 !important;
+}
+
+#root #housebets-app .quick-bet-float-head {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 8px 7px 11px;
+  background: #0B1A21;
+  border-bottom: 1px solid #29404A;
+}
+
+#root #housebets-app .quick-bet-float-mark {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  display: grid;
+  place-items: center;
+  color: #02F8F8;
+  background: #0E202A;
+  border: 1px solid #29404A;
+  border-radius: 9px 9px 3px 9px;
+}
+
+#root #housebets-app .quick-bet-float-title {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+#root #housebets-app .quick-bet-float-title strong {
+  color: #F8FBFB !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1.2;
+}
+
+#root #housebets-app .quick-bet-float-title small {
+  color: #96A7AB !important;
+  font-size: 11px !important;
+}
+
+#root #housebets-app .quick-bet-float-count {
+  padding: 4px 7px;
+  color: #B5C6C9;
+  background: #0E202A;
+  border: 1px solid #29404A;
+  border-radius: 3px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+#root #housebets-app .quick-bet-float-close {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: #A9B8BB;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#root #housebets-app .quick-bet-float-close:hover {
+  color: #F8FBFB;
+  background: #0E202A;
+  border-color: #29404A;
+}
+
+#root #housebets-app .quick-bet-float-tabs {
+  min-height: 43px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px 8px 0;
+  background: #0B1A21;
+  border-bottom: 1px solid #29404A;
+}
+
+#root #housebets-app .quick-bet-float-tabs button {
+  position: relative;
+  min-width: 0;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 9px;
+  color: #A7B8BC !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  font-size: 13px !important;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+#root #housebets-app .quick-bet-float-tabs button::after {
+  position: absolute;
+  right: 10px;
+  bottom: -1px;
+  left: 10px;
+  height: 2px;
+  background: transparent;
+  content: '';
+}
+
+#root #housebets-app .quick-bet-float-tabs button.is-active {
+  color: #F6FFFF !important;
+}
+
+#root #housebets-app .quick-bet-float-tabs button.is-active::after {
+  background: #02F8F8;
+}
+
+#root #housebets-app .quick-bet-float-tabs button span {
+  min-width: 20px;
+  height: 20px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 4px;
+  color: #B7C8CB;
+  background: #0E202A;
+  border: 1px solid #29404A;
+  border-radius: 3px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+#root #housebets-app .quick-bet-float-body {
+  min-height: 0;
+  overflow: auto;
+  padding: 10px;
+  overscroll-behavior: contain;
+  scrollbar-color: #29404A transparent;
+  scrollbar-width: thin;
+}
+
+#root #housebets-app .quick-bet-float-body .selection-card {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 9px !important;
+  margin: 0 !important;
+  padding: 12px !important;
+  background: #0E202A !important;
+  border: 1px solid #29404A !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+
+#root #housebets-app .quick-bet-float-body .selection-card > * {
+  min-width: 0;
+}
+
+#root #housebets-app .quick-bet-float-body .selection-card-top {
+  min-height: 26px;
+  margin: 0 !important;
+}
+
+#root #housebets-app .quick-bet-float-body .selection-competition {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root #housebets-app .quick-bet-float-body .selection-pick {
+  margin: 0 !important;
+}
+
+#root #housebets-app .quick-bet-float-body .stake-label {
+  margin: 1px 0 -5px !important;
+}
+
+#root #housebets-app .quick-bet-float-body .quick-bet-stakes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+#root #housebets-app .quick-bet-stakes button {
+  min-width: 0;
+  min-height: 34px;
+  padding: 0 5px;
+  color: #B8C8CC !important;
+  background: #0B1A21 !important;
+  border: 1px solid #29404A !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+#root #housebets-app .quick-bet-stakes button:hover {
+  color: #E8FFFF !important;
+  border-color: #507078 !important;
+}
+
+#root #housebets-app .quick-bet-stakes button.is-active {
+  color: #02F8F8 !important;
+  background: #02F8F810 !important;
+  border-color: #02F8F866 !important;
+}
+
+#root #housebets-app .quick-bet-float-body .stake-hint {
+  margin: -4px 0 0 !important;
+}
+
+#root #housebets-app .quick-bet-float-body .return-line {
+  margin: 0 !important;
+}
+
+#root #housebets-app .quick-bet-float-body .place-button {
+  width: 100% !important;
+  min-height: 44px !important;
+  margin: 0 !important;
+}
+
+#root #housebets-app .quick-bet-float-body .slip-next-step {
+  display: none !important;
+}
+
+#root #housebets-app .quick-bet-float-body .slip-disclaimer {
+  margin: -3px 0 0 !important;
+}
+
+#root #housebets-app .quick-bet-float-body .compact-bets {
+  display: grid;
+  gap: 10px;
+}
+
+#root #housebets-app .quick-bet-float-body .compact-bet {
+  padding: 12px !important;
+  background: #0E202A !important;
+  border: 1px solid #29404A !important;
+  border-radius: 8px !important;
+}
+
+#root #housebets-app .quick-bet-reopen {
+  position: fixed !important;
+  z-index: 87 !important;
+  right: 16px !important;
+  bottom: 18px !important;
+  width: 248px;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 11px;
+  color: #F8FBFB !important;
+  background: #0B1A21 !important;
+  border: 1px solid #29404A !important;
+  border-left: 2px solid #02F8F8 !important;
+  border-radius: 10px 10px 3px 10px !important;
+  box-shadow: 0 14px 36px #0008 !important;
+  text-align: left;
+  cursor: pointer;
+}
+
+#root #housebets-app .quick-bet-reopen:hover {
+  background: #0E202A !important;
+  border-color: #3C626A !important;
+}
+
+#root #housebets-app .quick-bet-reopen-mark {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: grid;
+  place-items: center;
+  color: #02F8F8;
+  background: #0E202A;
+  border: 1px solid #29404A;
+  border-radius: 8px 8px 3px 8px;
+}
+
+#root #housebets-app .quick-bet-reopen-copy {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#root #housebets-app .quick-bet-reopen-copy strong,
+#root #housebets-app .quick-bet-reopen-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root #housebets-app .quick-bet-reopen-copy strong {
+  color: #F8FBFB !important;
+  font-size: 13px !important;
+  font-weight: 600;
+}
+
+#root #housebets-app .quick-bet-reopen-copy small {
+  color: #A7B8BC !important;
+  font-size: 11px !important;
+}
+
+#root #housebets-app .quick-bet-reopen-action {
+  color: #02F8F8;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+@media (min-width: 761px) {
+  /* The floating widget occupies the existing rail zone, never alongside a second slip. */
+  #root #housebets-app:not([data-page="activity"]) .right-rail {
+    display: none !important;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1180px) {
+  #root #housebets-app .quick-bet-float {
+    right: 16px !important;
+    bottom: 16px !important;
+    width: 292px !important;
+    max-height: min(270px, calc(100dvh - 84px)) !important;
+  }
+
+  #root #housebets-app[data-quick-bet-open="true"]:not([data-page="activity"]) .main-content {
+    padding-right: 322px !important;
+  }
+
+  #root #housebets-app .quick-bet-float-head {
+    min-height: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  #root #housebets-app .quick-bet-float-body {
+    padding: 7px;
+  }
+
+  #root #housebets-app .quick-bet-float-body .selection-card {
+    gap: 7px !important;
+    padding: 9px !important;
+  }
+
+  #root #housebets-app .quick-bet-float-body .selection-pick {
+    min-height: 48px !important;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 900px) {
+  #root #housebets-app .quick-bet-float {
+    right: 10px !important;
+    bottom: 12px !important;
+    width: min(260px, calc(100vw - 210px)) !important;
+    max-height: min(250px, calc(100dvh - 80px)) !important;
+  }
+
+  #root #housebets-app .quick-bet-reopen {
+    right: 10px !important;
+    bottom: 12px !important;
+    width: min(238px, calc(100vw - 210px));
+  }
+
+  #root #housebets-app[data-quick-bet-open="true"]:not([data-page="activity"]) .main-content {
+    padding-right: 286px !important;
+  }
+
+  #root #housebets-app .quick-bet-float-head {
+    min-height: 47px;
+    gap: 6px;
+    padding: 4px 6px 4px 8px;
+  }
+
+  #root #housebets-app .quick-bet-float-title small,
+  #root #housebets-app .quick-bet-float-count {
+    display: none;
+  }
+
+  #root #housebets-app .quick-bet-float-tabs {
+    min-height: 38px;
+  }
+
+  #root #housebets-app .quick-bet-float-body {
+    padding: 6px;
+  }
+}
+
+@media (max-width: 760px) {
+  #root #housebets-app .quick-bet-float,
+  #root #housebets-app .quick-bet-reopen {
+    display: none !important;
+  }
+
+  /* Keep the one-pick summary as a compact dock above the existing bottom nav. */
+  #root #housebets-app .mobile-slip-bar[data-has-selection="true"] {
+    color: #F8FBFB !important;
+    background: #0B1A21 !important;
+    border: 1px solid #29404A !important;
+    border-left: 2px solid #02F8F8 !important;
+    border-radius: 12px 12px 4px 12px !important;
+    box-shadow: 0 10px 24px #0008 !important;
+  }
+
+  #root #housebets-app .mobile-slip-bar[data-has-selection="true"] .mobile-slip-count {
+    color: #041015 !important;
+    background: #02F8F8 !important;
+    border-radius: 8px 8px 2px 8px !important;
+  }
+
+  #root #housebets-app .mobile-slip-open {
+    color: #02F8F8 !important;
+  }
+
+  #root #housebets-app .mobile-slip-sheet {
+    max-height: min(66dvh, 560px) !important;
+    background: #0B1A21 !important;
+    border: 1px solid #29404A !important;
+    border-bottom: 0 !important;
+    border-radius: 18px 18px 0 0 !important;
+    box-shadow: 0 -14px 38px #0009 !important;
+  }
+
+  #root #housebets-app .mobile-sheet-body {
+    max-height: calc(66dvh - 110px) !important;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom)) !important;
+  }
+
+  #root #housebets-app .mobile-sheet-body .quick-bet-stakes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    margin: 6px 0;
+  }
+
+  #root #housebets-app .mobile-sheet-body .quick-bet-stakes button {
+    min-height: 40px;
+  }
+}
+
+/* Desktop Quick Bet lives in the existing right-hand lane, beside the board. */
+@media (min-width: 900px) {
+  #root #housebets-app .quick-bet-float {
+    position: sticky !important;
+    z-index: 4 !important;
+    top: 76px !important;
+    right: auto !important;
+    bottom: auto !important;
+    grid-column: 3 !important;
+    grid-row: 2 !important;
+    align-self: start;
+    width: 100% !important;
+    max-width: none !important;
+    height: calc(100vh - 76px) !important;
+    max-height: calc(100dvh - 76px) !important;
+    margin: 0 !important;
+    background: #07171e !important;
+    border: 0 !important;
+    border-left: 1px solid #29404A !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  #root #housebets-app .quick-bet-float-head,
+  #root #housebets-app .quick-bet-float-tabs {
+    flex: 0 0 auto;
+  }
+
+  #root #housebets-app .quick-bet-float-body {
+    flex: 1 1 auto;
+    max-height: none;
+    padding: 14px;
+  }
+
+  #root #housebets-app .quick-bet-reopen {
+    position: sticky !important;
+    z-index: 3 !important;
+    top: 82px !important;
+    right: auto !important;
+    bottom: auto !important;
+    grid-column: 3 !important;
+    grid-row: 2 !important;
+    align-self: start;
+    width: auto;
+    max-width: none;
+    margin: 14px 12px;
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1080px) {
+  #root #housebets-app.app-shell {
+    grid-template-columns: 184px minmax(0, 1fr) 292px !important;
+    grid-template-rows: 68px minmax(0, 1fr);
+  }
+
+  #root #housebets-app[data-quick-bet-open="true"]:not([data-page="activity"]) .main-content {
+    padding-right: 28px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #root #housebets-app .quick-bet-float,
+  #root #housebets-app .quick-bet-reopen {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Full desktop shell: show the empty slip rail before a pick; Quick Bet replaces it after a pick. */
+@media (min-width: 1121px) {
+  #root #housebets-app:not([data-page="activity"])[data-has-selection="false"] .right-rail {
+    display: flex !important;
+  }
+
+  #root #housebets-app .inline-demo-lab--desktop {
+    display: block !important;
+    margin: 0 0 14px !important;
+  }
+
+  #root #housebets-app .inline-demo-lab--mobile {
+    display: none !important;
+  }
+
+  #root #housebets-app .right-rail .rail-demo-disclosure {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1120px) {
+  #root #housebets-app .inline-demo-lab--desktop {
+    display: none !important;
+  }
+}

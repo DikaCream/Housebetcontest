@@ -33,6 +33,7 @@ import './audit-completion.css';
 import './approved-ui-revisions.css';
 import './live-mobile-refinements.css';
 import './mybets-mobile-refinements.css';
+import './quick-bet.css';
 export type { Fixture, Selection } from './types';
 type Page = 'home' | 'menu' | 'live' | 'football' | 'match' | 'activity';
 type ActivityTab = 'slip' | 'bets';
@@ -311,6 +312,7 @@ function App() {
   const [marketJumpRequest, setMarketJumpRequest] = useState(0);
   const handledMarketJump = useRef(0);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
+  const [quickBetOpen, setQuickBetOpen] = useState(false);
   const activeMeta = pageLabels[page];
   const openCount = bets.filter((bet) => bet.status === 'open').length;
   const stakeNumber = Number(stake) || 0;
@@ -498,6 +500,7 @@ function App() {
     setSlipMessage(null);
     setRailTab('slip');
     setActivityTab('slip');
+    setQuickBetOpen(true);
   }
 
   function undoSelectionReplacement() {
@@ -515,6 +518,7 @@ function App() {
     setSlipMessage(null);
     setPendingOdds(null);
     setNotice(null);
+    setQuickBetOpen(false);
   }
 
   function placeDemoBet() {
@@ -553,6 +557,7 @@ function App() {
     setSlipMessage(null);
     setPendingOdds(null);
     setMobileSheetOpen(false);
+    setQuickBetOpen(false);
     setNotice({ type: 'success', text: `Demo bet placed: ${newBet.selection} · ${formatDemoUSDT(newBet.stake)}.` });
     scrollPageTop();
   }
@@ -634,7 +639,7 @@ function App() {
   );
 
   return (
-    <div id="housebets-app" className="app-shell" data-page={page} data-has-selection={Boolean(selection)} data-sheet-open={mobileSheetOpen} data-design="original-matchday" data-theme="lavender">
+    <div id="housebets-app" className="app-shell" data-page={page} data-has-selection={Boolean(selection)} data-sheet-open={mobileSheetOpen} data-quick-bet-open={quickBetOpen} data-design="original-matchday" data-theme="lavender">
       <StatusBar style="light" />
       <header className="topbar">
         <button className="brand-lockup" onClick={() => navigate('home')} aria-label="Sports home">
@@ -716,6 +721,24 @@ function App() {
           <button className="notice-close" onClick={() => setNotice(null)} aria-label="Dismiss message"><Icon name="close" size={14} /></button>
           </div>
         )}
+        <details className="inline-demo-lab inline-demo-lab--desktop">
+          <summary><Icon name="grid" size={15} /><span>Demo state controls</span><small>Odds · suspend · failure</small><b>＋</b></summary>
+          <DemoLab
+            selection={selection}
+            canPlaceDemoBet={Boolean(selection && isValidStake(stake) && pendingOdds === null && !selectedFixtureSuspended)}
+            pendingOdds={pendingOdds}
+            marketSuspended={demoFixtureSuspended}
+            fixtureLabel={`${demoFixture.home} v ${demoFixture.away}`}
+            failNext={failNext}
+            openCount={openCount}
+            simulateOddsChange={simulateOddsChange}
+            toggleSuspended={() => toggleFixtureSuspension(demoFixtureId)}
+            setFailNext={() => { setFailNext(true); setNotice({ type: 'warning', text: 'The next demo placement will fail. Tap again to cancel.' }); }}
+            placeDemoBet={placeDemoBet}
+            settleOpenBet={settleOpenBet}
+            cancelFail={() => setFailNext(false)}
+          />
+        </details>
         {page === 'home' && <HomePage fixtures={visibleFixtures} featuredId={homeFeatured?.id} navigate={navigate} makeSelection={makeSelection} selection={selection} priceOverrides={priceOverrides} onCompetition={openCompetition} onChooseSport={selectMobileSport} favourites={favourites} toggleFavourite={toggleFavourite} openMarket={openMarket} />}
         {page === 'menu' && <MenuPage favourites={favourites} onChooseSport={openMenuSport} onOpenFavourite={openFavourite} toggleFavourite={toggleFavourite} onBrowseFootball={() => openMenuSport('Football')} />}
         {page === 'live' && <LivePage fixtures={visibleFixtures} navigate={navigate} makeSelection={makeSelection} priceOverrides={priceOverrides} favourites={favourites} toggleFavourite={toggleFavourite} sportFilter={liveSportFilter} setSportFilter={setLiveSportFilter} competitionFilter={liveCompetitionFilter} setCompetitionFilter={setLiveCompetitionFilter} searchQuery={query} selection={selection} openMarket={openMarket} />}
@@ -761,7 +784,7 @@ function App() {
             navigate={navigate}
           />
         )}
-        <details className="inline-demo-lab">
+        <details className="inline-demo-lab inline-demo-lab--mobile">
           <summary><Icon name="grid" size={15} /><span>Demo state controls</span><small>Prototype only</small><b>＋</b></summary>
           <DemoLab
             selection={selection}
@@ -816,6 +839,41 @@ function App() {
         </details>
       </aside>
 
+      {selection && quickBetOpen && page !== 'activity' && (
+        <FloatingQuickBet
+          selection={selection}
+          railTab={railTab}
+          setTab={(tab) => { setRailTab(tab); setActivityTab(tab); }}
+          stake={stake}
+          setStake={updateStake}
+          slipMessage={slipMessage}
+          pendingOdds={pendingOdds}
+          marketSuspended={selectedFixtureSuspended}
+          estimatedReturn={estimatedReturn}
+          clearSelection={clearSelection}
+          acceptNewOdds={acceptNewOdds}
+          placeDemoBet={placeDemoBet}
+          navigate={navigate}
+          bets={bets}
+          openCount={openCount}
+          cashOutBet={cashOutBet}
+          openFullBets={openFullBets}
+          onClose={() => setQuickBetOpen(false)}
+        />
+      )}
+      {selection && !quickBetOpen && page !== 'activity' && (
+        <button
+          type="button"
+          className="quick-bet-reopen"
+          aria-label={`Open Quick Bet for ${selection.label} at ${selection.odds.toFixed(2)}`}
+          onClick={() => { setRailTab('slip'); setActivityTab('slip'); setQuickBetOpen(true); }}
+        >
+          <span className="quick-bet-reopen-mark" aria-hidden="true"><Icon name="plus" size={17} /></span>
+          <span className="quick-bet-reopen-copy"><strong>Quick Bet</strong><small>{selection.label} · {selection.odds.toFixed(2)}</small></span>
+          <span className="quick-bet-reopen-action">Open</span>
+        </button>
+      )}
+
       {mobileSheetOpen && (
         <MobileSheet onClose={() => setMobileSheetOpen(false)}>
             <div className="mobile-sheet-head">
@@ -850,6 +908,48 @@ function App() {
       )}
       <nav className="mobile-nav" aria-label="Mobile navigation">{nav(true)}</nav>
     </div>
+  );
+}
+
+
+function FloatingQuickBet({ selection, railTab, setTab, stake, setStake, slipMessage, pendingOdds, marketSuspended, estimatedReturn, clearSelection, acceptNewOdds, placeDemoBet, navigate, bets, openCount, cashOutBet, openFullBets, onClose }: {
+  selection: Selection;
+  railTab: ActivityTab;
+  setTab: (tab: ActivityTab) => void;
+  stake: string;
+  setStake: (value: string) => void;
+  slipMessage: Notice | null;
+  pendingOdds: number | null;
+  marketSuspended: boolean;
+  estimatedReturn: number;
+  clearSelection: () => void;
+  acceptNewOdds: () => void;
+  placeDemoBet: () => void;
+  navigate: Navigate;
+  bets: DemoBet[];
+  openCount: number;
+  cashOutBet: (id: string) => void;
+  openFullBets: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <aside className="quick-bet-float" aria-label="Quick Bet">
+      <div className="quick-bet-float-head">
+        <span className="quick-bet-float-mark" aria-hidden="true"><Icon name="plus" size={16} /></span>
+        <div className="quick-bet-float-title"><strong>Quick Bet</strong><small>Single pick · Demo USDT</small></div>
+        <span className="quick-bet-float-count">1 pick</span>
+        <button type="button" className="quick-bet-float-close" onClick={onClose} aria-label="Close Quick Bet"><Icon name="close" size={17} /></button>
+      </div>
+      <div className="quick-bet-float-tabs" role="tablist" aria-label="Quick Bet views">
+        <button type="button" role="tab" aria-selected={railTab === 'slip'} className={railTab === 'slip' ? 'is-active' : ''} onClick={() => setTab('slip')}>Bet slip <span>1</span></button>
+        <button type="button" role="tab" aria-selected={railTab === 'bets'} className={railTab === 'bets' ? 'is-active' : ''} onClick={() => setTab('bets')}>My Bets <span>{openCount}</span></button>
+      </div>
+      <div className="quick-bet-float-body">
+        {railTab === 'slip'
+          ? <SlipPanel idPrefix="quick-bet-float" selection={selection} stake={stake} setStake={setStake} slipMessage={slipMessage} pendingOdds={pendingOdds} marketSuspended={marketSuspended} estimatedReturn={estimatedReturn} clearSelection={clearSelection} acceptNewOdds={acceptNewOdds} placeDemoBet={placeDemoBet} navigate={navigate} />
+          : <CompactBets bets={bets} cashOutBet={cashOutBet} openFullBets={openFullBets} />}
+      </div>
+    </aside>
   );
 }
 
@@ -1348,6 +1448,9 @@ function SelectionCard({ variant, idPrefix, selection, stake, setStake, slipMess
       <label className="stake-label" htmlFor={stakeId}>Stake <span>USDT</span></label>
       <div className="stake-input-row"><span className="stake-currency">USDT</span><Input id={stakeId} type="number" min="1" step="0.01" value={stake} onChange={(event) => setStake(event.currentTarget.value)} className="stake-input" aria-label="USDT stake" aria-invalid={invalidStake} aria-describedby={invalidStake ? hintId : undefined} /></div>
       <p id={hintId} className={`stake-hint ${invalidStake ? 'stake-error' : ''}`} aria-live="polite">{invalidStake ? 'Enter 1.00 or more, up to 2 decimals.' : 'Minimum 1.00'}</p>
+      {variant === 'compact' && <div className="quick-bet-stakes" role="group" aria-label="Quick stake amounts">
+        {[5, 10, 25].map((amount) => <button key={amount} type="button" aria-pressed={Number(stake) === amount} className={Number(stake) === amount ? 'is-active' : ''} onClick={() => setStake(String(amount))}>{amount} USDT</button>)}
+      </div>}
       <div className="return-line"><span>Possible return</span><strong><RollingNumber duration={reducedMotion ? 0 : 320} value={estimatedReturn} format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} className="rolling-return" /> <small>USDT</small></strong></div>
       {slipMessage && <div className={`placement-feedback placement-feedback--${slipMessage.type}`} role={slipMessage.type === 'error' ? 'alert' : 'status'} aria-live={slipMessage.type === 'error' ? 'assertive' : 'polite'}>{slipMessage.text}</div>}
       <Button className="place-button" disabled={disabled} onClick={placeDemoBet}>Place demo bet</Button>
