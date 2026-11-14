@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 
-export default function MobileSheet({ onClose, children }: { onClose: () => void; children: React.ReactNode }) {
+export default function MobileSheet({ onClose, children, closing = false }: {
+  onClose: () => void;
+  children: React.ReactNode;
+  closing?: boolean;
+}) {
   const dialog = useRef<HTMLElement>(null);
   const close = useRef(onClose);
 
@@ -12,7 +16,11 @@ export default function MobileSheet({ onClose, children }: { onClose: () => void
     const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    const frame = requestAnimationFrame(() => dialog.current?.querySelector<HTMLElement>('.mobile-sheet-close')?.focus());
+    const frame = requestAnimationFrame(() => {
+      const stakeInput = dialog.current?.querySelector<HTMLElement>('.mobile-sheet-body .stake-input');
+      const closeButton = dialog.current?.querySelector<HTMLElement>('.mobile-sheet-close');
+      (stakeInput ?? closeButton)?.focus({ preventScroll: true });
+    });
     function keydown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         event.preventDefault();
@@ -38,8 +46,9 @@ export default function MobileSheet({ onClose, children }: { onClose: () => void
     };
   }, []);
 
-  return <div className="mobile-sheet-backdrop" onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}>
-    <section ref={dialog} className="mobile-slip-sheet" role="dialog" aria-modal="true" aria-label="Bet slip and My bets" tabIndex={-1}>
+  const closingClass = closing ? ' is-closing' : '';
+  return <div className={`mobile-sheet-backdrop${closingClass}`} onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+    <section ref={dialog} className={`mobile-slip-sheet${closingClass}`} role="dialog" aria-modal="true" aria-label="Bet slip and My bets" tabIndex={-1}>
       {children}
     </section>
   </div>;

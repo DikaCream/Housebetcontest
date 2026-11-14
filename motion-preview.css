@@ -1,0 +1,130 @@
+/* Scoped motion polish for the current Housebets demo interactions. */
+
+#root #housebets-app :is(.match-card-odd, .hubie-hero-odd, .row-odd, .home-fixture-odd, .fieldside-price, .odds-button) {
+  transform-origin: center;
+  transition: transform 160ms cubic-bezier(.2, .8, .24, 1), box-shadow 160ms ease, color 140ms ease, background-color 140ms ease, border-color 140ms ease !important;
+}
+
+#root #housebets-app :is(.match-card-odd, .hubie-hero-odd, .row-odd, .home-fixture-odd, .fieldside-price, .odds-button):not(:disabled):not(.is-selected) {
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .24), 0 4px 8px rgba(0, 0, 0, .17), inset 0 1px 0 rgba(249, 249, 251, .08) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  #root #housebets-app :is(.match-card-odd, .hubie-hero-odd, .row-odd, .home-fixture-odd, .fieldside-price, .odds-button):hover:not(:disabled):not(.is-selected) {
+    transform: translateY(-1px) perspective(520px) rotateX(.7deg);
+    box-shadow: 0 3px 0 rgba(0, 0, 0, .28), 0 6px 10px rgba(0, 0, 0, .2), inset 0 1px 0 rgba(249, 249, 251, .1) !important;
+  }
+}
+
+#root #housebets-app :is(.match-card-odd, .hubie-hero-odd, .row-odd, .home-fixture-odd, .fieldside-price, .odds-button):active:not(:disabled):not(.is-selected),
+#root #housebets-app :is(.match-card-odd, .hubie-hero-odd, .row-odd, .home-fixture-odd, .fieldside-price, .odds-button).is-selected:active:not(:disabled) {
+  transform: translateY(1px) perspective(520px) rotateX(-.7deg) scale(.988);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0), inset 0 2px 4px rgba(0, 0, 0, .16) !important;
+  transition-duration: 75ms !important;
+}
+
+#root #housebets-app :is(.match-card-odd, .hubie-hero-odd, .row-odd, .home-fixture-odd, .fieldside-price, .odds-button):disabled {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+#root #housebets-app :is(.slip-count-update[data-active="true"], .nav-slip-count, .mobile-slip-count) {
+  transform-origin: center;
+  animation: hb-selection-count-pop 260ms cubic-bezier(.2, .85, .3, 1) both !important;
+}
+
+@keyframes hb-selection-count-pop {
+  0% { opacity: .68; transform: translateY(2px) scale(.88); }
+  64% { opacity: 1; transform: translateY(0) scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+#root #housebets-app .mobile-sheet-backdrop {
+  animation: hb-sheet-dim-in 220ms ease-out both !important;
+}
+
+#root #housebets-app .mobile-slip-sheet {
+  animation: hb-sheet-rise-in 250ms cubic-bezier(.22, 1, .36, 1) both !important;
+  box-shadow: 0 -16px 38px rgba(0, 0, 0, .28) !important;
+  will-change: transform, opacity;
+}
+
+#root #housebets-app .mobile-sheet-backdrop.is-closing {
+  animation: hb-sheet-dim-out 190ms ease-in both !important;
+}
+
+#root #housebets-app .mobile-slip-sheet.is-closing {
+  animation: hb-sheet-drop-out 190ms cubic-bezier(.4, 0, .8, .2) both !important;
+}
+
+@keyframes hb-sheet-dim-in {
+  from { opacity: .45; }
+  to { opacity: 1; }
+}
+
+@keyframes hb-sheet-rise-in {
+  from { opacity: .92; transform: translateY(18px) scale(.995); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes hb-sheet-dim-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes hb-sheet-drop-out {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: .94; transform: translateY(100%) scale(.985); }
+}
+
+#root #housebets-app .notice.demo-bet-confirmation .notice-mark {
+  transform-origin: center;
+  animation: hb-demo-check-in 360ms cubic-bezier(.2, .85, .3, 1) both;
+}
+
+#root #housebets-app .bet-record.is-just-placed .bet-result-cell > :first-child {
+  transform-origin: center;
+  animation: hb-open-status-in 420ms cubic-bezier(.2, .85, .3, 1) both;
+}
+
+@keyframes hb-demo-check-in {
+  0% { opacity: .55; transform: scale(.74) rotate(-9deg); }
+  70% { opacity: 1; transform: scale(1.08) rotate(0); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes hb-open-status-in {
+  0% { opacity: .72; transform: translateY(2px) scale(.94); filter: drop-shadow(0 0 0 rgba(2, 248, 248, 0)); }
+  62% { opacity: 1; transform: translateY(0) scale(1.035); filter: drop-shadow(0 0 4px rgba(2, 248, 248, .3)); }
+  100% { opacity: 1; transform: scale(1); filter: none; }
+}
+
+#root #housebets-app .hubie-hero-art[data-motion-entry="once"] {
+  transform-origin: 82% 96%;
+  animation: hb-hubie-walk-in 580ms cubic-bezier(.2, .85, .28, 1) both;
+}
+
+@keyframes hb-hubie-walk-in {
+  0% { opacity: .82; transform: translateX(15px) translateY(1px) rotate(.8deg); }
+  72% { opacity: 1; transform: translateX(-1px) translateY(0) rotate(-.15deg); }
+  100% { opacity: 1; transform: translate(0) rotate(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #root #housebets-app :is(.match-card-odd, .hubie-hero-odd, .row-odd, .home-fixture-odd, .fieldside-price, .odds-button) {
+    transition: none !important;
+  }
+
+  #root #housebets-app :is(.match-card-odd, .hubie-hero-odd, .row-odd, .home-fixture-odd, .fieldside-price, .odds-button):is(:hover, :active):not(:disabled) {
+    transform: none !important;
+  }
+
+  #root #housebets-app :is(.slip-count-update[data-active="true"], .nav-slip-count, .mobile-slip-count),
+  #root #housebets-app .mobile-sheet-backdrop,
+  #root #housebets-app .mobile-slip-sheet,
+  #root #housebets-app .notice.demo-bet-confirmation .notice-mark,
+  #root #housebets-app .bet-record.is-just-placed .bet-result-cell > :first-child,
+  #root #housebets-app .hubie-hero-art[data-motion-entry="once"] {
+    animation: none !important;
+  }
+}
