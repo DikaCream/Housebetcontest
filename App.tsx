@@ -215,24 +215,17 @@ const navItems: { id: Page; label: string; icon: string; count?: string }[] = [
 // Keep mobile reading/focus order aligned with the central Bets destination.
 const mobileNavItems: typeof navItems = [{ id: 'menu', label: 'Menu', icon: 'menu' }, navItems[1], navItems[4], navItems[2], navItems[3]];
 
-const mobileSports = [
+const homeSports = [
   { name: 'Football', icon: 'ball' },
   { name: 'Tennis', icon: 'tennis' },
   { name: 'Basketball', icon: 'basketball' },
-  { name: 'Cricket', icon: 'cricket' },
+  { name: 'Ice Hockey', icon: 'ice-hockey' },
+  { name: 'Esports', icon: 'esports' },
   { name: 'Volleyball', icon: 'volleyball' },
-  { name: 'Handball', icon: 'ball' },
 ];
-const homeSports = [...mobileSports.slice(0, 3), { name: 'Ice Hockey', icon: 'ice-hockey' }, { name: 'Esports', icon: 'esports' }, { name: 'Volleyball', icon: 'volleyball' }];
 const mobileMenuSports = [
   { name: 'Live Now', icon: 'live' },
-  { name: 'Football', icon: 'ball' },
-  { name: 'League of Legends', icon: 'esports' },
-  { name: 'Cricket', icon: 'cricket' },
-  { name: 'Basketball', icon: 'basketball' },
-  { name: 'MMA', icon: 'mma' },
-  { name: 'Tennis', icon: 'tennis' },
-  { name: 'American Football', icon: 'american-football' },
+  ...homeSports,
 ];
 
 const pageLabels: Record<Page, { crumb: string; title: string; subtitle: string }> = {
@@ -527,10 +520,7 @@ function App() {
       navigate('football');
       return;
     }
-    setLiveSportFilter(sport);
-    setLiveCompetitionFilter('All competitions');
-    navigate('live');
-    setNotice({ type: 'info', text: `No ${sport} fixtures are included in this football-only demo yet.` });
+    setNotice({ type: 'info', text: `This contest demo includes fictional football only. ${sport} is shown as a navigation preview.` });
   }
 
   function openFavourite(item: string) {
@@ -1051,7 +1041,7 @@ function MobileSportsHeader({ page, navigate, onChooseSport }: { page: Page; nav
     <nav className="sports-index" aria-label="Sports and sections">
       <div className="sports-index-items">
         {destinations.map((destination) => <button key={destination.page} className={`sports-index-item ${page === destination.page ? 'active' : ''}`} aria-current={page === destination.page ? 'page' : undefined} aria-pressed={page === destination.page} onClick={() => navigate(destination.page)}>{destination.name}{destination.count && <span>{destination.count}</span>}</button>)}
-        {mobileSports.filter((sport) => sport.name === 'Tennis' || sport.name === 'Basketball').map((sport) => <button key={sport.name} className="sports-index-item sport-preview" aria-pressed={false} onClick={() => onChooseSport(sport.name)}>{sport.name}</button>)}
+        {homeSports.filter((sport) => sport.name === 'Tennis' || sport.name === 'Basketball').map((sport) => <button key={sport.name} className="sports-index-item sport-preview" aria-pressed={false} onClick={() => onChooseSport(sport.name)}>{sport.name}</button>)}
       </div>
       <span className="sports-index-note">Football fixtures</span>
     </nav>
@@ -1127,7 +1117,7 @@ function MenuPage({ favourites, activeSport, onChooseSport, onOpenFavourite, tog
             <div><h2 id="menu-sports-heading">Sports</h2><p>Choose a sport to open its board.</p></div>
           </div>
           <div className="menu-sport-grid">
-            {mobileSports.map((sport) => <button key={sport.name} type="button" className="menu-sport-button" onClick={() => onChooseSport(sport.name)}>
+            {homeSports.map((sport) => <button key={sport.name} type="button" className="menu-sport-button" onClick={() => onChooseSport(sport.name)}>
               <span className="menu-sport-icon"><Icon name={sport.icon} size={18} /></span>
               <span className="menu-sport-name">{sport.name}</span>
               <span className="menu-sport-description">{sport.name === 'Football' ? 'Fixtures and leagues' : 'Open sport board'}</span>
